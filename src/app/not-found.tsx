@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default function NotFound() {
   return (
@@ -9,13 +10,13 @@ export default function NotFound() {
       </p>
       <div className="flex flex-col sm:flex-row gap-2 mt-4">
         <Link
-          className="text-white bg-black hover:bg-gray-800 rounded-sm py-2 px-4"
+          className="inline-flex items-center gap-2 text-white bg-black hover:bg-gray-950 hover:-translate-y-0.5 transition rounded-sm py-2 px-4 hover:"
           href="/"
         >
-          Back to home
+          <ArrowLeft className="size-4" /> Back to home
         </Link>
         <Link
-          className="rounded-sm py-2 px-4 border-2 border-black hover:border-gray-800 "
+          className="rounded-sm py-2 px-4 border-2 border-black hover:border-gray-800 hover:-translate-y-0.5 transition"
           href="/favorites"
         >
           Open favorites
