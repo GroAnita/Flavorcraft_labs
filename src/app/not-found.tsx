@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, FileQuestion } from "lucide-react";
 
 export default function NotFound() {
   return (
     <div className="bg-white text-black flex flex-col items-center my-auto text-center">
+      <FileQuestion className="h-24 w-24 text-gray-400" strokeWidth={1.5} />
       <h1 className="text-[28px] font-bold">We couldn't find that page</h1>
       <p className="text-gray-600">
         The recipe may have been removed, or the link has a typo.
