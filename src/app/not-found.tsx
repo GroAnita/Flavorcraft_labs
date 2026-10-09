@@ -1,0 +1,28 @@
+import Link from "next/link";
+import { ArrowLeft, FileQuestion } from "lucide-react";
+
+export default function NotFound() {
+  return (
+    <div className="bg-white text-black flex flex-col items-center my-auto text-center">
+      <FileQuestion className="h-24 w-24 text-gray-400" strokeWidth={1.5} />
+      <h1 className="text-[28px] font-bold">We couldn't find that page</h1>
+      <p className="text-gray-600">
+        The recipe may have been removed, or the link has a typo.
+      </p>
+      <div className="flex flex-col sm:flex-row gap-2 mt-4">
+        <Link
+          className="inline-flex items-center gap-2 text-white bg-black hover:bg-gray-950 hover:-translate-y-0.5 transition rounded-sm py-2 px-4 hover:"
+          href="/"
+        >
+          <ArrowLeft className="size-4" /> Back to home
+        </Link>
+        <Link
+          className="rounded-sm py-2 px-4 border-2 border-black hover:border-gray-800 hover:-translate-y-0.5 transition"
+          href="/favorites"
+        >
+          Open favorites
+        </Link>
+      </div>
+    </div>
+  );
+}
