@@ -180,6 +180,7 @@
   --color-background: var(--color-salt-500);
   --color-surface: var(--color-salt-50);
   --color-foreground: var(--color-nori-500);
+  --color-muted-foreground: var(--color-nori-300);
   --color-primary: var(--color-basil-500);
   --color-border: var(--color-nori-500);
 }

@@ -17,13 +17,14 @@ Headings get `font-aptly` automatically from `globals.css`. Tags don't, so add `
 
 Use the semantic names in components so the theme can change in one place.
 
-| Utility suffix | Maps to     | Use                       |
-| -------------- | ----------- | ------------------------- |
-| `background`   | `salt-500`  | Page background           |
-| `surface`      | `salt-50`   | Cards, inputs, panels     |
-| `foreground`   | `nori-500`  | Default text              |
-| `primary`      | `basil-500` | Primary buttons and links |
-| `border`       | `nori-500`  | Borders and dividers      |
+| Utility suffix     | Maps to     | Use                       |
+| ------------------ | ----------- | ------------------------- |
+| `background`       | `salt-500`  | Page background           |
+| `surface`          | `salt-50`   | Cards, inputs, panels     |
+| `foreground`       | `nori-500`  | Default text              |
+| `muted-foreground` | `nori-300`  | Secondary text            |
+| `primary`          | `basil-500` | Primary buttons and links |
+| `border`           | `nori-500`  | Borders                   |
 
 `body` already uses `bg-background text-foreground`, so text gets `foreground` by default.
 Only add a text color when you need something other than `foreground`.
