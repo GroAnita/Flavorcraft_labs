@@ -4,10 +4,12 @@ All global styles live in `src/app/globals.css` (Tailwind CSS v4, configured wit
 
 ## Fonts
 
-| Token        | Use                  |
-| ------------ | -------------------- |
-| `font-inter` | Body text (default)  |
-| `font-aptly` | Headings (`h1`–`h6`) |
+| Token        | Use                           |
+| ------------ | ----------------------------- |
+| `font-inter` | Body text (default)           |
+| `font-aptly` | Headings (`h1`–`h6`) and tags |
+
+Headings get `font-aptly` automatically from `globals.css`. Tags don't, so add `font-aptly` to them yourself.
 
 ## Colors
 
@@ -21,7 +23,7 @@ Use the semantic names in components so the theme can change in one place.
 | `surface`      | `salt-50`   | Cards, inputs, panels     |
 | `foreground`   | `nori-500`  | Default text              |
 | `primary`      | `basil-500` | Primary buttons and links |
-| `border`       | TODO        | Borders and dividers      |
+| `border`       | `nori-500`  | Borders and dividers      |
 
 Example: `bg-surface text-foreground border border-border`
 

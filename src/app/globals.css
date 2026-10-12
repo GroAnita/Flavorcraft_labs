@@ -181,10 +181,7 @@
   --color-surface: var(--color-salt-50);
   --color-foreground: var(--color-nori-500);
   --color-primary: var(--color-basil-500);
-
-  /* TODO
-  --color-border:
-  */
+  --color-border: var(--color-nori-500);
 }
 
 @layer base {
