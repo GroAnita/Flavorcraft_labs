@@ -15,22 +15,17 @@ All global styles live in `src/app/globals.css` (Tailwind CSS v4, configured wit
 
 Use the semantic names in components so the theme can change in one place.
 
-| Utility suffix  | Maps to       | Use                               |
-| --------------- | ------------- | --------------------------------- |
-| `background`    | `salt-500`    | Page background                   |
-| `surface`       | `salt-50`     | Cards, inputs, panels             |
-| `foreground`    | `nori-500`    | Default text                      |
-| `muted`         | TODO          | Secondary text, hints             |
-| `primary`       | TODO          | Primary buttons and links         |
-| `primary-hover` | TODO          | Hover state for primary           |
-| `on-primary`    | TODO          | Text on top of `primary`          |
-| `accent`        | TODO          | Highlights, badges (not for text) |
-| `border`        | TODO          | Borders and dividers              |
-| `focus`         | TODO          | Keyboard focus outline            |
+| Utility suffix | Maps to    | Use                       |
+| -------------- | ---------- | ------------------------- |
+| `background`   | `salt-500` | Page background           |
+| `surface`      | `salt-50`  | Cards, inputs, panels     |
+| `foreground`   | `nori-500` | Default text              |
+| `primary`      | TODO       | Primary buttons and links |
+| `border`       | TODO       | Borders and dividers      |
 
-Example: `bg-primary text-on-primary hover:bg-primary-hover border border-border`
+Example: `bg-surface text-foreground border border-border`
 
-### Feedback colors
+### Status colors
 
 Pairs of background + text: `error`, `warning`, `success`, `info`, `note`.
 Example: `bg-error-bg text-error-text`.
@@ -44,7 +39,7 @@ Only reach for these when no semantic color fits.
 ## Focus styles
 
 Every focusable element gets a visible outline on keyboard focus via `:focus-visible`
-(2px `focus` color, 2px offset). Don't remove it with `outline-none` unless you replace it
+(2px `foreground` color, 2px offset). Don't remove it with `outline-none` unless you replace it
 with an equally visible focus style.
 
 ## Spacing, radius and shadows

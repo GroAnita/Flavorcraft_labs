@@ -152,7 +152,7 @@
   --color-nori-800: #0b120e;
   --color-nori-900: #080d0b;
 
-  /* Feedback colors */
+  /* Status colors */
 
   /* Error / Danger */
   --color-error-bg: #ffe7e5;
@@ -180,14 +180,9 @@
   --color-background: var(--color-salt-500);
   --color-surface: var(--color-salt-50);
   --color-foreground: var(--color-nori-500);
-  /* TODO 
-  --color-muted: 
-  --color-primary: 
-  --color-primary-hover:
-  --color-on-primary: 
-  --color-accent: 
-  --color-border: 
-  --color-focus: 
+  /* TODO
+  --color-primary:
+  --color-border:
   */
 }
 
@@ -197,7 +192,7 @@
   }
 
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-focus;
+    @apply outline-2 outline-offset-2 outline-foreground;
   }
 
   h1,
