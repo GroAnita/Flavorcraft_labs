@@ -1,26 +1,206 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Fonts */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-inter: var(--font-inter-next), sans-serif;
+  --font-aptly: "aptly", sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@theme {
+  /* Neutrals – Salt */
+  --color-salt-50: #fefefe;
+  --color-salt-100: #fcfcfc;
+  --color-salt-200: #fafafa;
+  --color-salt-300: #f8f8f8;
+  --color-salt-400: #f7f7f7;
+  --color-salt-500: #f5f5f5;
+  --color-salt-600: #dfdfdf;
+  --color-salt-700: #aeaeae;
+  --color-salt-800: #878787;
+  --color-salt-900: #676767;
+
+  /* Neutrals – Cream */
+  --color-cream-50: #fffffe;
+  --color-cream-100: #fefdfc;
+  --color-cream-200: #fdfdfa;
+  --color-cream-300: #fcfcf8;
+  --color-cream-400: #fcfbf6;
+  --color-cream-500: #fbfaf4;
+  --color-cream-600: #e4e4de;
+  --color-cream-700: #b2b2ad;
+  --color-cream-800: #8a8a86;
+  --color-cream-900: #696966;
+
+  /* Neutrals – Oat */
+  --color-oat-50: #fdfcfb;
+  --color-oat-100: #f8f6f1;
+  --color-oat-200: #f4f2ea;
+  --color-oat-300: #f0ece1;
+  --color-oat-400: #ede9db;
+  --color-oat-500: #e8e3d2;
+  --color-oat-600: #d3cfbf;
+  --color-oat-700: #a5a195;
+  --color-oat-800: #807d74;
+  --color-oat-900: #615f58;
+
+  /* Neutrals – Thyme */
+  --color-thyme-50: #f3f2f0;
+  --color-thyme-100: #d9d8d1;
+  --color-thyme-200: #c7c5bb;
+  --color-thyme-300: #adaa9d;
+  --color-thyme-400: #9d9989;
+  --color-thyme-500: #85806c;
+  --color-thyme-600: #797462;
+  --color-thyme-700: #5e5b4d;
+  --color-thyme-800: #49463b;
+  --color-thyme-900: #38362d;
+
+  /* Yellows – Butter */
+  --color-butter-50: #fffdf8;
+  --color-butter-100: #fef8e8;
+  --color-butter-200: #fdf5dd;
+  --color-butter-300: #fcf1ce;
+  --color-butter-400: #fceec5;
+  --color-butter-500: #fbeab6;
+  --color-butter-600: #e4d5a6;
+  --color-butter-700: #b2a681;
+  --color-butter-800: #8a8164;
+  --color-butter-900: #69624c;
+
+  /* Yellows – Saffron */
+  --color-saffron-50: #fef7ea;
+  --color-saffron-100: #fbe7bf;
+  --color-saffron-200: #f9dca0;
+  --color-saffron-300: #f6cb74;
+  --color-saffron-400: #f5c159;
+  --color-saffron-500: #f2b230;
+  --color-saffron-600: #dca22c;
+  --color-saffron-700: #ac7e22;
+  --color-saffron-800: #85621a;
+  --color-saffron-900: #664b14;
+
+  /* Yellows – Olive */
+  --color-olive-50: #f0eee8;
+  --color-olive-100: #cfcbb6;
+  --color-olive-200: #b8b293;
+  --color-olive-300: #988f62;
+  --color-olive-400: #847943;
+  --color-olive-500: #655814;
+  --color-olive-600: #5c5012;
+  --color-olive-700: #483e0e;
+  --color-olive-800: #38300b;
+  --color-olive-900: #2a2508;
+
+  /* Yellows – Truffle */
+  --color-truffle-50: #e9e9e7;
+  --color-truffle-100: #bab9b3;
+  --color-truffle-200: #99988f;
+  --color-truffle-300: #6a685c;
+  --color-truffle-400: #4d4b3c;
+  --color-truffle-500: #211e0b;
+  --color-truffle-600: #1e1b0a;
+  --color-truffle-700: #171508;
+  --color-truffle-800: #121106;
+  --color-truffle-900: #0e0d05;
+
+  /* Greens – Mint */
+  --color-mint-50: #fcfefc;
+  --color-mint-100: #f4faf6;
+  --color-mint-200: #eff8f2;
+  --color-mint-300: #e8f5ec;
+  --color-mint-400: #e4f3e9;
+  --color-mint-500: #ddf0e3;
+  --color-mint-600: #c9dacf;
+  --color-mint-700: #9daaa1;
+  --color-mint-800: #7a847d;
+  --color-mint-900: #5d655f;
+
+  /* Greens – Sprout */
+  --color-sprout-50: #f6faf2;
+  --color-sprout-100: #e4eed7;
+  --color-sprout-200: #d7e6c3;
+  --color-sprout-300: #c5dba8;
+  --color-sprout-400: #bad497;
+  --color-sprout-500: #a9c97d;
+  --color-sprout-600: #9ab772;
+  --color-sprout-700: #788f59;
+  --color-sprout-800: #5d6f45;
+  --color-sprout-900: #475435;
+
+  /* Greens – Basil */
+  --color-basil-50: #e8eeeb;
+  --color-basil-100: #b6cac0;
+  --color-basil-200: #93b1a2;
+  --color-basil-300: #628d78;
+  --color-basil-400: #44775d;
+  --color-basil-500: #155535;
+  --color-basil-600: #134d30;
+  --color-basil-700: #0f3c26;
+  --color-basil-800: #0c2f1d;
+  --color-basil-900: #092416;
+
+  /* Greens – Nori */
+  --color-nori-50: #e8e9e8;
+  --color-nori-100: #b6bab8;
+  --color-nori-200: #939896;
+  --color-nori-300: #626a66;
+  --color-nori-400: #434d48;
+  --color-nori-500: #14201a;
+  --color-nori-600: #121d18;
+  --color-nori-700: #0e1712;
+  --color-nori-800: #0b120e;
+  --color-nori-900: #080d0b;
+
+  /* Status colors */
+
+  /* Error / Danger */
+  --color-error-bg: #ffe7e5;
+  --color-error-text: #971b14;
+
+  /* Warning */
+  --color-warning-bg: #fdf5dc;
+  --color-warning-text: #5c4a06;
+
+  /* Success */
+  --color-success-bg: #e2eedc;
+  --color-success-text: #19451d;
+
+  /* Info */
+  --color-info-bg: #e1ebf5;
+  --color-info-text: #25399f;
+
+  /* Note */
+  --color-note-bg: #f0f0f0;
+  --color-note-text: #040318;
+}
+
+/* Semantic colors – use these in components instead of the palette */
+
+@theme inline {
+  --color-background: var(--color-salt-500);
+  --color-surface: var(--color-salt-50);
+  --color-foreground: var(--color-nori-500);
+  --color-muted-foreground: var(--color-nori-300);
+  --color-primary: var(--color-basil-500);
+  --color-border: var(--color-nori-500);
+}
+
+@layer base {
+  body {
+    @apply bg-background font-inter text-foreground;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-foreground;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-aptly;
+  }
 }
