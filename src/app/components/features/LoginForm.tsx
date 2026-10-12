@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FormField } from "@/components/ui/FormField";
+import { FormField } from "@/app/components/ui/FormField";
 
 type LoginFormProps = {
   onSubmit: (email: string, password: string) => Promise<void>;
