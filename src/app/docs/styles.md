@@ -15,13 +15,13 @@ All global styles live in `src/app/globals.css` (Tailwind CSS v4, configured wit
 
 Use the semantic names in components so the theme can change in one place.
 
-| Utility suffix | Maps to    | Use                       |
-| -------------- | ---------- | ------------------------- |
-| `background`   | `salt-500` | Page background           |
-| `surface`      | `salt-50`  | Cards, inputs, panels     |
-| `foreground`   | `nori-500` | Default text              |
-| `primary`      | TODO       | Primary buttons and links |
-| `border`       | TODO       | Borders and dividers      |
+| Utility suffix | Maps to     | Use                       |
+| -------------- | ----------- | ------------------------- |
+| `background`   | `salt-500`  | Page background           |
+| `surface`      | `salt-50`   | Cards, inputs, panels     |
+| `foreground`   | `nori-500`  | Default text              |
+| `primary`      | `basil-500` | Primary buttons and links |
+| `border`       | TODO        | Borders and dividers      |
 
 Example: `bg-surface text-foreground border border-border`
 
