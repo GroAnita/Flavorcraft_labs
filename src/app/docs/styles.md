@@ -25,7 +25,10 @@ Use the semantic names in components so the theme can change in one place.
 | `primary`      | `basil-500` | Primary buttons and links |
 | `border`       | `nori-500`  | Borders and dividers      |
 
-Example: `bg-surface text-foreground border border-border`
+`body` already uses `bg-background text-foreground`, so text gets `foreground` by default.
+Only add a text color when you need something other than `foreground`.
+
+Example: `bg-surface border border-border`
 
 ### Status colors
 
