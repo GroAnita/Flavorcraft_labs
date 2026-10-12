@@ -50,4 +50,5 @@ with an equally visible focus style.
 
 ## Spacing, radius and shadows
 
-Not yet defined from Figma — Tailwind defaults are used for now.
+Use Tailwind's default scales only (e.g. `p-4`, `gap-6`, `rounded-lg`, `shadow-md`).
+Don't add custom tokens or arbitrary values like `p-[13px]`.
