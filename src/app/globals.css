@@ -174,9 +174,30 @@
   --color-note-text: #040318;
 }
 
+/* Semantic colors – use these in components instead of the palette */
+
+@theme inline {
+  --color-background: var(--color-salt-500);
+  --color-surface: var(--color-salt-50);
+  --color-foreground: var(--color-nori-500);
+  /* TODO 
+  --color-muted: 
+  --color-primary: 
+  --color-primary-hover:
+  --color-on-primary: 
+  --color-accent: 
+  --color-border: 
+  --color-focus: 
+  */
+}
+
 @layer base {
   body {
-    @apply bg-salt-500 font-inter text-nori-500;
+    @apply bg-background font-inter text-foreground;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-focus;
   }
 
   h1,
@@ -185,6 +206,6 @@
   h4,
   h5,
   h6 {
-    @apply font-aptly font-bold;
+    @apply font-aptly;
   }
 }
