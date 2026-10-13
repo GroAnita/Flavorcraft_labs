@@ -1,6 +1,5 @@
 import type { LoginResponse } from "../types/auth";
-
-const BASE_URL = "https://v2.api.noroff.dev";
+import { BASE_URL } from "./config";
 
 export async function loginUser(
   email: string,

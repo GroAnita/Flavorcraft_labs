@@ -1,4 +1,4 @@
-const BASE_URL = "https://v2.api.noroff.dev";
+import { BASE_URL } from "./config";
 
 export class AuthError extends Error {
   constructor(message: string) {
