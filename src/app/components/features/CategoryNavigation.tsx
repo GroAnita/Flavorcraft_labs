@@ -1,5 +1,4 @@
-import Image from 'next/image';
-import Link from 'next/link';
+import { CategoryItem } from '../ui/CategoryItem';
 
 const categories = [
   {
@@ -43,22 +42,11 @@ export default function CategoryNavigation() {
       <ul className="mx-auto grid max-w-6xl grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-6">
         {categories.map((category) => (
           <li key={category.slug}>
-            <Link
+            <CategoryItem
+              name={category.name}
+              image={category.image}
               href={`/categories/${category.slug}`}
-              className="group flex flex-col items-center gap-3 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-            >
-              <div className="relative aspect-[3/2] w-full overflow-hidden rounded-lg transition-transform duration-300 group-hover:scale-105">
-                <Image
-                  src={category.image}
-                  alt={category.name}
-                  fill
-                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                  className="object-cover"
-                />
-              </div>
-
-              <span className="text-lg text-basil-500 group-focus-visible:underline">{category.name}</span>
-            </Link>
+            />
           </li>
         ))}
       </ul>
