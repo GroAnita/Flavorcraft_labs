@@ -54,17 +54,16 @@ export default function Footer() {
     <footer className="mt-auto bg-nori-500">
       <div className="mx-auto w-full max-w-6xl px-5 py-10 md:px-8">
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-          {/* TODO: replace the text wordmark with the exported logo SVG */}
           <Link
             href="/"
             aria-label="FlavorCraft Labs – go to homepage"
-            className="flex w-fit items-end gap-1 font-aptly uppercase leading-none text-butter-500 outline-butter-500"
+            className="w-fit outline-butter-500"
           >
-            <span className="flex flex-col text-2xl font-bold">
-              <span>Flavor</span>
-              <span>Craft</span>
-            </span>
-            <span className="text-sm">Labs</span>
+            {/* The SVG is used as a mask so its color follows bg-* */}
+            <span
+              aria-hidden="true"
+              className="block h-11.5 w-32.5 bg-butter-500 [mask:url(/logo-footer.svg)_no-repeat_center/contain]"
+            />
           </Link>
 
           <ul className="flex items-center gap-3">
