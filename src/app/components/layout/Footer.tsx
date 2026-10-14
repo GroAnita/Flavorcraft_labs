@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-// TODO: confirm routes with the team. Recipes needs a dropdown
 const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Recipes", href: "/recipes" },
@@ -10,7 +9,6 @@ const NAV_LINKS = [
   { label: "Favorites", href: "/favorites" },
 ];
 
-// TODO: replace with the social URLs confirmed by the team.
 const SOCIAL_LINKS: {
   label: string;
   href: string;
