@@ -14,7 +14,7 @@ export default function NotFound() {
         className="mb-6"
       />
       <h1 className="text-[40px] text-truffle-500">
-        We couldn't find that page
+        We couldn&apos;t find that page
       </h1>
       <p className="text-oat-800 text-sm my-4">
         The recipe may have been removed, or the link has a typo.
