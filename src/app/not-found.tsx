@@ -16,18 +16,18 @@ export default function NotFound() {
       <h1 className="text-[40px] text-truffle-500">
         We couldn't find that page
       </h1>
-      <p className="text-oat-800">
+      <p className="text-oat-800 text-sm my-4">
         The recipe may have been removed, or the link has a typo.
       </p>
-      <div className="flex flex-col sm:flex-row gap-2 mt-4">
+      <div className="flex flex-col sm:flex-row gap-2 ">
         <Link
-          className="inline-flex items-center gap-2 text-salt-500 bg-basil-500 rounded-lg py-2 px-4 hover:"
+          className="inline-flex items-center gap-2 text-sm text-salt-500 bg-basil-500 rounded-lg py-2 px-4 transition-colors hover:bg-basil-700"
           href="/"
         >
           <ArrowLeft className="size-4" /> Go back home
         </Link>
         <Link
-          className="inline-flex items-center gap-2 text-basil-500 rounded-lg py-2 px-4 border-2 border-basil-500 "
+          className="inline-flex items-center gap-2 text-sm text-basil-500 rounded-lg py-2 px-4 border-2 border-basil-500 transition-colors hover:bg-basil-50"
           href="/favorites"
         >
           <Heart className="size-4" /> Open favorites
