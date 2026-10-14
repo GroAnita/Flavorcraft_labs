@@ -17,6 +17,7 @@ type FieldErrors = {
 };
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const USERNAME_PATTERN = /^\w+$/;
 
 export function RegisterForm({ onSubmit }: RegisterFormProps) {
   const router = useRouter();
@@ -33,10 +34,16 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
     e.preventDefault();
     if (isLoading) return;
 
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+
     const newErrors: FieldErrors = {};
-    if (!name) newErrors.name = "Full name is required";
-    if (!email) newErrors.email = "Email is required";
-    else if (!EMAIL_PATTERN.test(email))
+    if (!trimmedName) newErrors.name = "Username is required";
+    else if (!USERNAME_PATTERN.test(trimmedName))
+      newErrors.name =
+        "Username can only contain letters, numbers and underscores";
+    if (!trimmedEmail) newErrors.email = "Email is required";
+    else if (!EMAIL_PATTERN.test(trimmedEmail))
       newErrors.email = "Enter a valid email address";
     if (!password) newErrors.password = "Password is required";
     else if (password.length < 8)
@@ -53,7 +60,7 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
 
     setIsLoading(true);
     try {
-      await onSubmit(name, email, password);
+      await onSubmit(trimmedName, trimmedEmail, password);
       setSuccessMessage("Account created! Redirecting to login...");
       router.push("/login");
     } catch (err) {
@@ -62,7 +69,6 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
           ? err.message
           : "Registration failed. Please try again."
       );
-    } finally {
       setIsLoading(false);
     }
   }
@@ -70,10 +76,11 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
   return (
     <form onSubmit={handleSubmit} noValidate>
       <FormField
-        label="Full name"
+        label="Username"
         type="text"
         name="name"
-        autoComplete="name"
+        autoComplete="username"
+        helperText="Letters, numbers and underscores only"
         required
         disabled={isLoading}
         value={name}
@@ -85,6 +92,7 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
         type="email"
         name="email"
         autoComplete="email"
+        helperText="Must be a @stud.noroff.no address"
         required
         disabled={isLoading}
         value={email}

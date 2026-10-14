@@ -34,10 +34,10 @@ export async function registerUser({
     body: JSON.stringify({ name, email, password }),
   });
 
-  const json = await response.json();
+  const json = await response.json().catch(() => null);
 
-  if (!response.ok) {
-    throw new Error(json.errors?.[0]?.message ?? "Registration failed");
+  if (!response.ok || !json) {
+    throw new Error(json?.errors?.[0]?.message ?? "Registration failed");
   }
 
   return json.data;
