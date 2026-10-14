@@ -4,22 +4,23 @@ import { useState } from "react";
 import Image from "next/image";
 import { ImageOff } from "lucide-react";
 import { Badge } from "@/app/components/ui/Badge";
+import type { RecipeImage as RecipeImageData } from "@/app/types/recipe";
 
 type RecipeImageProps = {
-  src?: string | null;
-  alt: string;
+  image?: RecipeImageData | null;
   category?: string;
 };
 
-export function RecipeImage({ src, alt, category }: RecipeImageProps) {
+export function RecipeImage({ image, category }: RecipeImageProps) {
   const [hasError, setHasError] = useState(false);
+  const src = image?.url;
 
   return (
     <div className="relative aspect-2/1 w-full overflow-hidden bg-oat-300">
       {src && !hasError ? (
         <Image
           src={src}
-          alt={alt}
+          alt={image.alt}
           fill
           // Recipe images come from any host, so skip the optimizer's remotePatterns check
           unoptimized
