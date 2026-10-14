@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Footer from "@/app/components/layout/Footer";
 import Header from "@/app/components/layout/Header";
 import "./globals.css";
 
@@ -22,8 +23,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <link rel="stylesheet" href="https://use.typekit.net/xnz3twu.css" />
       </head>
       <body className="min-h-full flex flex-col">
+        <Footer />
         <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );
