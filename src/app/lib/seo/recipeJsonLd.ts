@@ -1,5 +1,14 @@
 import type { Recipe } from "../../types/recipe";
 
+/**
+ * Generates Schema.org Recipe structured data in JSON-LD format.
+ *
+ * Converts recipe details into properties understood by search engines,
+ * including ingredients, preparation steps, cooking times, and author information.
+ *
+ * @param recipe - The recipe data used to generate structured data.
+ * @returns An object containing Schema.org Recipe structured data.
+ */
 export function createRecipeJsonLd(recipe: Recipe) {
   return {
     "@context": "https://schema.org",
