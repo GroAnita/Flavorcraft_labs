@@ -8,6 +8,14 @@ type ClarityTrackerProps = {
   consent: AnalyticsConsentChoice;
 };
 
+/**
+ * Initializes Microsoft Clarity only after the user accepts analytics tracking.
+ *
+ * Skips initialization when consent is missing or rejected,
+ * or when the Clarity project ID is missing.
+ *
+ * @param consent - The user's current analytics consent choice.
+ */
 export default function ClarityTracker({ consent }: ClarityTrackerProps) {
   useEffect(() => {
     if (consent !== "accepted") {

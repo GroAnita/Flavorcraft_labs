@@ -27,6 +27,7 @@ export default function AnalyticsConsent({
   function handleClosePrivacyPolicy() {
     setIsPrivacyPolicyOpen(false);
 
+    // Restore focus to the privacy policy button after closing the modal.
     requestAnimationFrame(() => {
       privacyPolicyButtonRef.current?.focus();
     });
