@@ -4,7 +4,7 @@ import { ArrowLeft, Heart } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center my-auto text-center mx-4">
+    <div className="flex flex-col items-center text-center mx-4 my-32">
       <Image
         src="/404-image.svg"
         alt="404"
