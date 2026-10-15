@@ -12,8 +12,10 @@ type RecipeImageProps = {
 };
 
 export function RecipeImage({ image, category }: RecipeImageProps) {
-  const [hasError, setHasError] = useState(false);
+  // Track which URL failed so the error clears automatically when the URL changes
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const src = image?.url;
+  const hasError = src === failedSrc;
 
   return (
     <div className="relative aspect-2/1 w-full overflow-hidden bg-oat-300">
@@ -25,7 +27,7 @@ export function RecipeImage({ image, category }: RecipeImageProps) {
           // Recipe images come from any host, so skip the optimizer's remotePatterns check
           unoptimized
           className="object-cover"
-          onError={() => setHasError(true)}
+          onError={() => setFailedSrc(src)}
         />
       ) : (
         <div
