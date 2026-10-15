@@ -30,14 +30,10 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
         .join(" ") || undefined;
 
     return (
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor={id} className="text-sm font-medium">
+      <div>
+        <label htmlFor={id}>
           {label}
-          {required && (
-            <span aria-hidden="true" className="ml-0.5 text-error-text">
-              *
-            </span>
-          )}
+          {required && <span aria-hidden="true">*</span>}
         </label>
         <input
           ref={ref}
@@ -47,17 +43,12 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
           disabled={disabled}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy}
-          className="h-11 w-full rounded-md border border-salt-700 bg-surface px-3 text-sm placeholder:text-salt-900 disabled:cursor-not-allowed disabled:opacity-60 aria-invalid:border-error-text"
           {...inputProps}
         />
 
-        {helperText && !error && (
-          <p id={helperId} className="text-xs text-muted-foreground">
-            {helperText}
-          </p>
-        )}
+        {helperText && !error && <p id={helperId}>{helperText}</p>}
         {error && (
-          <p id={errorId} role="alert" className="text-xs text-error-text">
+          <p id={errorId} role="alert">
             {error}
           </p>
         )}

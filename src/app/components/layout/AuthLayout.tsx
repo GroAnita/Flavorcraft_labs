@@ -15,7 +15,7 @@ export default function AuthLayout({
   children,
 }: AuthLayoutProps) {
   return (
-    <main className="mx-auto grid w-full max-w-6xl flex-1 gap-6 px-5 py-6 md:grid-cols-2 md:items-center md:gap-16 md:px-8 md:py-10">
+    <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-6 md:grid-cols-2 md:items-center md:gap-16 md:px-8 md:py-10">
       <div className="relative aspect-2/1 overflow-hidden rounded-2xl md:aspect-3/4">
         <Image
           src={imageSrc}
@@ -26,11 +26,11 @@ export default function AuthLayout({
           className="object-cover"
         />
       </div>
-      <section className="w-full md:max-w-sm md:justify-self-center">
-        <h1 className="text-3xl md:text-4xl">{heading}</h1>
-        <p className="mt-2 text-sm text-muted-foreground">{description}</p>
+      <section className="w-full md:max-w-sm">
+        <h1>{heading}</h1>
+        <p>{description}</p>
         <div className="mt-6">{children}</div>
       </section>
-    </main>
+    </div>
   );
 }
