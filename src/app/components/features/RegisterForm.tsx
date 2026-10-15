@@ -1,13 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { LogIn } from "lucide-react";
 import { FormField } from "@/app/components/ui/FormField";
-
-type RegisterFormProps = {
-  onSubmit: (name: string, email: string, password: string) => Promise<void>;
-};
+import { registerUser } from "@/app/lib/auth";
 
 type FieldErrors = {
   name?: string;
@@ -19,7 +16,7 @@ type FieldErrors = {
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const USERNAME_PATTERN = /^\w+$/;
 
-export function RegisterForm({ onSubmit }: RegisterFormProps) {
+export function RegisterForm() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -45,6 +42,8 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
     if (!trimmedEmail) newErrors.email = "Email is required";
     else if (!EMAIL_PATTERN.test(trimmedEmail))
       newErrors.email = "Enter a valid email address";
+    else if (!trimmedEmail.toLowerCase().endsWith("@stud.noroff.no"))
+      newErrors.email = "Email must be a @stud.noroff.no address";
     if (!password) newErrors.password = "Password is required";
     else if (password.length < 8)
       newErrors.password = "Password must be at least 8 characters";
@@ -60,7 +59,11 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
 
     setIsLoading(true);
     try {
-      await onSubmit(trimmedName, trimmedEmail, password);
+      await registerUser({
+        name: trimmedName,
+        email: trimmedEmail,
+        password,
+      });
       setSuccessMessage("Account created! Redirecting to login...");
       router.push("/login");
     } catch (err) {
@@ -74,13 +77,17 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
+    <form
+      onSubmit={handleSubmit}
+      noValidate
+      className="flex flex-col gap-4 md:gap-6"
+    >
       <FormField
         label="Username"
         type="text"
         name="name"
         autoComplete="username"
-        helperText="Letters, numbers and underscores only"
+        placeholder="Enter a username"
         required
         disabled={isLoading}
         value={name}
@@ -92,7 +99,7 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
         type="email"
         name="email"
         autoComplete="email"
-        helperText="Must be a @stud.noroff.no address"
+        placeholder="Example@email.com"
         required
         disabled={isLoading}
         value={email}
@@ -104,6 +111,7 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
         type="password"
         name="password"
         autoComplete="new-password"
+        placeholder="At least 8 characters"
         required
         disabled={isLoading}
         value={password}
@@ -115,6 +123,7 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
         type="password"
         name="confirmPassword"
         autoComplete="new-password"
+        placeholder="Confirm password"
         required
         disabled={isLoading}
         value={confirmPassword}
@@ -122,15 +131,31 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
         error={errors.confirmPassword}
       />
 
-      {formError && <p role="alert">{formError}</p>}
-      {successMessage && <p role="status">{successMessage}</p>}
-      <button type="submit" disabled={isLoading}>
+      {formError && (
+        <p
+          role="alert"
+          className="rounded-md bg-error-bg px-3 py-2 text-sm text-error-text"
+        >
+          {formError}
+        </p>
+      )}
+      {successMessage && (
+        <p
+          role="status"
+          className="rounded-md bg-success-bg px-3 py-2 text-sm text-success-text"
+        >
+          {successMessage}
+        </p>
+      )}
+      <button
+        type="submit"
+        disabled={isLoading}
+        aria-busy={isLoading}
+        className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2 text-base font-semibold text-salt-500 hover:bg-basil-700 disabled:cursor-not-allowed disabled:opacity-60"
+      >
         {isLoading ? "Signing up..." : "Sign up"}
+        <LogIn aria-hidden="true" className="size-5" />
       </button>
-
-      <p>
-        Already have an account? <Link href="/login">Log in</Link>
-      </p>
     </form>
   );
 }
