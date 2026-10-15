@@ -95,6 +95,7 @@ export function RecipeMeta({
 
       {hasDifficulty && (
         <div className="sm:only:ml-auto">
+          <span className="sr-only">Difficulty: </span>
           {level ? (
             <Badge variant="difficulty" level={level}>
               {difficultyLabels[level]}
