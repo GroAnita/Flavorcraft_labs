@@ -12,7 +12,7 @@ export default function LoginPage() {
     <AuthLayout
       heading="Hi, welcome back!"
       description="Sign in to pick up where you left off and keep your favorite recipes close."
-      imageSrc="/images/login.jpg"
+      imageSrc="/images/categories/login-image.jpg"
     >
       <LoginForm />
 
