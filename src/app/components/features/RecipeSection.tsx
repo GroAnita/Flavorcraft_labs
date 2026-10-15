@@ -15,25 +15,32 @@ type RecipeSectionProps = {
 const arrowButtonClass =
   "hidden size-10 shrink-0 items-center justify-center rounded-full border border-border bg-surface lg:flex";
 
-export function RecipeSection({ title, recipes, viewAllHref }: RecipeSectionProps) {
+export function RecipeSection({
+  title,
+  recipes,
+  viewAllHref,
+}: RecipeSectionProps) {
   const headingId = useId();
   const trackRef = useRef<HTMLUListElement>(null);
 
   function scrollTrack(direction: 1 | -1) {
     const track = trackRef.current;
     if (!track) return;
-    track.scrollBy({ left: direction * track.clientWidth * 0.8, behavior: "smooth" });
+    track.scrollBy({
+      left: direction * track.clientWidth * 0.8,
+      behavior: "smooth",
+    });
   }
 
   return (
     <section aria-labelledby={headingId} className="w-full py-8">
       <div className="mb-6 flex flex-col items-center gap-1 text-center">
-        <h2 id={headingId} className="text-3xl font-bold text-truffle-500">
+        <h2 id={headingId} className="text-3xl  text-truffle-500">
           {title}
         </h2>
         <Link
           href={viewAllHref}
-          className="inline-flex items-center gap-1 text-sm font-medium"
+          className="inline-flex items-center gap-1 text-sm font-medium text-basil-500"
         >
           See all
           <span className="sr-only"> {title.toLowerCase()}</span>
@@ -63,7 +70,7 @@ export function RecipeSection({ title, recipes, viewAllHref }: RecipeSectionProp
             role="list"
             tabIndex={0}
             aria-label={title}
-            className="relative flex min-w-0 flex-1 snap-x snap-mandatory overflow-x-auto scroll-smooth py-1 pb-3"
+            className="relative flex min-w-0 flex-1 snap-x snap-mandatory overflow-x-auto scroll-smooth py-1 pb-3 [scrollbar-color:var(--color-basil-500)_var(--color-salt-200)]"
           >
             {recipes.map((recipe) => (
               <li
