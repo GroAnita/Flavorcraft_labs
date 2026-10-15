@@ -1,17 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { LogIn } from "lucide-react";
 import { FormField } from "@/app/components/ui/FormField";
-import { loginUser } from "@/app/lib/auth";
+import { login } from "@/app/actions/auth";
 
 type FieldErrors = { email?: string; password?: string };
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function LoginForm() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -35,14 +33,9 @@ export function LoginForm() {
     if (Object.keys(newErrors).length > 0) return;
 
     setIsLoading(true);
-    try {
-      // TODO: store the session (accessToken, profile) once session handling is agreed.
-      await loginUser(trimmedEmail, password);
-      router.push("/");
-    } catch (err) {
-      setFormError(
-        err instanceof Error ? err.message : "Login failed. Please try again."
-      );
+    const result = await login(trimmedEmail, password);
+    if (result?.error) {
+      setFormError(result.error);
       setIsLoading(false);
     }
   }
