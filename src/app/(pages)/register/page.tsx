@@ -12,7 +12,7 @@ export default function RegisterPage() {
     <AuthLayout
       heading="Create an account"
       description="Save your favorites and find your next meal with ease."
-      imageSrc="/images/register.jpg"
+      imageSrc="/images/categories/register-image.jpg"
     >
       <RegisterForm />
 
