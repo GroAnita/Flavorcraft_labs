@@ -1,4 +1,8 @@
-import type { LoginResponse } from "../types/auth";
+import type {
+  LoginResponse,
+  RegisterRequest,
+  RegisterResponse,
+} from "../types/auth";
 import { BASE_URL } from "./config";
 
 export async function loginUser(
@@ -16,5 +20,25 @@ export async function loginUser(
   }
 
   const json = await response.json();
+  return json.data;
+}
+
+export async function registerUser({
+  name,
+  email,
+  password,
+}: RegisterRequest): Promise<RegisterResponse> {
+  const response = await fetch(`${BASE_URL}/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, password }),
+  });
+
+  const json = await response.json().catch(() => null);
+
+  if (!response.ok || !json) {
+    throw new Error(json?.errors?.[0]?.message ?? "Registration failed");
+  }
+
   return json.data;
 }
