@@ -2,7 +2,7 @@
 
 import { useId, useRef } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Recipe } from "@/app/types/recipe";
 import { RecipeCard } from "@/app/components/features/RecipeCard";
 
@@ -13,7 +13,7 @@ type RecipeSectionProps = {
 };
 
 const arrowButtonClass =
-  "hidden size-10 shrink-0 items-center justify-center rounded-full border border-border bg-surface lg:flex";
+  "absolute top-1/2 z-10 hidden size-12 -translate-y-1/2 items-center justify-center rounded-xl bg-basil-200/80 text-white transition-colors hover:bg-basil-300/90 lg:flex";
 
 export function RecipeSection({
   title,
@@ -53,14 +53,14 @@ export function RecipeSection({
           No recipes to show here yet. Check back soon.
         </p>
       ) : (
-        <div className="flex items-center gap-2">
+        <div className="relative">
           <button
             type="button"
             onClick={() => scrollTrack(-1)}
             aria-label={`Scroll ${title} left`}
-            className={arrowButtonClass}
+            className={`${arrowButtonClass} -left-5`}
           >
-            <ArrowLeft aria-hidden="true" className="size-5" />
+            <ChevronLeft aria-hidden="true" className="size-6" />
           </button>
 
           {/* tabIndex lets keyboard users focus the list and scroll it with the arrow keys.
@@ -70,7 +70,7 @@ export function RecipeSection({
             role="list"
             tabIndex={0}
             aria-label={title}
-            className="relative flex min-w-0 flex-1 snap-x snap-mandatory overflow-x-auto scroll-smooth py-1 pb-3 [scrollbar-color:var(--color-basil-500)_var(--color-salt-200)]"
+            className="relative flex snap-x snap-mandatory overflow-x-auto scroll-smooth py-1 pb-3 [scrollbar-color:var(--color-basil-500)_var(--color-salt-200)]"
           >
             {recipes.map((recipe) => (
               <li
@@ -86,9 +86,9 @@ export function RecipeSection({
             type="button"
             onClick={() => scrollTrack(1)}
             aria-label={`Scroll ${title} right`}
-            className={arrowButtonClass}
+            className={`${arrowButtonClass} -right-5`}
           >
-            <ArrowRight aria-hidden="true" className="size-5" />
+            <ChevronRight aria-hidden="true" className="size-6" />
           </button>
         </div>
       )}
