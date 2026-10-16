@@ -1,8 +1,8 @@
-import Image from 'next/image';
+import Image from "next/image";
 
 export default function HeroSection() {
   return (
-    <section className="relative w-full overflow-hidden bg-salt-500 pt-6 md:flex md:aspect-[595/219] md:items-center md:pt-0 md:pb-6">
+    <section className="relative w-full z-10 bg-salt-500 pt-6 md:flex md:aspect-595/219 md:items-center md:pt-0 md:pb-6">
       <div className="relative z-10 container mx-auto px-6">
         <p className="text-sm uppercase tracking-wide font-medium text-basil-300">
           Let&apos;s make something delicious
@@ -39,9 +39,9 @@ export default function HeroSection() {
         alt=""
         width={922}
         height={379}
-        sizes="56vw"
+        sizes="64vw"
         priority
-        className="absolute right-0 bottom-0 hidden h-auto w-[56%] md:block"
+        className="pointer-events-none absolute right-0 bottom-[-2.1vw] z-10 hidden h-auto w-[64%] md:block"
       />
     </section>
   );
