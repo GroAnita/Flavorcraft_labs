@@ -18,7 +18,7 @@ export function RecipeImage({ image, category }: RecipeImageProps) {
   const hasError = src === failedSrc;
 
   return (
-    <div className="relative aspect-2/1 w-full overflow-hidden bg-oat-300">
+    <div className="relative h-46.5 w-full overflow-hidden bg-oat-300">
       {src && !hasError ? (
         <Image
           src={src}
