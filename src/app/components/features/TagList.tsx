@@ -10,7 +10,7 @@ export function TagList({ tags }: TagListProps) {
   return (
     <ul role="list" className="flex flex-wrap gap-2">
       {tags.map((tag, index) => (
-        <li key={`${tag}-${index}`} title={tag} className="max-w-full">
+        <li key={`${tag}-${index}`} title={tag} className="flex max-w-full">
           <Badge variant="tag">{tag}</Badge>
         </li>
       ))}
