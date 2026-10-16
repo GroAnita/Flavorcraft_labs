@@ -21,12 +21,12 @@ const providerIcons: {
 }[] = [
   {
     name: 'Google',
-    icon: <FaGoogle className="text-3xl text-basil-500" aria-hidden="true" />,
+    icon: <FaGoogle className="size-7 text-basil-500" aria-hidden="true" />,
     enabled: true,
   },
   {
     name: 'Facebook',
-    icon: <FaFacebook className="text-3xl text-basil-500" aria-hidden="true" />,
+    icon: <FaFacebook className="size-7 text-basil-500" aria-hidden="true" />,
     enabled: true,
   },
 ];
@@ -53,23 +53,16 @@ export function SocialAuthButton({
       title={label}
       aria-busy={isLoading}
       className="
-        flex items-center justify-center
-        h-[52px] w-[186px] p-5
-        rounded-2xl border border-oat-500
+        flex flex-1 items-center justify-center
+        px-2 py-3
+        rounded-xl border border-oat-500 bg-salt-300
         transition-colors
-        hover:bg-stone-100
-        focus-visible:outline-none
-        focus-visible:ring-2
-        focus-visible:ring-green-700
-        focus-visible:ring-offset-2
-        disabled:opacity-50
-        disabled:grayscale
+        enabled:hover:bg-salt-500
         disabled:cursor-not-allowed
-        disabled:hover:bg-transparent
       "
     >
       {isLoading ? (
-        <LoaderCircle className="animate-spin" size={28} aria-hidden="true" />
+        <LoaderCircle className="size-7 animate-spin" aria-hidden="true" />
       ) : (
         icon
       )}
@@ -91,17 +84,19 @@ export default function AlternativeAuth({
   const visibleProviders = providerIcons.filter((provider) => provider.enabled);
 
   return (
-    <section className="w-full mt-10">
+    <section className="flex w-full flex-col gap-6 md:mt-6 md:gap-12">
       {visibleProviders.length > 0 && (
-        <>
+        <div className="flex flex-col gap-6">
           {/* Divider */}
-          <div className="mx-auto flex w-full max-w-[388px] items-center gap-8">
+          <div className="flex w-full items-center gap-4">
             <div className="h-px flex-1 bg-oat-500" />
-            <span className="text-2xl text-thyme-500">Or</span>
+            <span className="text-sm leading-none text-thyme-500 md:text-base">
+              Or
+            </span>
             <div className="h-px flex-1 bg-oat-500" />
           </div>
 
-          <div className="flex justify-center gap-4 mt-8">
+          <div className="flex gap-4">
             {visibleProviders.map((provider) => (
               <SocialAuthButton
                 key={provider.name}
@@ -111,18 +106,18 @@ export default function AlternativeAuth({
               />
             ))}
           </div>
-        </>
+        </div>
       )}
 
       {/* Login / Register Links */}
-      <p className="mt-12 text-center text-lg">
+      <p className="text-center text-sm leading-none text-truffle-500 md:text-base">
         {isLogin ? "Don't have an account yet?" : 'Already have an account?'}
 
         <Link
           href={isLogin ? '/register' : '/login'}
-          className="ml-2 text-basil-500 underline hover:text-green-700"
+          className="ml-2 text-basil-500 underline underline-offset-2 hover:text-basil-700"
         >
-          {isLogin ? 'Register here!' : 'Log in here!'}
+          {isLogin ? 'Register here!' : 'Login here!'}
         </Link>
       </p>
     </section>
