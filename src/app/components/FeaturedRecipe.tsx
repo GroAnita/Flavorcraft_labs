@@ -25,7 +25,7 @@ export default async function FeaturedRecipeSection() {
           <p className="text-sm font-medium uppercase tracking-wide text-truffle-500">
             Today&apos;s favorite
           </p>
-          <h2 className="mt-1 text-3xl leading-tight font-bold text-truffle-500">
+          <h2 className="mt-1 text-[2rem] leading-tight font-medium text-truffle-500">
             What everyone&apos;s cooking today
           </h2>
           <p className="mt-4 leading-snug text-truffle-600">
@@ -56,7 +56,7 @@ export default async function FeaturedRecipeSection() {
                 {totalTime > 0 && `${totalTime} min · `}
                 {recipe.difficulty}
               </p>
-              <h3 className="mt-1 text-[24px] font-bold text-foreground text-truffle-500">
+              <h3 className="mt-1 text-[24px] font-medium text-foreground text-truffle-500">
                 {recipe.title}
               </h3>
             </div>

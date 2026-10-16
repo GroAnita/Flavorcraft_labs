@@ -35,7 +35,7 @@ const categories = [
 export default function CategoryNavigation() {
   return (
     <section className="w-full py-12">
-      <h2 className="mb-10 text-center text-truffle-500 text-3xl font-bold">
+      <h2 className="mb-10 text-center text-truffle-500 text-[2rem] font-medium">
         What&apos;s on your plate today?
       </h2>
 

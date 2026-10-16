@@ -56,12 +56,12 @@ export function RecipeSection({
   return (
     <section aria-labelledby={headingId} className="w-full py-8">
       <div className="mb-6 flex flex-col items-center gap-1 text-center">
-        <h2 id={headingId} className="text-3xl  text-truffle-500">
+        <h2 id={headingId} className="text-[2rem] font-medium text-truffle-500">
           {title}
         </h2>
         <Link
           href={viewAllHref}
-          className="inline-flex items-center gap-1 text-sm font-medium text-basil-500"
+          className="inline-flex items-center gap-1 text-base font-medium text-basil-500"
         >
           See all
           <span className="sr-only"> {title.toLowerCase()}</span>
