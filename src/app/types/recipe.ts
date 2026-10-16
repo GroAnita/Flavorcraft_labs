@@ -15,7 +15,7 @@ export interface Recipe {
   image: RecipeImage | null;
   owner: Profile;
   comments: Comment[];
-  _count: object;
+  _count: { favorites: number };
   created: Date;
   updated: Date;
 }

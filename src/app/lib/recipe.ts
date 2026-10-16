@@ -10,3 +10,13 @@ export async function fetchRecipes(): Promise<Recipe[]> {
   const json = await response.json();
   return json.data;
 }
+
+export async function fetchRecipe(id: string): Promise<Recipe> {
+  const response = await fetch(`${BASE_URL}/recipe-book/recipes/${id}`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch recipe");
+  }
+  // The API wraps the result as { data: Recipe, meta: {...} }
+  const json = await response.json();
+  return json.data;
+}
