@@ -23,7 +23,7 @@ export function CategoryItem({ name, image, href }: CategoryItemProps) {
         />
       </div>
 
-      <span className="text-lg text-basil-500 group-focus-visible:underline">
+      <span className="text-lg font-medium text-basil-500 group-focus-visible:underline">
         {name}
       </span>
     </Link>
