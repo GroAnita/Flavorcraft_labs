@@ -672,3 +672,460 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - Branch: `feat/microsoft-clarity-consent-53`
 - [Microsoft Clarity Documentation](https://learn.microsoft.com/en-us/clarity/)
 - [Radix Dialog Documentation](https://www.radix-ui.com/primitives/docs/components/dialog)
+
+### AI-013 - RecipeImage Component
+
+**Date:** 2026-10-14
+
+**Team Member:** Alexander Lislelid (AlexanderLislelid)
+
+**Related Tasks / Files:**
+
+- Ticket #45 - Create RecipeImage component (parent: Build recipe card)
+- Branch: `feat/recipe-image-45`
+- `src/app/components/ui/RecipeImage.tsx`
+- Depends on `src/app/components/ui/Badge.tsx` (Ticket #44, branch `feat/badge-component-44`)
+
+**AI Tool / Model:** Claude (Claude Code VS Code extension), Opus 5.5
+
+**Purpose:** Build the recipe card image with a category badge over it, a consistent shape and crop, and a fallback for missing or broken images.
+
+**Key Prompt(s):**
+
+Provided the ticket text for #45 and asked Claude to implement it. Claude read the existing codebase, contributing guidelines, styles documentation and the Next.js 16 `Image` docs, and found the Badge component on the unmerged `feat/badge-component-44` branch.
+
+Follow-ups: shared a screenshot of the recipe card design and asked for the image to match it, then asked whether the error-handling state was more complex than needed.
+
+**Outcome and Decisions:**
+
+- Used Claude's component as the basis for `RecipeImage.tsx`. It takes `src` (nullable, since `recipe.image` can be `null`), `alt` and an optional `category`.
+- The image uses `next/image` with `fill` and `object-cover` inside a fixed aspect-ratio container, so every card has the same shape and crop.
+- The category is shown with the shared `Badge` component (`variant="category"`), positioned top left.
+- Missing or broken images show a neutral placeholder with a lucide `ImageOff` icon, keeping the card's size.
+- The component contains no link or interactive elements, so the parent card can wrap it in a `Link`.
+- Used `unoptimized` on `next/image`, because recipe images can come from any host and unlisted hosts would otherwise throw an error and break the card. Trade-off: Next.js does not resize or compress these images.
+- Changed the aspect ratio from Claude's initial guess of 4:3 to 2:1 after comparing with the design screenshot.
+- Simplified the error handling: replaced Claude's "remember which URL failed" state with a single `hasError` boolean, since cards are keyed by recipe ID and the extra handling was not needed.
+- Left corner rounding to the parent card (`overflow-hidden` on the card) instead of the image component.
+
+**Verification / Status:**
+
+- `tsc --noEmit` and ESLint pass with the Badge component from #44 temporarily added.
+- The build fails on this branch until #44 (Badge) is merged into `develop`.
+- Not yet tested in the browser. Remaining work: check the image, badge position and fallback visually against Figma, test with a broken image URL, and confirm the 2:1 ratio and the placeholder color (`bg-oat-300`) with the designer.
+
+**References:**
+
+- Ticket #45
+- Ticket #44 (Badge component)
+- Branch: `feat/recipe-image-45`
+
+### AI-014 - TagList Accessibility Fixes from QA
+
+**Date:** 2026-10-15
+
+**Team Member:** Thea (Theanordhoy)
+
+**Related Tasks / Files:**
+
+- Ticket #93 — TagList accessibility fixes
+- Branch: `fix/tag-list-93`
+- `src/app/components/features/TagList.tsx`
+
+**AI Tool / Model:** Claude (Anthropic), Claude Sonnet 5.5
+
+**Purpose:** Assist with implementing two accessibility fixes requested by QA for the TagList component.
+
+**Key Prompt(s):**
+
+- Shared two QA comments requesting `role="list"` on the `<ul>` element and a `title` attribute to display the full text of truncated tags on hover.
+- Asked how to implement the requested changes.
+- Asked for assistance when VoiceOver was not working as expected.
+
+**Outcome and Decisions:**
+
+- Both accessibility improvements originated from QA, not AI. AI provided implementation guidance.
+- Added `role="list"` to the `<ul>` element to preserve list semantics in Safari/VoiceOver when list styling is removed.
+- Added `title={tag}` to each `<li>` element rather than modifying the shared Badge component.
+- Created a temporary page for manual testing, which was removed before committing.
+
+**Verification / Status:**
+
+- Confirmed that `role="list"` appears in the accessibility tree.
+- Verified with VoiceOver in Safari that tags are announced as a list.
+- Checked the layout using a temporary test page, which was subsequently removed.
+- `npm run lint` passed with 0 errors and 1 pre-existing, unrelated warning in `layout.tsx`.
+- `npm run build` passed.
+- Awaiting QA re-verification.
+
+**References:**
+
+- Ticket #93
+- [Original TagList PR #82](https://github.com/GroAnita/Flavorcraft_labs/pull/82)
+- [Accessibility fixes PR #95](https://github.com/GroAnita/Flavorcraft_labs/pull/95)
+
+### AI-015 - Cookie-Based Authentication
+
+**Date:** 2026-10-15
+
+**Team Member:** Thea (Theanordhoy)
+
+**Related Tasks / Files:**
+
+- Ticket #103 — Cookie-based authentication
+- Branch: `feat/cookie-based-authentication-103`
+- `src/app/lib/session.ts`
+- `src/app/actions/auth.ts`
+- `src/app/components/features/LoginForm.tsx`
+- `src/app/components/features/LogoutButton.tsx`
+
+**AI Tool / Model:** Claude (Anthropic), Claude Sonnet 5.5. A colleague also provided a code suggestion; its AI origin has not been confirmed.
+
+**Purpose:** Understand how to store an access token in an HttpOnly cookie, review a colleague's code suggestion against the ticket requirements, and implement the necessary changes to session helpers, Server Actions, login, and logout functionality.
+
+**Key Prompt(s):**
+
+- Shared the ticket and a colleague's code suggestion, asking which parts were relevant and what needed to change.
+- Asked which lines to remove from `LoginForm`, including `useRouter`, `router.push`, and the `loginUser` import.
+- Asked how to handle the cookie-reading functionality described in the suggestion.
+- Asked how to implement the logout button.
+
+**Outcome and Decisions:**
+
+- Accepted the session helpers, login and logout Server Actions, and `LoginForm` changes from the suggestion.
+- Configured the authentication cookie with `httpOnly`, `sameSite: "lax"`, `path: "/"`, a seven-day lifetime, and `secure` enabled in production.
+- Placed `redirect()` outside the `try/catch` block and returned login errors instead of throwing them, allowing the form to display the error message.
+- Implemented `LogoutButton` as a server component containing a form that calls the `logout` Server Action, intended to display only for authenticated users.
+- Decided to read `isLoggedIn` once on the server and pass it down as a prop rather than accessing the cookie separately in each component. Integration with `RecipeCard` and the like button remains pending.
+- Rejected adding `server-only` because it would introduce a new dependency requiring team agreement.
+- Excluded the temporary `LogoutButton` used for testing in `page.tsx`, along with unrelated formatting changes introduced by VS Code.
+
+**Verification / Status:**
+
+- Verified in DevTools that login sets the `accessToken` cookie with `HttpOnly`, `SameSite: Lax`, and path `/`.
+- Tested cookie persistence after refresh, access through `document.cookie`, logout, and incorrect-password handling.
+- `npm run build` passed.
+- `npm run lint` reported no errors in the changed files. One existing error in `CategoryNavigation.tsx` and one warning in `layout.tsx` originated from `develop`.
+- Remaining work includes connecting `isLoggedIn` to `RecipeCard` and the like button, and placing the logout button in the header.
+
+**References:**
+
+- Ticket #103
+- Next.js authentication guide: `node_modules/next/dist/docs/01-app/02-guides/authentication.md`
+- [Cookie-based authentication PR #105](https://github.com/GroAnita/Flavorcraft_labs/pull/105)
+
+### AI-016 - FavoriteButton Component
+
+**Date:** 2026-10-15
+
+**Team Member:** Thea (Theanordhoy)
+
+**Related Tasks / Files:**
+
+- Ticket #98 — FavoriteButton component
+- Branch: `feat/like-button-component-98`
+- `src/app/components/ui/FavoriteButton.tsx`
+
+**AI Tool / Model:** Claude (Anthropic), Claude Sonnet 5.5
+
+**Purpose:** Assist with creating a reusable heart button for recipe cards, matching the Figma design, and understanding how to test its functionality and accessibility.
+
+**Key Prompt(s):**
+
+- Asked whether the heart button should be a separate component or part of the image component, providing the ticket requirements, including visibility only for authenticated users.
+- Shared Figma measurements for the button size, border radius, background, icon size, and positioning, along with the designer's instructions for the filled heart.
+- Requested the final implementation and corrected the stroke color after checking Figma.
+
+**Outcome and Decisions:**
+
+- Created a separate, reusable component accepting `isLiked` and `onToggle` props, without managing its own state.
+- Followed AI guidance to position the button alongside the image link rather than inside it, avoiding invalid nested interactive elements.
+- Added `preventDefault()` and `stopPropagation()` to prevent button clicks from triggering recipe navigation.
+- Used an accessible `<button>` with a consistent `aria-label` and `aria-pressed` to communicate its toggle state.
+- Added an `isLoggedIn` prop, defaulting to `false`, so the button renders nothing for unauthenticated users. This keeps the component independent of the session implementation.
+- Used `fill-current` for the selected heart icon, matching the designer's requirement that its fill and stroke use the same color.
+- Replaced AI's initial styling estimates with the actual Figma specifications: `size-8`, `rounded-xl`, `bg-oat-500`, `text-truffle-500`, a 16px icon, and 12px positioning from the corner.
+- Corrected the AI's initial stroke color suggestion from `foreground` to `truffle-500` after reviewing Figma.
+
+**Verification / Status:**
+
+- Verified in DevTools that the button has `aria-label` and `aria-pressed`, and that the decorative icon is hidden from assistive technology.
+- Tested the toggle interaction, prevention of link navigation, keyboard interaction, and visibility when logged out.
+- Compared the component's appearance with Figma.
+- `npm run build` passed.
+- `npm run lint` reported no errors in the changed file. One existing error in `CategoryNavigation.tsx` and one warning in `layout.tsx` originated from `develop`.
+- Remaining work includes integrating the button into `RecipeCard`, connecting `isLoggedIn` to the authentication session, and implementing the functionality for saving and removing likes.
+
+**References:**
+
+- Ticket #98
+- Figma recipe card design
+- Lucide `heart` icon
+- [Cookie-based authentication PR #105](https://github.com/GroAnita/Flavorcraft_labs/pull/105)
+- [FavoriteButton PR #106](https://github.com/GroAnita/Flavorcraft_labs/pull/106
+
+### AI-017 - Recipe Detail Page Mockup
+
+**Date:** 2026-10-13
+
+**Team Member:** Helene Syre (helenesyre)
+
+**Related Tasks / Files:**
+
+- Recipe detail page: `/recipe-book/recipes/<id>`
+- Specific ticket and files: Not specified
+
+**AI Tool / Model:** Claude (Cowork), Opus 5.5
+
+**Purpose:** Quickly visualize how data from the single-recipe API response could be presented on the recipe detail page before designing it in Figma.
+
+**Key Prompt(s):**
+
+- Asked Claude to create a mockup for `/recipe-book/recipes/<id>`, providing a sample JSON response for "Classic Margherita Pizza".
+- The response included the recipe title, description, preparation and cooking times, servings, difficulty, category, ingredients, instructions, tags, image, owner, comments, favorite count, and timestamps.
+- Provided findings from user interviews and personas to inform the design.
+
+**Outcome and Decisions:**
+
+- Claude generated an interactive design canvas with two artboards: mobile (390px) and desktop (fluid layout, maximum width 1200px).
+- Displayed total preparation and cooking time as a combined time badge (35 minutes).
+- Presented preparation time, cooking time, difficulty, and category as quick-fact tiles.
+- Displayed `_count.favorites` as "Saved by 3 cooks".
+- Presented recipe tags and category as links to similar recipes.
+- Included an empty comment state with a comment input field.
+- Incorporated features informed by user interviews:
+  - An interactive servings stepper that adjusts ingredient quantities.
+  - Ingredient checkboxes for tracking progress while cooking.
+  - Large, numbered cooking instructions.
+  - A "Start cooking mode" button intended to keep the screen active, based on Henrik's feedback.
+- The generated mockup was used as a reference for the Figma design, not as a final design.
+
+**Verification / Status:**
+
+- The mockup has not yet been reviewed in detail.
+- It requires comparison against the Figma designs, brand guide, and actual API response before further use.
+- Remaining work:
+  - Replace placeholder images with real images.
+  - Test the layout with long recipe titles and recipes containing many ingredients or instructions.
+  - Decide whether cooking mode and the servings stepper are within project scope.
+  - Design the saved state (filled heart) and a populated comments list.
+
+**References:**
+
+- Noroff Recipe API
+- User interview findings and personas
+
+### AI-018 - Register Page (#30)
+
+**Date:** 2026-10-15
+
+**Team Member:** Emilie Sofie Fosmo (Emifos)
+
+**Related Tasks / Files:**
+
+- Ticket #30 — Register page
+- Ticket #31 — Auth layout
+- Ticket #32 — Form field
+- Branch: `feat/register-page-30`
+- `src/app/(pages)/register/page.tsx`
+- `src/app/components/features/RegisterForm.tsx`
+- `src/app/components/layout/AuthLayout.tsx`
+- `src/app/components/ui/FormField.tsx`
+
+**AI Tool / Model:** Claude Code (Claude Opus 5.5) in VS Code
+
+**Purpose:** Build the register page from the Figma design, starting with mobile and adapting the layout for desktop, while reusing the shared authentication layout and form field components.
+
+**Key Prompt(s):**
+
+- Requested a register page using `AuthLayout` and `RegisterForm`, styled according to Figma with a mobile-first approach.
+- Provided Figma Dev Mode specifications for dimensions, colors, spacing, and typography, first for mobile and then desktop.
+- Requested validation error messages matching the design, using an icon and red text displayed only when validation fails.
+- Requested email validation restricting registration to `@stud.noroff.no` addresses.
+
+**Outcome and Decisions:**
+
+- Created the register page, placing the "Already have an account? Login here!" link below the form to allow future integration of social sign-in (#33).
+- Updated `RegisterForm` to call `registerUser` directly rather than accepting an `onSubmit` callback, because a Server Component page cannot pass an ordinary function to a Client Component.
+- Added validation for `@stud.noroff.no` email addresses.
+- Styled `AuthLayout`, `FormField`, the button, and navigation link using Tailwind CSS and Figma specifications, with `md:` breakpoints for desktop.
+- Used the `CircleAlert` icon and `text-error-text` for validation errors.
+- Removed helper text beneath form fields to match the design, displaying requirements through validation errors instead.
+- Rejected AI-generated changes to `layout.tsx` and `globals.css` because they were outside the ticket's scope.
+- Followed `styles.md` by avoiding arbitrary Tailwind font sizes. Used 30px on mobile and 36px on desktop instead of the Figma values of 32px and 40px.
+- Preserved existing validation error messages rather than replacing them with Figma text. The message "Email is already in use" depends on the API response.
+
+**Verification / Status:**
+
+- `tsc --noEmit` and ESLint passed.
+- Visually compared the page with Figma using `npm run dev`.
+- Remaining work:
+  - Add the missing register image (`public/images/register.jpg`).
+  - Integrate social sign-in (#33).
+  - Add Aptly Medium (500) to the Adobe Fonts kit. Until then, the heading renders at weight 400.
+  - Resolve potential merge conflicts involving `AuthLayout` and `FormField`, which are also modified on the login branch.
+
+**References:**
+
+- Figma register design
+- `src/app/docs/styles.md`
+- Register page PR: Link not provided
+
+### AI-019 - Login Page (#71)
+
+**Date:** 2026-10-15
+
+**Team Member:** Emilie Sofie Fosmo (Emifos)
+
+**Related Tasks / Files:**
+
+- Ticket #71 — Login page
+- Branch: `feat/login-page-71`
+- `src/app/(pages)/login/page.tsx`
+- `src/app/components/features/LoginForm.tsx`
+
+**AI Tool / Model:** Claude Code (Claude Opus 5.5) in VS Code
+
+**Purpose:** Build the login page according to the Figma design using the shared `AuthLayout` and `FormField` components.
+
+**Key Prompt(s):**
+
+- Requested a login page using `AuthLayout` and `LoginForm`, following the mobile-first Figma design.
+- Specified that social sign-in would be implemented later as a separate component.
+
+**Outcome and Decisions:**
+
+- Created the login page with a heading, description, form, and "Register here!" link to `/register`.
+- Included a placeholder for future social sign-in functionality (#33).
+- Updated `LoginForm` to call `loginUser` directly rather than accepting an `onSubmit` callback, because a Server Component page cannot pass an ordinary function to a Client Component.
+- Added email format validation.
+- Disabled the submit button while a login request is pending.
+- Displayed the generic error message "Invalid email or password" after unsuccessful login attempts, without revealing whether an account exists.
+- Styled the submit button and error message container.
+- Kept `AuthLayout` and `FormField` styling changes on the register branch to reduce merge conflicts.
+- Rejected an AI-generated modification to the root `layout.tsx` because it was outside the ticket's scope.
+- Did not add "Forgot password?" functionality because the API does not support it.
+
+**Verification / Status:**
+
+- `tsc --noEmit` and ESLint passed.
+- Remaining work:
+  - Implement session handling after login (TODO in `LoginForm`).
+  - Add the missing login image (`public/images/login.jpg`).
+  - Integrate social sign-in (#33).
+  - Incorporate shared `AuthLayout` and `FormField` styling once the register PR is merged into `develop`.
+
+**References:**
+
+- Figma login design
+- `src/app/docs/auth.md`
+- Login page PR: Link not provided
+
+### AI-020 - AlternativeAuth Integration and Styling (#111)
+
+**Date:** 2026-10-16
+
+**Team Member:** Emilie Sofie Fosmo (Emifos)
+
+**Related Tasks / Files:**
+
+- Ticket #111 — Connect and style AlternativeAuth on login and register pages
+- Ticket #33 — AlternativeAuth component
+- Branch: `fix/alternative-auth-login-register-111`
+- `src/app/components/ui/AlternativeAuth.tsx`
+- `src/app/(pages)/login/page.tsx`
+- `src/app/(pages)/register/page.tsx`
+
+**AI Tool / Model:** Claude Code (Claude Opus 5.5) in VS Code
+
+**Purpose:** Integrate the existing AlternativeAuth component into the login and register pages and style it according to the mobile and desktop Figma designs.
+
+**Key Prompt(s):**
+
+- Requested integration of `AlternativeAuth.tsx` into the login and register pages, following the Figma designs.
+- Provided Figma Dev Mode specifications step by step, starting with mobile and then desktop.
+- Specified that the social sign-in buttons should retain their intended colors while remaining non-interactive.
+
+**Outcome and Decisions:**
+
+- Added `<AlternativeAuth mode="login" />` and `<AlternativeAuth mode="register" />` to their respective pages.
+- Removed duplicate login and registration links from the pages because AlternativeAuth already provides them.
+- Removed `disabled:opacity-50` and `disabled:grayscale` to prevent disabled social sign-in buttons from appearing grey.
+- Kept the buttons disabled because authentication providers are not connected. Screen readers continue to announce that the options are not available yet.
+- Applied Figma styling:
+  - "Or" text and navigation link: 14px on mobile and 16px on desktop.
+  - Buttons: full available width using `flex-1`, 12px border radius, 12px/9px padding, `bg-salt-300`, and 28px icons.
+  - Spacing around the component: 24px on mobile and 48px on desktop.
+- Replaced arbitrary Tailwind values (`h-[52px]`, `w-[186px]`, `max-w-[388px]`) and non-design colors (`stone-100`, `green-700`) with standard Tailwind utilities and project design tokens.
+- Removed the custom focus ring to use the shared focus styling from `globals.css`.
+- Updated the link text from "Log in here!" to "Login here!" to match Figma.
+
+**Verification / Status:**
+
+- `tsc --noEmit` and ESLint passed.
+- Remaining work:
+  - Replace the plain green Google icon with a custom SVG to match the gradient in the Figma design.
+
+**References:**
+
+- Ticket #111
+- Ticket #33
+- Figma login and register designs
+- `src/app/docs/styles.md`
+- PR link: Not provided
+
+### AI-021 - Homepage Font Weight and Size Adjustments (#119)
+
+**Date:** 2026-10-16
+
+**Team Member:** Emilie Sofie Fosmo (Emifos)
+
+**Related Tasks / Files:**
+
+- Ticket #119 — Homepage font weight and size adjustments
+- Branch: `fix/font-weight-119`
+- `src/app/components/HeroSection.tsx`
+- `src/app/components/FeaturedRecipe.tsx`
+- `src/app/components/features/CategoryNavigation.tsx`
+- `src/app/components/features/RecipeSection.tsx`
+- `src/app/components/ui/CategoryItem.tsx`
+
+**AI Tool / Model:** Claude Code (Claude Opus 5.5) in VS Code
+
+**Purpose:** Adjust font weights and sizes on the homepage to match the mobile and desktop Figma designs.
+
+**Key Prompt(s):**
+
+- Compared rendered typography with Figma using WhatFont.
+- Provided Claude with a list of required font sizes and weights for individual elements, first for desktop and then for mobile.
+
+**Outcome and Decisions:**
+
+- Changed headings from `font-bold` to `font-medium` (500), including:
+  - "What's on your plate today?"
+  - "What everyone's cooking today"
+  - Featured recipe title
+  - Recipe section headings
+  - Category names such as Breakfast and Lunch
+- Applied typography sizes based on Figma:
+  - Hero label: 12px mobile / 14px desktop.
+  - Hero heading: 40px mobile / 48px desktop.
+  - Hero description: 18px mobile / 20px desktop.
+  - Section headings: 32px.
+  - "See all" links: 16px.
+- Used `text-[2rem]` and `text-[2.5rem]` to match the required 32px and 40px sizes. This was a deliberate exception to the project's `styles.md` guidelines.
+- Identified that Aptly Medium (500) was missing from the Adobe Fonts kit (`xnz3twu`), causing `font-medium` to render at weight 400.
+- The team added Aptly Medium to the Adobe Fonts kit, resolving the font weight issue without additional code changes.
+
+**Verification / Status:**
+
+- `tsc --noEmit` passed.
+- ESLint passed.
+- The desktop font size for "Let's make something delicious" was not specified, so it remains at 14px.
+
+**References:**
+
+- Ticket #119
+- Figma homepage design
+- Adobe Fonts kit `xnz3twu`
+- PR link: Not provided
