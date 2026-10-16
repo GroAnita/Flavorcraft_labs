@@ -35,7 +35,7 @@ export default function MobileMenu({ links, linkClassName }: Props) {
   return (
     <div
       onKeyDown={handleKeyDown}
-      className="flex items-center gap-1 justify-self-end md:hidden"
+      className="flex items-center gap-1 justify-self-end md:hidden z-50"
     >
       <Link href="/login" aria-label="Login" className={ICON_BUTTON}>
         <CircleUserRound aria-hidden="true" className="size-7" />
