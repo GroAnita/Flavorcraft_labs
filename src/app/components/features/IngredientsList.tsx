@@ -33,14 +33,16 @@ export function IngredientsList({
         return (
           <li
             key={`${ingredient.name}-${index}`}
-            className="flex items-baseline gap-3 rounded-lg bg-surface p-3 text-sm md:p-4 md:text-base"
+            className="flex items-baseline gap-3 rounded-lg bg-surface p-3 text-base md:p-4"
           >
             {amount && (
               <span className="shrink-0 font-semibold text-truffle-500">
                 {amount}
               </span>
             )}
-            <span className="wrap-anywhere">{ingredient.name}</span>
+            <span className="wrap-anywhere font-normal text-muted-foreground">
+              {ingredient.name}
+            </span>
           </li>
         );
       })}
