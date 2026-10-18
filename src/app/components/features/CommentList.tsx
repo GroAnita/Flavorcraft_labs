@@ -2,7 +2,7 @@
 
 import { use, useEffect, useRef, useState } from "react";
 import type { Comment } from "@/app/types/recipe";
-import { CommentItem } from "@/app/components/ui/CommentItem";
+import { CommentItem } from "@/app/components/features/CommentItem";
 
 export type CommentsResult =
   | { ok: true; comments: Comment[] }
@@ -58,7 +58,7 @@ export function CommentList({ commentsPromise }: CommentListProps) {
             ref={index === INITIAL_COUNT ? firstRevealedRef : undefined}
             tabIndex={index === INITIAL_COUNT ? -1 : undefined}
           >
-            <CommentItem comment={comment} />
+            <CommentItem text={comment.text} author={comment.author} />
           </li>
         ))}
       </ul>
