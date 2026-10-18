@@ -17,7 +17,7 @@ export function CommentItem({ text, author }: CommentItemProps) {
       <Avatar name={name} src={author.avatar?.url} alt="" />
 
       <div className="flex min-w-0 flex-1 flex-col gap-1">
-        <h3 className="wrap-anywhere text-[18px] font-semibold">{name}</h3>
+        <h3 className="wrap-anywhere text-lg font-semibold">{name}</h3>
         <p className="whitespace-pre-line wrap-anywhere text-sm leading-5">
           {text}
         </p>
