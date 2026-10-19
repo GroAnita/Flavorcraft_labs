@@ -320,6 +320,38 @@ export function serializeFilters(values: string[]): string {
   return values.join(",");
 }
 
+// Link to the recipes page with these filters selected, so every link uses the same format
+export function filterHref(values: string[]): string {
+  if (values.length === 0) return "/recipes";
+  // Filter values only contain a-z, 0-9, "-" and ":", so they are safe in a URL as is
+  return `/recipes?filters=${serializeFilters(values)}`;
+}
+
+// Turns a tag, category or difficulty from the API into a filter value, e.g.
+// "Easy" → "difficulty:easy", "Dinner" → "category:dinner", "homemade" → null.
+// It reuses the filters' own matches functions, so a link always gives the same
+// results as the filter. Matching is case-insensitive and ignores surrounding spaces.
+export function tagToFilterValue(text: string): string | null {
+  if (!text.trim()) return null;
+
+  // A minimal recipe where the text is the tag, category and difficulty at once.
+  // No times, ingredients or steps, so time and simplicity options never match.
+  const probe = {
+    tags: [text],
+    category: text,
+    difficulty: text,
+    prepTime: 0,
+    cookTime: 0,
+    ingredients: [],
+    instructions: [],
+  } as unknown as Recipe;
+
+  for (const option of OPTIONS_BY_VALUE.values()) {
+    if (option.matches(probe)) return option.value;
+  }
+  return null;
+}
+
 // Different fields combine with AND (Dinner AND Easy)
 export function filterRecipes(recipes: Recipe[], selected: string[]): Recipe[] {
   if (selected.length === 0) return recipes;
