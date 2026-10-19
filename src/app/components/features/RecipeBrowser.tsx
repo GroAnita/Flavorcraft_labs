@@ -2,6 +2,7 @@
 
 import { RecipeCard } from "@/app/components/features/RecipeCard";
 import { FilterGroup } from "@/app/components/ui/FilterGroup";
+import { SavedRecipesLink } from "@/app/components/ui/SavedRecipesLink";
 import { useRecipeFilters } from "@/app/hooks/useRecipeFilters";
 import {
   RECIPE_FILTER_GROUPS,
@@ -26,6 +27,8 @@ export function RecipeBrowser({ recipes }: RecipeBrowserProps) {
         aria-label="Filters"
         className="flex flex-col gap-4 md:w-80.5 md:shrink-0"
       >
+        <SavedRecipesLink />
+
         {RECIPE_FILTER_GROUPS.map((group) => (
           <FilterGroup
             key={group.id}
