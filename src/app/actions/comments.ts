@@ -1,10 +1,12 @@
 "use server";
 
 import { authFetch, AuthError } from "@/app/lib/api";
-import { getAccessToken } from "@/app/lib/session";
+import { deleteSession, getAccessToken } from "@/app/lib/session";
 import type { Comment } from "@/app/types/recipe";
 
-type CreateCommentResult = { comment: Comment } | { error: string };
+type CreateCommentResult =
+  | { comment: Comment }
+  | { error: string; needsLogin?: boolean };
 
 export async function createComment(
   recipeId: string,
@@ -30,7 +32,9 @@ export async function createComment(
     return { comment: json.data };
   } catch (error) {
     if (error instanceof AuthError) {
-      return { error: error.message };
+      // The token is missing or expired, so remove it and ask the user to log in again
+      await deleteSession();
+      return { error: error.message, needsLogin: true };
     }
     return {
       error: "Something went wrong. Check your connection and try again.",
