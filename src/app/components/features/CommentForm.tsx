@@ -1,6 +1,8 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { CircleAlert, Send } from "lucide-react";
 import { createComment } from "@/app/actions/comments";
 import type { Comment } from "@/app/types/recipe";
@@ -11,8 +13,10 @@ type CommentFormProps = {
 };
 
 export function CommentForm({ recipeId, onCommentAdded }: CommentFormProps) {
+  const router = useRouter();
   const [text, setText] = useState("");
   const [error, setError] = useState("");
+  const [needsLogin, setNeedsLogin] = useState(false);
   const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -27,18 +31,21 @@ export function CommentForm({ recipeId, onCommentAdded }: CommentFormProps) {
     setStatus("");
     if (!text.trim()) {
       setError("Write a comment before posting");
+      setNeedsLogin(false);
       textareaRef.current?.focus();
       return;
     }
 
     setError("");
+    setNeedsLogin(false);
     setIsLoading(true);
     const result = await createComment(recipeId, text);
     setIsLoading(false);
 
     if ("error" in result) {
-      // Keep the text so the user can try again without retyping
+      // Keep the text so the user can log in again or retry without retyping
       setError(result.error);
+      setNeedsLogin(Boolean(result.needsLogin));
       textareaRef.current?.focus();
       return;
     }
@@ -46,6 +53,8 @@ export function CommentForm({ recipeId, onCommentAdded }: CommentFormProps) {
     setText("");
     setStatus("Your comment was posted");
     onCommentAdded?.(result.comment);
+    // Re-runs the server components so the list fetches the new comment
+    router.refresh();
     textareaRef.current?.focus();
   }
 
@@ -85,7 +94,7 @@ export function CommentForm({ recipeId, onCommentAdded }: CommentFormProps) {
         value={text}
         onChange={(e) => {
           setText(e.target.value);
-          if (error) setError("");
+          if (error && !needsLogin) setError("");
         }}
         onKeyDown={handleKeyDown}
         aria-invalid={error ? true : undefined}
@@ -97,10 +106,18 @@ export function CommentForm({ recipeId, onCommentAdded }: CommentFormProps) {
         <p
           id={errorId}
           role="alert"
-          className="flex items-center gap-1.5 text-xs font-medium text-error-text"
+          className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-error-text"
         >
           <CircleAlert aria-hidden="true" className="size-4 shrink-0" />
           {error}
+          {needsLogin && (
+            <Link
+              href="/login"
+              className="font-semibold underline underline-offset-2"
+            >
+              Log in again
+            </Link>
+          )}
         </p>
       ) : (
         <p id={helperId} className="text-xs text-muted-foreground">
