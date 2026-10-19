@@ -294,7 +294,55 @@ export const RECIPE_FILTER_GROUPS: RecipeFilterGroup[] = [
   },
 ];
 
-// Counts come from the recipes passed in, not from the design's placeholder numbers
+// --- Selection logic ---
+
+// Every option by value. Shared options (e.g. "Easy") appear once.
+const OPTIONS_BY_VALUE = new Map(
+  RECIPE_FILTER_GROUPS.flatMap((group) =>
+    group.options.map((option) => [option.value, option] as const),
+  ),
+);
+
+// Fields where a recipe must match every selected option (Vegan AND Gluten-free).
+// In all other fields one match is enough (Dinner OR Lunch).
+const MATCH_ALL_FIELDS = new Set(["diet"]);
+
+const fieldOf = (value: string) => value.split(":")[0];
+
+// Reads the "filters" URL parameter and drops values that don't exist
+export function parseFilters(param: string | null): string[] {
+  if (!param) return [];
+  const values = param.split(",").filter((value) => OPTIONS_BY_VALUE.has(value));
+  return [...new Set(values)];
+}
+
+export function serializeFilters(values: string[]): string {
+  return values.join(",");
+}
+
+// Different fields combine with AND (Dinner AND Easy)
+export function filterRecipes(recipes: Recipe[], selected: string[]): Recipe[] {
+  if (selected.length === 0) return recipes;
+
+  const byField = new Map<string, RecipeFilterOption[]>();
+  for (const value of selected) {
+    const option = OPTIONS_BY_VALUE.get(value);
+    if (!option) continue;
+    const field = fieldOf(value);
+    byField.set(field, [...(byField.get(field) ?? []), option]);
+  }
+
+  return recipes.filter((recipe) =>
+    [...byField].every(([field, options]) =>
+      MATCH_ALL_FIELDS.has(field)
+        ? options.every((option) => option.matches(recipe))
+        : options.some((option) => option.matches(recipe)),
+    ),
+  );
+}
+
+// Counts come from the recipes passed in, not from the design's placeholder numbers.
+// The results page passes all recipes, so counts don't change while filtering.
 export function getGroupOptionsWithCounts(
   group: RecipeFilterGroup,
   recipes: Recipe[],
