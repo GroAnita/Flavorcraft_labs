@@ -4,7 +4,13 @@ import { RegisterForm } from "@/app/components/features/RegisterForm";
 import AlternativeAuth from "@/app/components/ui/AlternativeAuth";
 
 export const metadata: Metadata = {
-  title: "Register | FlavorCraft Labs",
+  title: "Register",
+  description:
+    "Register for FlavorCraft Labs to start saving your favorite recipes and enhance your cooking experience.",
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function RegisterPage() {
