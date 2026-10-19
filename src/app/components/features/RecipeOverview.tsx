@@ -156,12 +156,12 @@ export function RecipeOverview({
         )}
 
         <div className="flex flex-col gap-2">
-          <h1 className="text-[40px] font-medium leading-none tracking-[0.01em] text-truffle-500">
+          <h1 className="wrap-break-word text-[40px] font-medium leading-none tracking-[0.01em] text-truffle-500">
             {title}
           </h1>
 
           {description?.trim() && (
-            <p className="text-base leading-[1.2] text-oat-800 md:leading-6">
+            <p className="text-base wrap-break-word leading-[1.2] text-oat-800 md:leading-6">
               {description}
             </p>
           )}
