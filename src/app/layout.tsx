@@ -27,7 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link rel="stylesheet" href="https://use.typekit.net/xnz3twu.css" />
       </head>
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-svh flex flex-col">
         <Header />
         {children}
         <Footer />
