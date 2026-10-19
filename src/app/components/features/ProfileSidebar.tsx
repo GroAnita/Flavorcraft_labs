@@ -50,13 +50,15 @@ export function ProfileSidebar({
 
         <div className="flex flex-col gap-6 px-6 pb-4 pt-16">
           <header>
-            <h2 className="font-aptly text-3xl font-semibold text-nori-500">
+            <h2 className="wrap-break-wordsfont-aptly text-3xl font-semibold text-nori-500">
               {profile.name}
             </h2>
-            <p className="text-sm text-primary">{profile.email}</p>
+            <p className=" wrap-anywhere text-sm text-primary">
+              {profile.email}
+            </p>
           </header>
 
-          <p className="text-sm text-muted-foreground text-oat-800">
+          <p className="text-sm text-oat-800">
             {profile.bio?.trim() || 'No profile description yet.'}
           </p>
 

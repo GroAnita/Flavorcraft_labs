@@ -25,9 +25,7 @@ export function ProfileStats({
           key={stat.label}
           className="flex flex-col-reverse items-start gap-1 rounded-lg bg-oat-200 px-4 py-4 text-left"
         >
-          <dt className="text-base text-muted-foreground text-nori-500">
-            {stat.label}
-          </dt>
+          <dt className="text-base text-nori-500">{stat.label}</dt>
           <dd className="font-aptly text-3xl font-semibold text-primary">
             {stat.value.toLocaleString('en-US')}
           </dd>
