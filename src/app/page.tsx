@@ -40,7 +40,9 @@ export default async function Home() {
 
   // New: most recently created first
   const newestRecipes = [...recipes]
-    .sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime())
+    .sort(
+      (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime(),
+    )
     .slice(0, SECTION_SIZE);
 
   return (
@@ -50,18 +52,30 @@ export default async function Home() {
       <FeaturedRecipeSection />
       <div className="container mx-auto flex flex-col gap-8 px-6 py-8">
         {failed ? (
-          <p role="alert" className="rounded-lg bg-surface p-6 text-center text-muted-foreground">
-            We couldn&apos;t load recipes right now. Please try again in a moment.
+          <p
+            role="alert"
+            className="rounded-lg bg-surface p-6 text-center text-muted-foreground"
+          >
+            We couldn&apos;t load recipes right now. Please try again in a
+            moment.
           </p>
         ) : (
           <>
-            <RecipeSection title="Fast recipes" recipes={fastRecipes} viewAllHref="/recipes" />
+            <RecipeSection
+              title="Fast recipes"
+              recipes={fastRecipes}
+              viewAllHref="/recipes"
+            />
             <RecipeSection
               title="Popular everyday dinners"
               recipes={dinnerRecipes}
               viewAllHref="/recipes?category=Dinner"
             />
-            <RecipeSection title="Try something new" recipes={newestRecipes} viewAllHref="/recipes" />
+            <RecipeSection
+              title="Try something new"
+              recipes={newestRecipes}
+              viewAllHref="/recipes"
+            />
           </>
         )}
       </div>
