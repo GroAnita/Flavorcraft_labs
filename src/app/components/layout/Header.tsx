@@ -84,7 +84,7 @@ export default async function Header() {
   return (
     <header className="relative bg-sprout-500">
       <div
-        className={`mx-auto grid w-full max-w-6xl grid-cols-[auto_1fr] items-center gap-x-4 gap-y-4 px-5 py-4 md:gap-x-12 md:px-8 md:py-5 ${layout.grid}`}
+        className={`grid w-full grid-cols-[auto_1fr] items-center gap-x-4 gap-y-4 px-5 py-4 md:gap-x-12 md:px-8 md:py-5 ${layout.grid}`}
       >
         <Link
           href="/"
@@ -139,7 +139,7 @@ export default async function Header() {
               <li>
                 <Link
                   href={CREATE_LINK.href}
-                  className="inline-flex h-9 items-center gap-1.5 rounded-full bg-basil-500 px-3.5 text-sm font-semibold text-white hover:bg-basil-700"
+                  className="inline-flex h-9 items-center gap-1.5 rounded-full bg-basil-500 px-3.5 font-inter text-xs leading-[15px] font-semibold text-white hover:bg-basil-700"
                 >
                   <Plus aria-hidden="true" className="size-4" />
                   {CREATE_LINK.label}

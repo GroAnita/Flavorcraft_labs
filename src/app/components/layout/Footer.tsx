@@ -50,7 +50,7 @@ export default function Footer() {
 
   return (
     <footer className="mt-auto bg-nori-500">
-      <div className="mx-auto w-full max-w-6xl px-5 py-10 md:px-8">
+      <div className="w-full px-5 py-10 md:px-8">
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <Link
             href="/"
