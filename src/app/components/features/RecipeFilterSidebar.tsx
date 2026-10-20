@@ -12,16 +12,18 @@ type RecipeFilterSidebarProps = {
   recipes: Recipe[];
   selected: string[];
   onChange: (value: string, checked: boolean) => void;
+  isLoggedIn: boolean;
 };
 
 export function RecipeFilterSidebar({
   recipes,
   selected,
   onChange,
+  isLoggedIn,
 }: RecipeFilterSidebarProps) {
   return (
     <div className="flex flex-col gap-4">
-      <SavedRecipesLink />
+      <SavedRecipesLink href={isLoggedIn ? "/favorites" : "/login"} />
 
       {RECIPE_FILTER_GROUPS.map((group) => (
         <FilterGroup

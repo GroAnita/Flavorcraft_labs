@@ -8,6 +8,8 @@ export type RecipeFilterOption = {
   label: string;
   value: string;
   matches: (recipe: Recipe) => boolean;
+  // Field to combine with when it differs from the value's own field
+  combineWith?: string;
 };
 
 export type RecipeFilterGroup = {
@@ -67,6 +69,8 @@ const CAKES: RecipeFilterOption = {
   label: "Cakes",
   value: "tag:cake",
   matches: (r) => hasTag(r, "cake", "cakes"),
+  // Shown as a meal type, so "Dinner + Cakes" means Dinner OR Cakes
+  combineWith: "category",
 };
 const MEAT: RecipeFilterOption = {
   label: "Meat",
@@ -365,7 +369,7 @@ export function filterRecipes(recipes: Recipe[], selected: string[]): Recipe[] {
   for (const value of selected) {
     const option = OPTIONS_BY_VALUE.get(value);
     if (!option) continue;
-    const field = fieldOf(value);
+    const field = option.combineWith ?? fieldOf(value);
     byField.set(field, [...(byField.get(field) ?? []), option]);
   }
 
