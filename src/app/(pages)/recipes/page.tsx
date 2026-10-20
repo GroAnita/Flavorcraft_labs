@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { RecipeBrowser } from "@/app/components/features/RecipeBrowser";
 import { fetchRecipes } from "@/app/lib/recipe";
+import { getAccessToken } from "@/app/lib/session";
 import type { Recipe } from "@/app/types/recipe";
 
 export const metadata: Metadata = {
@@ -17,6 +18,9 @@ export default async function RecipesPage() {
   } catch {
     failed = true;
   }
+
+  // Only checks that a session cookie exists, as in CommentSection
+  const isLoggedIn = Boolean(await getAccessToken());
 
   return (
     <main className="flex flex-1 flex-col bg-salt-500">
@@ -38,7 +42,7 @@ export default async function RecipesPage() {
         ) : (
           // RecipeBrowser reads the filters from the URL, which needs Suspense
           <Suspense fallback={<p className="sr-only">Loading recipes…</p>}>
-            <RecipeBrowser recipes={recipes} />
+            <RecipeBrowser recipes={recipes} isLoggedIn={isLoggedIn} />
           </Suspense>
         )}
       </div>

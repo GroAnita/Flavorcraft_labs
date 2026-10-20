@@ -10,6 +10,7 @@ import type { Recipe } from "@/app/types/recipe";
 
 type RecipeBrowserProps = {
   recipes: Recipe[];
+  isLoggedIn: boolean;
 };
 
 // Shortcuts shown in the Suggestion row, using the same values as the sidebar
@@ -22,7 +23,7 @@ const SUGGESTIONS = [
   "tag:cake",
 ];
 
-export function RecipeBrowser({ recipes }: RecipeBrowserProps) {
+export function RecipeBrowser({ recipes, isLoggedIn }: RecipeBrowserProps) {
   // Shared state for every group, so equivalent options stay in sync
   const { selected, toggle, clear } = useRecipeFilters();
   const results = filterRecipes(recipes, selected);
@@ -34,6 +35,7 @@ export function RecipeBrowser({ recipes }: RecipeBrowserProps) {
       recipes={recipes}
       selected={selected}
       onChange={toggle}
+      isLoggedIn={isLoggedIn}
     />
   );
 
