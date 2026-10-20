@@ -4,6 +4,7 @@ import { useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
+import ProfileMenu from "@/app/components/layout/ProfileMenu";
 
 type NavLink = { label: string; href: string };
 type IconLink = NavLink & { icon: ReactNode };
@@ -12,6 +13,7 @@ type Props = {
   links: readonly NavLink[];
   linkClassName: string;
   iconLinks: readonly IconLink[]; // shown next to the menu button; label is read by screen readers
+  profileIcon?: ReactNode; // when set, an avatar button that opens the profile menu
   navLabel: string;
   className: string; // hides the menu at the breakpoint where the desktop nav shows
 };
@@ -25,6 +27,7 @@ export default function MobileMenu({
   links,
   linkClassName,
   iconLinks,
+  profileIcon,
   navLabel,
   className,
 }: Props) {
@@ -61,6 +64,9 @@ export default function MobileMenu({
           {link.icon}
         </Link>
       ))}
+      {profileIcon && (
+        <ProfileMenu buttonClassName={ICON_BUTTON}>{profileIcon}</ProfileMenu>
+      )}
       <button
         ref={buttonRef}
         type="button"

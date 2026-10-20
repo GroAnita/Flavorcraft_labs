@@ -687,6 +687,8 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - Branch: `fix/header-logged-in-state-199`
 - `src/app/components/layout/Header.tsx`
 - `src/app/components/layout/MobileMenu.tsx`
+- `src/app/components/layout/ProfileMenu.tsx`
+- `src/app/components/layout/ProfileMenu.tsx`
 
 **AI Tool / Model:** Claude Code (Anthropic), VS Code extension, Claude Opus 5.5
 
@@ -697,6 +699,7 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - Shared the ticket and a screenshot of the desktop design, and asked for the logged-in header.
 - Shared a screenshot of the mobile design and asked for heart (Favorites) and plus (Create) icons next to the profile icon.
 - Gave the Figma measurements: 24px icons, 144px total width for the four mobile icons, and thinner icon outlines.
+- Asked for the avatar icon to open a menu with a log out option.
 
 **Outcome and Decisions:**
 
@@ -705,13 +708,15 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - **Accepted:** `MobileMenu` takes a list of icon links instead of a single profile link. Logged in, it shows Favorites, Create recipe and Profile icons; the menu lists Recipes, Meal plan and Pantry.
 - **Accepted:** The logged-in header switches to the desktop layout at `lg` instead of `md`, because the extra links left almost no room for search at tablet width.
 - **Modified:** Mobile icons resized to 24px with 16px gaps and a 1.5 stroke to match Figma. An invisible `before:` layer keeps a 40px tap area without changing the layout.
+- **Accepted:** Added `ProfileMenu`, a client component that opens a dropdown with Log out from the avatar on desktop and mobile. It uses the existing `logout` action, closes on Escape (returning focus to the avatar) or an outside click, and replaces the link to `/profile`.
 - **Open:** `/favorites`, `/profile` and `/recipes/create` do not exist yet. `/recipes/create` was a guess and must match the page when it is built.
 
 **Verification / Status:**
 
 - `npm run build` and TypeScript pass; ESLint passes for the changed files.
 - Checked the rendered HTML of a production build with and without a session cookie: logged out shows Login/Register, logged in shows the new links and icons.
-- Not yet tested with a real login, in a browser at different screen sizes, or with keyboard navigation.
+- Log out from the profile menu tested manually by the team member and works.
+- Not yet tested in a browser at different screen sizes or with keyboard navigation.
 
 **References:**
 
