@@ -5,7 +5,11 @@ import { ArrowLeft, SlidersHorizontal, X } from "lucide-react";
 import { RecipeCard } from "@/app/components/features/RecipeCard";
 import { RecipeFilterSidebar } from "@/app/components/features/RecipeFilterSidebar";
 import { useRecipeFilters } from "@/app/hooks/useRecipeFilters";
-import { filterRecipes, getFilterLabel } from "@/app/lib/recipeFilters";
+import {
+  filterRecipes,
+  getFilterLabel,
+  searchRecipes,
+} from "@/app/lib/recipeFilters";
 import type { Recipe } from "@/app/types/recipe";
 
 type RecipeBrowserProps = {
@@ -25,8 +29,9 @@ const SUGGESTIONS = [
 
 export function RecipeBrowser({ recipes, isLoggedIn }: RecipeBrowserProps) {
   // Shared state for every group, so equivalent options stay in sync
-  const { selected, toggle, clear } = useRecipeFilters();
-  const results = filterRecipes(recipes, selected);
+  const { selected, search, toggle, clearAll } = useRecipeFilters();
+  // Search and filters combine: a recipe must match both
+  const results = filterRecipes(searchRecipes(recipes, search), selected);
   // Native <dialog> traps focus, closes on Escape and hides the page behind it
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -104,6 +109,7 @@ export function RecipeBrowser({ recipes, isLoggedIn }: RecipeBrowserProps) {
           <p role="status" className="text-nori-200">
             <span className="font-semibold text-nori-500">{results.length}</span>{" "}
             {results.length === 1 ? "result" : "results"}
+            {search && <> for &ldquo;{search}&rdquo;</>}
           </p>
         </div>
       </div>
@@ -148,14 +154,16 @@ export function RecipeBrowser({ recipes, isLoggedIn }: RecipeBrowserProps) {
           {results.length === 0 ? (
             <div className="flex flex-col items-center gap-4 rounded-lg bg-surface p-6 text-center">
               <p className="text-muted-foreground">
-                No recipes match your filters.
+                {search
+                  ? "No recipes matched the search or filter."
+                  : "No recipes match your filters."}
               </p>
               <button
                 type="button"
-                onClick={clear}
+                onClick={clearAll}
                 className="inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-salt-500 hover:bg-basil-700"
               >
-                Clear filters
+                {search ? "Clear search & filters" : "Clear filters"}
               </button>
             </div>
           ) : (

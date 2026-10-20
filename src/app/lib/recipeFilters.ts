@@ -361,6 +361,19 @@ export function tagToFilterValue(text: string): string | null {
   return null;
 }
 
+// Search in title, description and tags. Case-insensitive and ignores
+// surrounding spaces, so "  Pasta " finds the same recipes as "pasta".
+export function searchRecipes(recipes: Recipe[], term: string): Recipe[] {
+  const query = normalize(term);
+  if (!query) return recipes;
+
+  return recipes.filter((recipe) =>
+    [recipe.title, recipe.description, ...(recipe.tags ?? [])].some((text) =>
+      normalize(text).includes(query),
+    ),
+  );
+}
+
 // Different fields combine with AND (Dinner AND Easy)
 export function filterRecipes(recipes: Recipe[], selected: string[]): Recipe[] {
   if (selected.length === 0) return recipes;
