@@ -3,6 +3,7 @@ import HeroSection from './components/HeroSection';
 import FeaturedRecipeSection from './components/FeaturedRecipe';
 import CategoryNavigation from './components/features/CategoryNavigation';
 import { RecipeSection } from './components/features/RecipeSection';
+import { FavoritesBoundary } from './components/features/FavoritesBoundary';
 import { fetchRecipes } from './lib/recipe';
 import type { Recipe } from './types/recipe';
 
@@ -60,7 +61,7 @@ export default async function Home() {
             moment.
           </p>
         ) : (
-          <>
+          <FavoritesBoundary>
             <RecipeSection
               title="Fast recipes"
               recipes={fastRecipes}
@@ -76,7 +77,7 @@ export default async function Home() {
               recipes={newestRecipes}
               viewAllHref="/recipes"
             />
-          </>
+          </FavoritesBoundary>
         )}
       </div>
     </main>

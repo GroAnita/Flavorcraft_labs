@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { FavoritesBoundary } from "@/app/components/features/FavoritesBoundary";
 import { RecipeBrowser } from "@/app/components/features/RecipeBrowser";
 import { fetchRecipes } from "@/app/lib/recipe";
 import { getAccessToken } from "@/app/lib/session";
@@ -42,7 +43,9 @@ export default async function RecipesPage() {
         ) : (
           // RecipeBrowser reads the filters from the URL, which needs Suspense
           <Suspense fallback={<p className="sr-only">Loading recipes…</p>}>
-            <RecipeBrowser recipes={recipes} isLoggedIn={isLoggedIn} />
+            <FavoritesBoundary>
+              <RecipeBrowser recipes={recipes} isLoggedIn={isLoggedIn} />
+            </FavoritesBoundary>
           </Suspense>
         )}
       </div>
