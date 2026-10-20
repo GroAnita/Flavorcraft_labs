@@ -944,3 +944,48 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 
 - [Ticket #219 - Favorite recipes from the recipe card](https://github.com/GroAnita/Flavorcraft_labs/issues/219)
 - Branch: `feat/favorite-recipe-card-219`
+
+---
+
+### AI-019 - Profile Area and Favorites Page
+
+**Date:** 2026-10-20
+
+**Team Member:** Gro Anita / `GroAnita`
+
+**Related Tasks / Files:**
+
+- Ticket #155 - Build Profile area and favorites page, with sub-issues #157, #158, #159, #160, #161 and #162
+- Branch: `feat/favorites-page-155`
+- `src/app/(pages)/(profile)/layout.tsx`, `profile/page.tsx`, `profile/recipes/page.tsx`, `profile/settings/page.tsx`, `favorites/page.tsx`, `favorites/loading.tsx`
+- `src/app/components/features/ProfileNavigation.tsx`, `ProfileSections.tsx` (was `ProfileTabs.tsx`), `ProfileComingSoon.tsx`, `FavoritesGrid.tsx`, `FavoritesEmptyState.tsx`, `FavoritesError.tsx`, `FavoritesProvider.tsx`, `ProfileSidebar.tsx`
+- `public/images/favorites-empty.png`
+
+**AI Tool / Model:** Claude Code (Anthropic), VS Code extension, Claude Opus 5.5
+
+**Purpose:** Read issue #155 and its sub-issues on GitHub, including the attached designs, and build the shared profile layout and the favorites page.
+
+**Key Prompt(s):** _(Summary of prompts; not exact original wording)_
+
+- Asked to look at issue #155 and all its sub-issues on GitHub.
+- Supplied the empty-state sushi illustration.
+- Chose to keep `/favorites` with `/profile/...` for the other sections, and to build all sub-issues on one branch with one PR.
+
+**Outcome and Decisions:**
+
+- **Accepted:** A `(profile)` route group with a shared layout (sidebar, profile navigation, redirect to login) for `/profile`, `/profile/recipes`, `/profile/settings` and `/favorites`. The client-side tabs became links with `aria-current`, so each section works on direct load and refresh.
+- **Accepted:** `FavoritesGrid` reuses `RecipeCard` inside `FavoritesProvider`. After a successful removal the card is hidden, focus moves to the list heading or empty-state heading, and `router.refresh()` updates the sidebar's Favorites count.
+- **Accepted:** Loading placeholders (`loading.tsx`), an error message with a Try again button, a Log in link for expired sessions, and the designed empty state, shown only after a successful load.
+- **Modified:** Three columns only from 1536px, because at 1280px the cards were too narrow and the recipe times wrapped. The "Go to favorites" arrow is hidden in messages on the favorites page itself.
+- **Checked:** The Noroff docs confirm each favorite includes the full recipe, so the page needs one request.
+
+**Verification / Status:**
+
+- `npm run build`, TypeScript and ESLint for the changed files pass.
+- 39 automated checks in Chromium (Playwright) against a local mock of the Noroff API with real recipe data: grid, removal, focus, sidebar count, empty state, error and retry, expired session, loading placeholders, navigation on direct load, refresh and keyboard, logged-out redirect, and mobile layout. The temporary API address used for the mock was reverted before committing.
+- Screenshots compared with the desktop, mobile and empty-state designs.
+
+**References:**
+
+- [Ticket #155 - Build Profile area and favorites page](https://github.com/GroAnita/Flavorcraft_labs/issues/155)
+- Branch: `feat/favorites-page-155`

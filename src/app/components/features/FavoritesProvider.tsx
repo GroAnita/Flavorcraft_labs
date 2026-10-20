@@ -20,6 +20,10 @@ const FavoritesContext = createContext<FavoritesValue | null>(null);
 
 type FavoritesProviderProps = {
   initialRecipeIds: string[];
+  // Called after a change is saved, for example to remove the card on the favorites page
+  onSaved?: (recipeId: string, favorite: boolean) => void;
+  // Hide the "Go to favorites" arrow, for example on the favorites page itself
+  showFavoritesLink?: boolean;
   children: ReactNode;
 };
 
@@ -27,6 +31,8 @@ type FavoritesProviderProps = {
 // message after each change. Only rendered for logged-in users.
 export function FavoritesProvider({
   initialRecipeIds,
+  onSaved,
+  showFavoritesLink = true,
   children,
 }: FavoritesProviderProps) {
   const [favoriteIds, setFavoriteIds] = useState(
@@ -74,8 +80,11 @@ export function FavoritesProvider({
                 : "was removed from favorites."}
             </>
           ),
-          action: { href: "/favorites", label: "Go to favorites" },
+          action: showFavoritesLink
+            ? { href: "/favorites", label: "Go to favorites" }
+            : undefined,
         });
+        onSaved?.(recipeId, favorite);
         return;
       }
 
