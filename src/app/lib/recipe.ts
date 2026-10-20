@@ -1,6 +1,13 @@
 import type { Comment, Recipe } from "../types/recipe";
 import { BASE_URL } from "./config";
 
+export class RecipeNotFoundError extends Error {
+  constructor() {
+    super("Recipe not found");
+    this.name = "RecipeNotFoundError";
+  }
+}
+
 export async function fetchRecipes(): Promise<Recipe[]> {
   const response = await fetch(`${BASE_URL}/recipe-book/recipes`);
   if (!response.ok) {
@@ -13,6 +20,10 @@ export async function fetchRecipes(): Promise<Recipe[]> {
 
 export async function fetchRecipe(id: string): Promise<Recipe> {
   const response = await fetch(`${BASE_URL}/recipe-book/recipes/${id}`);
+  // 400 is returned for ids that aren't valid, 404 for ids that don't exist
+  if (response.status === 400 || response.status === 404) {
+    throw new RecipeNotFoundError();
+  }
   if (!response.ok) {
     throw new Error("Failed to fetch recipe");
   }
@@ -23,7 +34,7 @@ export async function fetchRecipe(id: string): Promise<Recipe> {
 
 export async function fetchComments(recipeId: string): Promise<Comment[]> {
   const response = await fetch(
-    `${BASE_URL}/recipe-book/recipes/${recipeId}/comments`,
+    `${BASE_URL}/recipe-book/recipes/${recipeId}/comments`
   );
   if (!response.ok) {
     throw new Error("Failed to fetch comments");
