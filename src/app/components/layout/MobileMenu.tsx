@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -35,12 +35,26 @@ export default function MobileMenu({
   const pathname = usePathname();
   const [prevPathname, setPrevPathname] = useState(pathname);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  // Wraps the menu button and the menu, so focus and clicks can be checked against both.
+  const menuRef = useRef<HTMLDivElement>(null);
 
   // Close the menu after navigating to another page.
   if (pathname !== prevPathname) {
     setPrevPathname(pathname);
     setIsOpen(false);
   }
+
+  // Close when clicking or tapping outside the menu and its button.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    function handlePointerDown(e: PointerEvent) {
+      if (!menuRef.current?.contains(e.target as Node)) setIsOpen(false);
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [isOpen]);
 
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === "Escape" && isOpen) {
@@ -49,9 +63,15 @@ export default function MobileMenu({
     }
   }
 
+  // Close when keyboard focus moves outside the menu and its button. relatedTarget is
+  // null when clicking a non-focusable spot, which the pointerdown handler covers.
+  function handleBlur(e: React.FocusEvent) {
+    const next = e.relatedTarget;
+    if (next && !menuRef.current?.contains(next)) setIsOpen(false);
+  }
+
   return (
     <div
-      onKeyDown={handleKeyDown}
       className={`z-50 flex items-center gap-4 justify-self-end ${className}`}
     >
       {iconLinks.map((link) => (
@@ -67,43 +87,50 @@ export default function MobileMenu({
       {profileIcon && (
         <ProfileMenu buttonClassName={ICON_BUTTON}>{profileIcon}</ProfileMenu>
       )}
-      <button
-        ref={buttonRef}
-        type="button"
-        aria-expanded={isOpen}
-        aria-controls="mobile-menu"
-        aria-label={isOpen ? "Close menu" : "Open menu"}
-        onClick={() => setIsOpen((open) => !open)}
-        className={ICON_BUTTON}
+      <div
+        ref={menuRef}
+        onKeyDown={handleKeyDown}
+        onBlur={handleBlur}
+        className="contents"
       >
-        {isOpen ? (
-          <X aria-hidden="true" className="size-6" strokeWidth={1.5} />
-        ) : (
-          <Menu aria-hidden="true" className="size-6" strokeWidth={1.5} />
-        )}
-      </button>
-
-      {isOpen && (
-        <nav
-          id="mobile-menu"
-          aria-label={navLabel}
-          className="absolute inset-x-0 top-full z-10 bg-sprout-500 px-5 pb-5 shadow-md"
+        <button
+          ref={buttonRef}
+          type="button"
+          aria-expanded={isOpen}
+          aria-controls="mobile-menu"
+          aria-label={isOpen ? "Close menu" : "Open menu"}
+          onClick={() => setIsOpen((open) => !open)}
+          className={ICON_BUTTON}
         >
-          <ul className="flex flex-col gap-3">
-            {links.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className={`${linkClassName} w-full justify-center`}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )}
+          {isOpen ? (
+            <X aria-hidden="true" className="size-6" strokeWidth={1.5} />
+          ) : (
+            <Menu aria-hidden="true" className="size-6" strokeWidth={1.5} />
+          )}
+        </button>
+
+        {isOpen && (
+          <nav
+            id="mobile-menu"
+            aria-label={navLabel}
+            className="absolute inset-x-0 top-full z-10 bg-sprout-500 px-5 pb-5 shadow-md"
+          >
+            <ul className="flex flex-col gap-3">
+              {links.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`${linkClassName} w-full justify-center`}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+      </div>
     </div>
   );
 }
