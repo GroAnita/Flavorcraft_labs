@@ -1,4 +1,5 @@
 import { CategoryItem } from "../ui/CategoryItem";
+import { filterHref } from "@/app/lib/recipeFilters";
 
 const categories = [
   {
@@ -45,7 +46,7 @@ export default function CategoryNavigation() {
             <CategoryItem
               name={category.name}
               image={category.image}
-              href={`/categories/${category.slug}`}
+              href={filterHref([`category:${category.slug}`])}
             />
           </li>
         ))}
