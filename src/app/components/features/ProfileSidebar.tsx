@@ -4,6 +4,7 @@ import { logout } from '@/app/actions/auth';
 import { ProfileStats } from '@/app/components/ui/ProfileStats';
 import { Avatar } from '@/app/components/ui/Avatar';
 import { ProfileBanner } from '@/app/components/ui/ProfileBanner';
+import type { ProfileStatsData } from '@/app/lib/profile';
 
 export type ProfileSidebarData = {
   name: string;
@@ -15,18 +16,13 @@ export type ProfileSidebarData = {
 
 type ProfileSidebarProps = {
   profile: ProfileSidebarData;
-  favoritesCount: number;
-  recipesCount: number;
+  stats: ProfileStatsData;
 };
 
 const BUTTON_CLASSES =
-  'inline-flex min-h-[36px] w-full max-w-[353px] items-center justify-center gap-2 rounded-lg border border-basil-500 px-4 py-1 font-inter text-sm font-semibold leading-6 tracking-normal text-center text-basil-500 transition-all duration-200 hover:bg-mint-200 hover:shadow-[0_0_12px_0_#00000040] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basil-500 cursor-pointer motion-reduce:transition-none';
+  'inline-flex min-h-[36px] w-full items-center justify-center gap-2 rounded-lg border border-basil-500 px-4 py-1 font-inter text-sm font-semibold leading-6 tracking-normal text-center text-basil-500 transition-all duration-200 hover:bg-mint-200 hover:shadow-[0_0_12px_0_#00000040] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basil-500 cursor-pointer motion-reduce:transition-none';
 
-export function ProfileSidebar({
-  profile,
-  favoritesCount,
-  recipesCount,
-}: ProfileSidebarProps) {
+export function ProfileSidebar({ profile, stats }: ProfileSidebarProps) {
   return (
     <aside
       aria-label="Your profile"
@@ -50,7 +46,7 @@ export function ProfileSidebar({
 
         <div className="flex flex-col gap-6 px-6 pb-4 pt-16">
           <header>
-            <h2 className="wrap-break-wordsfont-aptly text-3xl font-semibold text-nori-500">
+            <h2 className="wrap-break-word font-aptly text-3xl font-semibold text-nori-500">
               {profile.name}
             </h2>
             <p className=" wrap-anywhere text-sm text-primary">
@@ -62,13 +58,11 @@ export function ProfileSidebar({
             {profile.bio?.trim() || 'No profile description yet.'}
           </p>
 
-          <ProfileStats
-            favoritesCount={favoritesCount}
-            recipesCount={recipesCount}
-          />
+          <ProfileStats stats={stats} />
 
           <div className="flex flex-col gap-2">
-            <Link href="/profile/edit" className={BUTTON_CLASSES}>
+            {/* There is no separate edit page yet, so this jumps to the form on the profile page */}
+            <Link href="#general-information" className={BUTTON_CLASSES}>
               Edit profile
               <SquarePen aria-hidden="true" className="size-[18px]" />
             </Link>
