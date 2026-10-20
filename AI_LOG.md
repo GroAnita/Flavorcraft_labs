@@ -724,3 +724,44 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - Branch: `fix/header-logged-in-state-199`
 - `src/app/components/layout/Header.tsx`
 - `src/app/components/layout/MobileMenu.tsx`
+
+---
+
+### AI-014 - Close Mobile Menu When Focus Leaves It
+
+**Date:** 2026-10-20
+
+**Team Member:** Gro Anita / `GroAnita`
+
+**Related Tasks / Files:**
+
+- Ticket #209 - Close mobile menu when focus leaves it
+- Branch: `fix/header-accessibility-209`
+- `src/app/components/layout/MobileMenu.tsx`
+
+**AI Tool / Model:** Claude Code (Anthropic), VS Code extension, Claude Opus 5.5
+
+**Purpose:** Run a keyboard navigation check on the header, and fix the mobile menu accessibility issue it found.
+
+**Key Prompt(s):** _(Summary of prompts; not exact original wording)_
+
+- Asked for a keyboard navigation check of the header after the logged-in state work (#199).
+- Asked to create a ticket for the issue found, and then to fix it on a new branch.
+
+**Outcome and Decisions:**
+
+- **Accepted:** The keyboard check found that the mobile menu stayed open when focus moved out of it, and that Escape no longer worked once focus had left. Ticket #209 was created for it.
+- **Accepted:** The menu button and the menu are wrapped together. The menu closes when focus moves to an element outside the wrapper, and when clicking or tapping outside it. Clicking an empty spot inside the menu keeps it open.
+- **Modified:** Moving from the open mobile menu to the profile menu now closes the mobile menu, so only one menu is open at a time.
+
+**Verification / Status:**
+
+- `npm run build`, TypeScript and ESLint for the changed files pass.
+- 25 automated keyboard and click checks run in Chromium (Playwright) at 375px width, logged out and logged in, all passing: Tab and Shift+Tab out of the menu, click outside, click inside, Escape with focus return, toggle, profile menu, and closing after navigation.
+- Not tested in Safari or Firefox, or with a screen reader.
+
+**References:**
+
+- [Ticket #209 - Close mobile menu when focus leaves it](https://github.com/GroAnita/Flavorcraft_labs/issues/209)
+- Branch: `fix/header-accessibility-209`
+- `src/app/components/layout/MobileMenu.tsx`
