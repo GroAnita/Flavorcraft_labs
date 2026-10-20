@@ -899,3 +899,48 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 
 - [Ticket #217 - Mobile menu redesign for logged-in and logged-out users](https://github.com/GroAnita/Flavorcraft_labs/issues/217)
 - Branch: `feat/mobile-menu-217`
+
+---
+
+### AI-018 - Favorite Recipes from the Recipe Card
+
+**Date:** 2026-10-20
+
+**Team Member:** Gro Anita / `GroAnita`
+
+**Related Tasks / Files:**
+
+- Ticket #219 - Favorite recipes from the recipe card
+- Branch: `feat/favorite-recipe-card-219`
+- `src/app/components/features/FavoritesProvider.tsx`, `FavoritesBoundary.tsx`, `RecipeCard.tsx`
+- `src/app/components/ui/Toast.tsx`, `FavoriteButton.tsx`
+- `src/app/lib/favorites.ts`
+- `src/app/page.tsx`, `src/app/(pages)/recipes/page.tsx`
+
+**AI Tool / Model:** Claude Code (Anthropic), VS Code extension, Claude Opus 5.5
+
+**Purpose:** Create the ticket and make the heart on recipe cards save and remove favorites for logged-in users, with a confirmation message from the design.
+
+**Key Prompt(s):** _(Summary of prompts; not exact original wording)_
+
+- Shared screenshots of the recipe card, the filled heart and the confirmation message, and explained that the heart is only for logged-in users and saves the recipe to favorites.
+- Chose that clicking a filled heart removes the favorite with a message, and that messages close after 5 seconds.
+
+**Outcome and Decisions:**
+
+- **Accepted:** `FavoritesBoundary` (server) loads the user's favorite recipe ids and wraps the cards in `FavoritesProvider` only when logged in, so logged-out users get no heart.
+- **Accepted:** `FavoritesProvider` keeps the favorite state for every card on the page, fills or empties the heart immediately, saves with the existing `setFavorite` action, and undoes the change with an error message if saving fails. Requests per recipe are blocked while one is in progress.
+- **Accepted:** A reusable `Toast` component with an always-rendered live region, auto close after 5 seconds, paused while hovered or focused.
+- **Modified:** Restyled the card's heart button to the design's cream square and larger icon.
+- **Found:** The home page and recipes page rendered cards without the logged-in state, so the heart was never shown before this change.
+
+**Verification / Status:**
+
+- `npm run build`, TypeScript and ESLint for the changed files pass.
+- Automated checks in Chromium (Playwright) on `/` and `/recipes`: no heart when logged out, heart with accessible name when logged in, clicking doesn't open the recipe, double click sends one request, failed save reverts the heart and shows an error, message closes after 5 s and stays open while hovered.
+- A real save could not be tested locally because `.env.local` with an API key was missing; this needs testing in an environment with the key.
+
+**References:**
+
+- [Ticket #219 - Favorite recipes from the recipe card](https://github.com/GroAnita/Flavorcraft_labs/issues/219)
+- Branch: `feat/favorite-recipe-card-219`

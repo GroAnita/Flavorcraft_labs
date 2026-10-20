@@ -1,12 +1,12 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
 import type { Recipe } from "@/app/types/recipe"
 import { RecipeImage } from "@/app/components/ui/RecipeImage"
 import { RecipeMeta } from "@/app/components/features/RecipeMeta"
 import { TagList } from "@/app/components/features/TagList"
 import { FavoriteButton } from "@/app/components/ui/FavoriteButton"
+import { useFavorites } from "@/app/components/features/FavoritesProvider"
 
 type RecipeCardProps = {
   recipe: Pick<
@@ -22,12 +22,11 @@ type RecipeCardProps = {
     | "difficulty"
     | "tags"
   >
-  isLoggedIn?: boolean
 }
 
-export function RecipeCard({ recipe, isLoggedIn = false }: RecipeCardProps) {
-  // Placeholder: saving and removing likes is a separate issue
-  const [isLiked, setIsLiked] = useState(false)
+export function RecipeCard({ recipe }: RecipeCardProps) {
+  // null when the user is logged out, so no heart is shown
+  const favorites = useFavorites()
 
   const href = `/recipes/${recipe.id}`
   const title = recipe.title?.trim() || "Untitled recipe"
@@ -40,9 +39,10 @@ export function RecipeCard({ recipe, isLoggedIn = false }: RecipeCardProps) {
       {/* z-10 keeps the heart above the clickable area of the title link */}
       <FavoriteButton
         className="z-10"
-        isLiked={isLiked}
-        onToggle={() => setIsLiked((value) => !value)}
-        isLoggedIn={isLoggedIn}
+        label={`Save ${title} to favorites`}
+        isLiked={favorites?.isFavorite(recipe.id) ?? false}
+        onToggle={() => favorites?.toggleFavorite(recipe.id, title)}
+        isLoggedIn={favorites !== null}
       />
 
       <div className="flex flex-1 flex-col gap-6 p-4">

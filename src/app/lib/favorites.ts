@@ -33,3 +33,11 @@ export async function fetchIsFavorite(
   const favorites = await fetchFavorites(accessToken);
   return favorites.some((favorite) => favorite.recipeId === recipeId);
 }
+
+// The ids of every recipe the logged-in user has saved, used to fill the hearts on recipe cards
+export async function fetchFavoriteRecipeIds(
+  accessToken: string
+): Promise<string[]> {
+  const favorites = await fetchFavorites(accessToken);
+  return favorites.map((favorite) => favorite.recipeId);
+}
