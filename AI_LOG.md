@@ -857,3 +857,45 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 
 - [Ticket #214 - Profile page: sidebar and My profile tab](https://github.com/GroAnita/Flavorcraft_labs/issues/214)
 - Branch: `feat/profile-page-214`
+
+---
+
+### AI-017 - Mobile Menu Redesign
+
+**Date:** 2026-10-20
+
+**Team Member:** Gro Anita / `GroAnita`
+
+**Related Tasks / Files:**
+
+- Ticket #217 - Mobile menu redesign for logged-in and logged-out users
+- Branch: `feat/mobile-menu-217`
+- `src/app/components/layout/MobileMenu.tsx`
+- `src/app/components/layout/Header.tsx`
+
+**AI Tool / Model:** Claude Code (Anthropic), VS Code extension, Claude Opus 5.5
+
+**Purpose:** Create the ticket and rebuild the mobile menu from the new logged-in and logged-out designs.
+
+**Key Prompt(s):** _(Summary of prompts; not exact original wording)_
+
+- Shared screenshots of the new mobile menu, logged in and logged out, and asked for a ticket, branch and fix.
+
+**Outcome and Decisions:**
+
+- **Accepted:** Logged-in menu shows the avatar, name and @username, links with icons (Home, Recipes, Meal plan, Pantry, Favorites, Create recipe) and a Log out button. Logged-out menu shows Home and Recipes with Login and Register buttons.
+- **Accepted:** The current page's link is highlighted and marked with `aria-current="page"`; the longest matching link wins, so `/recipes/create` highlights Create recipe.
+- **Accepted:** `Header` reads the saved profile from the session and passes the name and avatar to the menu. Sessions without a saved profile show the menu without the profile block.
+- **Modified:** Noroff accounts have no separate username, so @username is the account name in lowercase.
+- **Kept:** Existing keyboard and click behavior from #209 (Escape, closing when focus leaves, closing on outside click).
+
+**Verification / Status:**
+
+- `npm run build`, TypeScript and ESLint for the changed files pass.
+- 27 automated checks in Chromium (Playwright) at 400px, logged in and logged out: links, current page highlighting, profile block, navigation closing the menu, Escape and focus return, Tab out, click outside, log out removing the session, and no horizontal scroll.
+- Screenshots of both states compared with the design and approved by the team member.
+
+**References:**
+
+- [Ticket #217 - Mobile menu redesign for logged-in and logged-out users](https://github.com/GroAnita/Flavorcraft_labs/issues/217)
+- Branch: `feat/mobile-menu-217`
