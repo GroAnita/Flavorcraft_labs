@@ -316,6 +316,11 @@ export function parseFilters(param: string | null): string[] {
   return [...new Set(values)];
 }
 
+// Display label for a filter value, e.g. "difficulty:easy" → "Easy"
+export function getFilterLabel(value: string): string | undefined {
+  return OPTIONS_BY_VALUE.get(value)?.label;
+}
+
 export function serializeFilters(values: string[]): string {
   return values.join(",");
 }

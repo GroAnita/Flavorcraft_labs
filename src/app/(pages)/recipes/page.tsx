@@ -20,7 +20,7 @@ export default async function RecipesPage() {
 
   return (
     <main className="flex flex-1 flex-col bg-salt-500">
-      <div className="container mx-auto flex flex-col gap-8 px-6 py-8 md:flex-row md:gap-6">
+      <div className="container mx-auto flex flex-col px-6 pt-6 pb-8 md:pt-11">
         <h1 className="sr-only">Recipes</h1>
 
         {failed ? (
