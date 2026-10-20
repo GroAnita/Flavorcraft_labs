@@ -7,7 +7,7 @@ import { getAccessToken } from "@/app/lib/session";
 import type { Recipe } from "@/app/types/recipe";
 
 export const metadata: Metadata = {
-  title: "Recipes | FlavorCraft Labs",
+  title: "Recipes",
   description: "Browse all recipes and find something you want to cook.",
 };
 
