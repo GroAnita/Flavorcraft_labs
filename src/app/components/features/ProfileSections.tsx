@@ -2,22 +2,16 @@
 
 import { Tabs } from "@/app/components/ui/Tabs";
 import { DietAllergies } from "@/app/components/features/DietAllergies";
+import { ProfileComingSoon } from "@/app/components/features/ProfileComingSoon";
 import { ProfileGeneralForm } from "@/app/components/features/ProfileGeneralForm";
 
-type ProfileTabsProps = {
+type ProfileSectionsProps = {
   name: string;
   email: string;
 };
 
-function ComingSoon({ title }: { title: string }) {
-  return (
-    <p className="rounded-lg bg-surface p-6 text-center text-muted-foreground">
-      {title} is coming soon.
-    </p>
-  );
-}
-
-export function ProfileTabs({ name, email }: ProfileTabsProps) {
+// The General / Preferences switch on the My profile page
+export function ProfileSections({ name, email }: ProfileSectionsProps) {
   // Saved per user, so someone else logging in on the same browser starts fresh
   const storagePrefix = `flavorcraft_profile_${name}`;
 
@@ -31,7 +25,7 @@ export function ProfileTabs({ name, email }: ProfileTabsProps) {
     </div>
   );
 
-  const myProfile = (
+  return (
     <Tabs
       label="Profile sections"
       variant="segmented"
@@ -40,31 +34,7 @@ export function ProfileTabs({ name, email }: ProfileTabsProps) {
         {
           id: "preferences",
           label: "Preferences",
-          content: <ComingSoon title="Preferences" />,
-        },
-      ]}
-    />
-  );
-
-  return (
-    <Tabs
-      label="Profile"
-      tabs={[
-        { id: "profile", label: "My profile", content: myProfile },
-        {
-          id: "recipes",
-          label: "My recipes",
-          content: <ComingSoon title="My recipes" />,
-        },
-        {
-          id: "favorites",
-          label: "Favorites",
-          content: <ComingSoon title="Favorites" />,
-        },
-        {
-          id: "settings",
-          label: "Settings",
-          content: <ComingSoon title="Settings" />,
+          content: <ProfileComingSoon title="Preferences" />,
         },
       ]}
     />
