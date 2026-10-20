@@ -361,6 +361,47 @@ export function tagToFilterValue(text: string): string | null {
   return null;
 }
 
+// --- Sorting ---
+
+export const SORT_OPTIONS = [
+  { value: "trending", label: "Trending" },
+  { value: "newest", label: "Newest" },
+  { value: "quickest", label: "Quickest" },
+  { value: "a-z", label: "A–Z" },
+] as const;
+
+export type SortValue = (typeof SORT_OPTIONS)[number]["value"];
+
+export const DEFAULT_SORT: SortValue = "trending";
+
+// Reads the "sort" URL parameter; unknown values fall back to the default
+export function parseSort(param: string | null): SortValue {
+  return SORT_OPTIONS.find((option) => option.value === param)?.value ?? DEFAULT_SORT;
+}
+
+export function sortRecipes(recipes: Recipe[], sort: SortValue): Recipe[] {
+  const sorted = [...recipes];
+  switch (sort) {
+    case "trending":
+      // Most favorited first; the API has no "trending" value
+      return sorted.sort(
+        (a, b) => (b._count?.favorites ?? 0) - (a._count?.favorites ?? 0),
+      );
+    case "newest":
+      return sorted.sort(
+        (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime(),
+      );
+    case "quickest":
+      // Recipes without time info (0 min) go last
+      return sorted.sort(
+        (a, b) =>
+          (totalTime(a) || Infinity) - (totalTime(b) || Infinity),
+      );
+    case "a-z":
+      return sorted.sort((a, b) => a.title.localeCompare(b.title));
+  }
+}
+
 // Search in title, description and tags. Case-insensitive and ignores
 // surrounding spaces, so "  Pasta " finds the same recipes as "pasta".
 export function searchRecipes(recipes: Recipe[], term: string): Recipe[] {
