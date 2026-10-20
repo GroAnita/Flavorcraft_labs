@@ -672,3 +672,50 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - Branch: `feat/microsoft-clarity-consent-53`
 - [Microsoft Clarity Documentation](https://learn.microsoft.com/en-us/clarity/)
 - [Radix Dialog Documentation](https://www.radix-ui.com/primitives/docs/components/dialog)
+
+---
+
+### AI-013 - Logged-in State in Header
+
+**Date:** 2026-10-20
+
+**Team Member:** Gro Anita / `GroAnita`
+
+**Related Tasks / Files:**
+
+- Ticket #199 - Add logged-in state to Header component
+- Branch: `fix/header-logged-in-state-199`
+- `src/app/components/layout/Header.tsx`
+- `src/app/components/layout/MobileMenu.tsx`
+
+**AI Tool / Model:** Claude Code (Anthropic), VS Code extension, Claude Opus 5.5
+
+**Purpose:** Assist with showing different header controls for logged-in users, matching the Figma design for desktop and mobile.
+
+**Key Prompt(s):** _(Summary of prompts; not exact original wording)_
+
+- Shared the ticket and a screenshot of the desktop design, and asked for the logged-in header.
+- Shared a screenshot of the mobile design and asked for heart (Favorites) and plus (Create) icons next to the profile icon.
+- Gave the Figma measurements: 24px icons, 144px total width for the four mobile icons, and thinner icon outlines.
+
+**Outcome and Decisions:**
+
+- **Accepted:** `Header` reads the session cookie with the existing `getAccessToken()`, so the header is correct on first load and after a refresh, and updates after the login and logout redirects.
+- **Accepted:** Logged-in desktop header shows Recipes, Meal plan, Pantry, Favorites, a "+ Create" button and a profile icon with an accessible label. Logged-out users keep the existing Login/Register header.
+- **Accepted:** `MobileMenu` takes a list of icon links instead of a single profile link. Logged in, it shows Favorites, Create recipe and Profile icons; the menu lists Recipes, Meal plan and Pantry.
+- **Accepted:** The logged-in header switches to the desktop layout at `lg` instead of `md`, because the extra links left almost no room for search at tablet width.
+- **Modified:** Mobile icons resized to 24px with 16px gaps and a 1.5 stroke to match Figma. An invisible `before:` layer keeps a 40px tap area without changing the layout.
+- **Open:** `/favorites`, `/profile` and `/recipes/create` do not exist yet. `/recipes/create` was a guess and must match the page when it is built.
+
+**Verification / Status:**
+
+- `npm run build` and TypeScript pass; ESLint passes for the changed files.
+- Checked the rendered HTML of a production build with and without a session cookie: logged out shows Login/Register, logged in shows the new links and icons.
+- Not yet tested with a real login, in a browser at different screen sizes, or with keyboard navigation.
+
+**References:**
+
+- [Ticket #199 - Add logged-in state to Header component](https://github.com/GroAnita/Flavorcraft_labs/issues/199)
+- Branch: `fix/header-logged-in-state-199`
+- `src/app/components/layout/Header.tsx`
+- `src/app/components/layout/MobileMenu.tsx`

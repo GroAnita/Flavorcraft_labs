@@ -1,19 +1,33 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CircleUserRound, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
+
+type NavLink = { label: string; href: string };
+type IconLink = NavLink & { icon: ReactNode };
 
 type Props = {
-  links: readonly { label: string; href: string }[];
+  links: readonly NavLink[];
   linkClassName: string;
+  iconLinks: readonly IconLink[]; // shown next to the menu button; label is read by screen readers
+  navLabel: string;
+  className: string; // hides the menu at the breakpoint where the desktop nav shows
 };
 
+// 24px icons with 16px gaps (144px for four, as in Figma). The before: layer
+// enlarges the tap area to 40px without changing the layout.
 const ICON_BUTTON =
-  "flex size-11 items-center justify-center rounded-lg text-basil-500 hover:bg-basil-500/10";
+  "relative flex size-6 items-center justify-center rounded text-basil-500 hover:text-basil-700 before:absolute before:-inset-2";
 
-export default function MobileMenu({ links, linkClassName }: Props) {
+export default function MobileMenu({
+  links,
+  linkClassName,
+  iconLinks,
+  navLabel,
+  className,
+}: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const [prevPathname, setPrevPathname] = useState(pathname);
@@ -35,11 +49,18 @@ export default function MobileMenu({ links, linkClassName }: Props) {
   return (
     <div
       onKeyDown={handleKeyDown}
-      className="flex items-center gap-1 justify-self-end md:hidden z-50"
+      className={`z-50 flex items-center gap-4 justify-self-end ${className}`}
     >
-      <Link href="/login" aria-label="Login" className={ICON_BUTTON}>
-        <CircleUserRound aria-hidden="true" className="size-7" />
-      </Link>
+      {iconLinks.map((link) => (
+        <Link
+          key={link.href}
+          href={link.href}
+          aria-label={link.label}
+          className={ICON_BUTTON}
+        >
+          {link.icon}
+        </Link>
+      ))}
       <button
         ref={buttonRef}
         type="button"
@@ -50,16 +71,16 @@ export default function MobileMenu({ links, linkClassName }: Props) {
         className={ICON_BUTTON}
       >
         {isOpen ? (
-          <X aria-hidden="true" className="size-7" />
+          <X aria-hidden="true" className="size-6" strokeWidth={1.5} />
         ) : (
-          <Menu aria-hidden="true" className="size-7" />
+          <Menu aria-hidden="true" className="size-6" strokeWidth={1.5} />
         )}
       </button>
 
       {isOpen && (
         <nav
           id="mobile-menu"
-          aria-label="Account"
+          aria-label={navLabel}
           className="absolute inset-x-0 top-full z-10 bg-sprout-500 px-5 pb-5 shadow-md"
         >
           <ul className="flex flex-col gap-3">
