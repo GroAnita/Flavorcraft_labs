@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { CalendarDays, Heart, Printer, Share2 } from "lucide-react";
 import { FavoriteButton } from "@/app/components/ui/FavoriteButton";
+import { useShareLink, type ShareFeedback } from "@/app/hooks/useShareLink";
 
 type RecipeActionsProps = {
   title: string;
@@ -15,8 +16,6 @@ type RecipeActionsProps = {
   // Opens the flow for adding the recipe to the meal plan
   onOpenMealPlanner: () => void;
 };
-
-type Feedback = { type: "success" | "error"; message: string } | null;
 
 // Size, layout and colors shared by every tile
 const BASE_TILE_CLASSES =
@@ -79,9 +78,9 @@ export function RecipeActions({
   onToggleFavorite,
   onOpenMealPlanner,
 }: RecipeActionsProps) {
-  const [isSharing, setIsSharing] = useState(false);
+  const { share, isSharing } = useShareLink();
   const [isSavingFavorite, setIsSavingFavorite] = useState(false);
-  const [feedback, setFeedback] = useState<Feedback>(null);
+  const [feedback, setFeedback] = useState<ShareFeedback>(null);
 
   // Success messages disappear after a few seconds, errors stay until the next action
   useEffect(() => {
@@ -90,40 +89,10 @@ export function RecipeActions({
     return () => clearTimeout(timer);
   }, [feedback]);
 
-  async function copyLink(url: string) {
-    await navigator.clipboard.writeText(url);
-    setFeedback({ type: "success", message: "Link copied" });
-  }
-
   async function handleShare() {
-    if (isSharing) return;
-    setIsSharing(true);
     setFeedback(null);
-    const url = shareUrl ?? window.location.href;
-
-    try {
-      if (typeof navigator.share === "function") {
-        try {
-          await navigator.share({ title, url });
-        } catch (error) {
-          // The user closed the share sheet, which is not an error
-          if (error instanceof DOMException && error.name === "AbortError")
-            return;
-          // Sharing failed for another reason, so copy the link instead
-          await copyLink(url);
-        }
-      } else {
-        await copyLink(url);
-      }
-    } catch {
-      setFeedback({
-        type: "error",
-        message:
-          "Couldn't copy the link. Copy it from the address bar instead.",
-      });
-    } finally {
-      setIsSharing(false);
-    }
+    const result = await share(title, shareUrl);
+    if (result) setFeedback(result);
   }
 
   async function handleToggleFavorite() {
