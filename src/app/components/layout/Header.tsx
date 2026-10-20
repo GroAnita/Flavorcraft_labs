@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { CirclePlus, CircleUserRound, Heart, Plus } from "lucide-react";
 import SearchInput from "@/app/components/features/SearchInput";
 import MobileMenu from "@/app/components/layout/MobileMenu";
-import { getAccessToken } from "@/app/lib/session";
+import { getAccessToken, getProfile } from "@/app/lib/session";
 
 const SEARCH_PLACEHOLDER = "What do you want to make today?";
 
@@ -25,9 +25,6 @@ const PROFILE_LINK = { label: "Profile", href: "/profile" } as const;
 
 const MOBILE_ICON = "size-6";
 const MOBILE_ICON_STROKE = 1.5; // thinner outline, as in Figma
-
-// Favorites and Create are icons on mobile, so the menu only lists the remaining links.
-const MOBILE_MENU_LINKS = NAV_LINKS.filter((link) => link.href !== "/favorites");
 
 const MOBILE_ICON_LINKS = [
   {
@@ -82,7 +79,11 @@ function SearchFallback() {
 }
 
 export default async function Header() {
-  const isLoggedIn = Boolean(await getAccessToken());
+  const [accessToken, profile] = await Promise.all([
+    getAccessToken(),
+    getProfile(),
+  ]);
+  const isLoggedIn = Boolean(accessToken);
   const layout = isLoggedIn ? LAYOUT.loggedIn : LAYOUT.loggedOut;
 
   return (
@@ -105,10 +106,13 @@ export default async function Header() {
         </Link>
 
         <MobileMenu
-          links={isLoggedIn ? MOBILE_MENU_LINKS : ACCOUNT_LINKS}
-          linkClassName={BUTTON_CLASSES}
           iconLinks={isLoggedIn ? MOBILE_ICON_LINKS : [MOBILE_LOGIN_LINK]}
-          navLabel={isLoggedIn ? "Main" : "Account"}
+          isLoggedIn={isLoggedIn}
+          profile={
+            isLoggedIn && profile
+              ? { name: profile.name, avatarUrl: profile.avatar?.url }
+              : null
+          }
           className={layout.mobile}
         />
 
