@@ -765,3 +765,45 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - [Ticket #209 - Close mobile menu when focus leaves it](https://github.com/GroAnita/Flavorcraft_labs/issues/209)
 - Branch: `fix/header-accessibility-209`
 - `src/app/components/layout/MobileMenu.tsx`
+
+---
+
+### AI-015 - Full-width Header and Footer, Smaller Create Text
+
+**Date:** 2026-10-20
+
+**Team Member:** Gro Anita / `GroAnita`
+
+**Related Tasks / Files:**
+
+- Ticket #212 - Header and footer: full width and smaller Create button text
+- Branch: `style/header-footer-full-width-212`
+- `src/app/components/layout/Header.tsx`
+- `src/app/components/layout/Footer.tsx`
+
+**AI Tool / Model:** Claude Code (Anthropic), VS Code extension, Claude Opus 5.5
+
+**Purpose:** Create the ticket and adjust the header and footer layout and the Create button text to match the design.
+
+**Key Prompt(s):** _(Summary of prompts; not exact original wording)_
+
+- Asked for a ticket and branch to make the header and footer full width and the Create button smaller: 40×15, 12px Inter text.
+- When asked whether 40×15 was the whole button or the text, answered to keep the button as it is.
+
+**Outcome and Decisions:**
+
+- **Accepted:** Removed the `max-w-6xl` container from the header and footer, keeping the existing side padding (20px mobile, 32px from `md`).
+- **Modified:** Applied 40×15 to the text only, since "+ Create" in 12px Inter cannot fit in a 40px-wide button. The text is now 12px Inter with a 15px line height; the button's shape, padding and colors are unchanged.
+
+**Verification / Status:**
+
+- `npm run build` and ESLint for the changed files pass.
+- Measured in Chromium (Playwright): Create text box is 38.7×15px; header and footer logos align 32px from the edge at 1586px; no horizontal scrolling at 375px, 1024px and 1586px.
+- Screenshots of the full-width header and footer reviewed by the team member.
+
+**References:**
+
+- [Ticket #212 - Header and footer: full width and smaller Create button text](https://github.com/GroAnita/Flavorcraft_labs/issues/212)
+- Branch: `style/header-footer-full-width-212`
+- `src/app/components/layout/Header.tsx`
+- `src/app/components/layout/Footer.tsx`
