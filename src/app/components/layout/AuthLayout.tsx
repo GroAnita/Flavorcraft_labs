@@ -15,7 +15,8 @@ export default function AuthLayout({
   children,
 }: AuthLayoutProps) {
   return (
-    <main className="mx-auto grid w-full max-w-6xl flex-1 gap-6 px-5 py-6 md:grid-cols-2 md:items-center md:gap-16 md:px-8 md:py-10">
+    // Desktop: two 668px columns at 1440px (40px sides, 24px gap), as in Figma
+    <main className="mx-auto grid w-full max-w-360 flex-1 gap-6 px-5 py-6 md:grid-cols-2 md:items-center md:px-10">
       <div className="relative h-45 overflow-hidden rounded-2xl md:aspect-3/4 md:h-auto">
         <Image
           src={imageSrc}
