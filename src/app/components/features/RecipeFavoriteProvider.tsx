@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { setFavorite } from "@/app/actions/favorites";
+import { trackClarityEvent } from "@/app/components/analytics/trackClarityEvent";
 
 type RecipeFavoriteValue = {
   isFavorite: boolean;
@@ -32,9 +33,12 @@ export function RecipeFavoriteProvider({
     if (isSaving) return;
     setIsSaving(true);
     try {
-      const result = await setFavorite(recipeId, !isFavorite);
+      const favorite = !isFavorite;
+      const result = await setFavorite(recipeId, favorite);
       if (!result.ok) throw new Error(result.error);
-      setIsFavorite(!isFavorite);
+      setIsFavorite(favorite);
+
+      trackClarityEvent(favorite ? "recipe_favorited" : "recipe_unfavorited");
     } finally {
       setIsSaving(false);
     }
@@ -51,7 +55,7 @@ export function useRecipeFavorite() {
   const value = useContext(RecipeFavoriteContext);
   if (!value) {
     throw new Error(
-      "useRecipeFavorite must be used inside RecipeFavoriteProvider"
+      "useRecipeFavorite must be used inside RecipeFavoriteProvider",
     );
   }
   return value;

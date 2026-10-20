@@ -10,6 +10,7 @@ import {
 } from "react";
 import { setFavorite } from "@/app/actions/favorites";
 import { Toast, type ToastData } from "@/app/components/ui/Toast";
+import { trackClarityEvent } from "@/app/components/analytics/trackClarityEvent";
 
 type FavoritesValue = {
   isFavorite: (recipeId: string) => boolean;
@@ -36,7 +37,7 @@ export function FavoritesProvider({
   children,
 }: FavoritesProviderProps) {
   const [favoriteIds, setFavoriteIds] = useState(
-    () => new Set(initialRecipeIds)
+    () => new Set(initialRecipeIds),
   );
   const [toast, setToast] = useState<ToastData | null>(null);
   // Recipes with a request in progress, so double clicks don't send a second request
@@ -69,7 +70,9 @@ export function FavoritesProvider({
 
     try {
       const result = await setFavorite(recipeId, favorite);
+
       if (result.ok) {
+        trackClarityEvent(favorite ? "recipe_favorited" : "recipe_unfavorited");
         showToast({
           tone: "success",
           message: (

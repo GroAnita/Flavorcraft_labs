@@ -22,6 +22,7 @@ import {
   type SortValue,
 } from "@/app/lib/recipeFilters";
 import type { Recipe } from "@/app/types/recipe";
+import { trackClarityEvent } from "@/app/components/analytics/trackClarityEvent";
 
 type RecipeBrowserProps = {
   recipes: Recipe[];
@@ -58,7 +59,9 @@ function SortSelect({ value, onChange, className = "" }: SortSelectProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
-  const selectedIndex = SORT_OPTIONS.findIndex((option) => option.value === value);
+  const selectedIndex = SORT_OPTIONS.findIndex(
+    (option) => option.value === value,
+  );
   const selectedLabel = SORT_OPTIONS[selectedIndex]?.label;
 
   // Move focus into the list when it opens
@@ -234,7 +237,11 @@ export function RecipeBrowser({ recipes, isLoggedIn }: RecipeBrowserProps) {
                       className="inline-flex h-7 items-center gap-1 rounded-lg border border-mint-600 bg-mint-500 py-1 pr-2 pl-3 font-aptly text-sm leading-5 font-medium text-basil-500 hover:bg-mint-600"
                     >
                       {label}
-                      <X aria-hidden="true" strokeWidth={2.25} className="size-4" />
+                      <X
+                        aria-hidden="true"
+                        strokeWidth={2.25}
+                        className="size-4"
+                      />
                     </button>
                   </li>
                 );
@@ -287,7 +294,9 @@ export function RecipeBrowser({ recipes, isLoggedIn }: RecipeBrowserProps) {
           </div>
 
           <p role="status" className="text-nori-200">
-            <span className="font-semibold text-nori-500">{results.length}</span>{" "}
+            <span className="font-semibold text-nori-500">
+              {results.length}
+            </span>{" "}
             {results.length === 1 ? "result" : "results"}
             {search && <> for &ldquo;{search}&rdquo;</>}
           </p>
@@ -368,7 +377,14 @@ export function RecipeBrowser({ recipes, isLoggedIn }: RecipeBrowserProps) {
             <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {results.map((recipe) => (
                 <li key={recipe.id}>
-                  <RecipeCard recipe={recipe} />
+                  <RecipeCard
+                    recipe={recipe}
+                    onOpen={
+                      search.trim()
+                        ? () => trackClarityEvent("recipe_opened_from_search")
+                        : undefined
+                    }
+                  />
                 </li>
               ))}
             </ul>
