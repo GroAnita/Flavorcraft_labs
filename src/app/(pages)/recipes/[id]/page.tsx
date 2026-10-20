@@ -38,14 +38,36 @@ export async function generateMetadata({
   params,
 }: RecipePageProps): Promise<Metadata> {
   const { id } = await params;
+
   try {
     const recipe = await fetchRecipe(id);
+
+    const description =
+      recipe.description?.trim() ||
+      "Discover this delicious recipe on FlavorCraft Labs.";
+
     return {
       title: recipe.title,
-      description: recipe.description,
+      description,
+      openGraph: {
+        title: recipe.title,
+        description,
+        type: "article",
+        ...(recipe.image?.url && {
+          images: [
+            {
+              url: recipe.image.url,
+              alt: recipe.image.alt || recipe.title,
+            },
+          ],
+        }),
+      },
     };
   } catch {
-    return { title: "Recipe | FlavorCraft Labs" };
+    return {
+      title: "Recipe",
+      description: "Discover delicious recipes on FlavorCraft Labs.",
+    };
   }
 }
 
