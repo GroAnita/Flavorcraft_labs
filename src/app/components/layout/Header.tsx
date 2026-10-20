@@ -119,7 +119,7 @@ export default async function Header() {
 
         <div className={`col-span-2 md:w-full md:max-w-2xl ${layout.search}`}>
           <Suspense fallback={<SearchFallback />}>
-            <SearchInput placeholder={SEARCH_PLACEHOLDER} />
+            <SearchInput placeholder={SEARCH_PLACEHOLDER} resultsPath="/recipes" />
           </Suspense>
         </div>
 
