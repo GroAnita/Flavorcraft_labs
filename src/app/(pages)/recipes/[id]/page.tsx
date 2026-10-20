@@ -41,7 +41,7 @@ export async function generateMetadata({
   try {
     const recipe = await fetchRecipe(id);
     return {
-      title: `${recipe.title} | FlavorCraft Labs`,
+      title: recipe.title,
       description: recipe.description,
     };
   } catch {
@@ -68,7 +68,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
   // Escapes "<" so text in the recipe can't close the script tag
   const jsonLd = JSON.stringify(createRecipeJsonLd(recipe)).replace(
     /</g,
-    "\\u003c"
+    "\\u003c",
   );
 
   return (
