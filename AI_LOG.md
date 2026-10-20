@@ -807,3 +807,53 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - Branch: `style/header-footer-full-width-212`
 - `src/app/components/layout/Header.tsx`
 - `src/app/components/layout/Footer.tsx`
+
+---
+
+### AI-016 - Profile Page: Sidebar and My Profile Tab
+
+**Date:** 2026-10-20
+
+**Team Member:** Gro Anita / `GroAnita`
+
+**Related Tasks / Files:**
+
+- Ticket #214 - Profile page: sidebar and My profile tab
+- Branch: `feat/profile-page-214`
+- `src/app/(pages)/profile/page.tsx`
+- `src/app/components/features/ProfileTabs.tsx`, `ProfileGeneralForm.tsx`, `DietAllergies.tsx`, `ProfileSidebar.tsx`
+- `src/app/components/ui/Tabs.tsx`, `ProfileStats.tsx`
+- `src/app/hooks/useLocalStorage.ts`
+- `src/app/lib/profile.ts`, `src/app/lib/session.ts`, `src/app/actions/auth.ts`, `src/app/types/auth.ts`
+- `src/app/components/layout/Header.tsx`, `MobileMenu.tsx` (removed `ProfileMenu.tsx`)
+
+**AI Tool / Model:** Claude Code (Anthropic), VS Code extension, Claude Opus 5.5
+
+**Purpose:** Create the ticket and build the profile page from the mobile and desktop designs, reusing the existing profile sidebar components.
+
+**Key Prompt(s):** _(Summary of prompts; not exact original wording)_
+
+- Shared mobile and desktop screenshots of the profile page and asked for a ticket, branch and implementation.
+- Chose to save the form and diet choices in the browser, and to build only the My profile tab in this ticket.
+- Asked to remove the avatar dropdown in the header and link straight to the profile page.
+
+**Outcome and Decisions:**
+
+- **Accepted:** The API has no profile endpoint, so the profile from the login response is saved in a second httpOnly cookie next to the token, and removed on logout. Sessions without it are sent to log in again.
+- **Accepted:** Four stats (Favorites, Recipes, Meals planned, Pantry items). Counts come from the API's `meta.totalCount`; recipes are counted by owner across all pages. A stat that can't load shows "–".
+- **Accepted:** An accessible `Tabs` component (WAI-ARIA tabs pattern, arrow keys, Home/End) used for the main tabs and the General/Preferences switch. Other tabs show "coming soon".
+- **Accepted:** General information form and Diet & allergies toggles saved to localStorage per user through a `useLocalStorage` hook built on `useSyncExternalStore`, avoiding hydration mismatches.
+- **Modified:** Diet icons, heading icons and the diet description differ from the design, which used placeholder icons and text. Cards stack below 1536px because they were too narrow next to the sidebar.
+- **Modified:** The header avatar now links straight to `/profile`; the dropdown with Log out was removed, and Log out stays in the profile sidebar.
+
+**Verification / Status:**
+
+- `npm run build`, TypeScript and ESLint for the changed files pass.
+- 27 automated checks in Chromium (Playwright) with a test session: tab keyboard navigation, diet toggles with Enter/Space, email validation, Save and Reset, values kept after refresh, Edit profile link, mobile tabs on one line and no horizontal scroll. Logged-out users are redirected to `/login`.
+- Tested with a real login by the team member.
+- My recipes, Favorites, Settings and Preferences need their own tickets.
+
+**References:**
+
+- [Ticket #214 - Profile page: sidebar and My profile tab](https://github.com/GroAnita/Flavorcraft_labs/issues/214)
+- Branch: `feat/profile-page-214`

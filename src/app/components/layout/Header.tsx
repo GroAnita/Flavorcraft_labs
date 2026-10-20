@@ -4,7 +4,6 @@ import { Suspense } from "react";
 import { CirclePlus, CircleUserRound, Heart, Plus } from "lucide-react";
 import SearchInput from "@/app/components/features/SearchInput";
 import MobileMenu from "@/app/components/layout/MobileMenu";
-import ProfileMenu from "@/app/components/layout/ProfileMenu";
 import { getAccessToken } from "@/app/lib/session";
 
 const SEARCH_PLACEHOLDER = "What do you want to make today?";
@@ -22,6 +21,7 @@ const NAV_LINKS = [
 ] as const;
 
 const CREATE_LINK = { label: "Create", href: "/recipes/create" } as const;
+const PROFILE_LINK = { label: "Profile", href: "/profile" } as const;
 
 const MOBILE_ICON = "size-6";
 const MOBILE_ICON_STROKE = 1.5; // thinner outline, as in Figma
@@ -39,6 +39,10 @@ const MOBILE_ICON_LINKS = [
     label: "Create recipe",
     href: CREATE_LINK.href,
     icon: <CirclePlus aria-hidden="true" className={MOBILE_ICON} strokeWidth={MOBILE_ICON_STROKE} />,
+  },
+  {
+    ...PROFILE_LINK,
+    icon: <CircleUserRound aria-hidden="true" className={MOBILE_ICON} strokeWidth={MOBILE_ICON_STROKE} />,
   },
 ];
 
@@ -104,15 +108,6 @@ export default async function Header() {
           links={isLoggedIn ? MOBILE_MENU_LINKS : ACCOUNT_LINKS}
           linkClassName={BUTTON_CLASSES}
           iconLinks={isLoggedIn ? MOBILE_ICON_LINKS : [MOBILE_LOGIN_LINK]}
-          profileIcon={
-            isLoggedIn && (
-              <CircleUserRound
-                aria-hidden="true"
-                className={MOBILE_ICON}
-                strokeWidth={MOBILE_ICON_STROKE}
-              />
-            )
-          }
           navLabel={isLoggedIn ? "Main" : "Account"}
           className={layout.mobile}
         />
@@ -146,9 +141,13 @@ export default async function Header() {
                 </Link>
               </li>
               <li>
-                <ProfileMenu buttonClassName="flex size-10 items-center justify-center rounded-full text-basil-500 hover:bg-basil-500/10">
+                <Link
+                  href={PROFILE_LINK.href}
+                  aria-label={PROFILE_LINK.label}
+                  className="flex size-10 items-center justify-center rounded-full text-basil-500 hover:bg-basil-500/10"
+                >
                   <CircleUserRound aria-hidden="true" className="size-7" />
-                </ProfileMenu>
+                </Link>
               </li>
             </ul>
           </nav>
