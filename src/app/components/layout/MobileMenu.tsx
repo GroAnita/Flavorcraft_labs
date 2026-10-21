@@ -18,12 +18,18 @@ import {
 } from "lucide-react";
 import { logout } from "@/app/actions/auth";
 import { Avatar } from "@/app/components/ui/Avatar";
+import { CreateRecipeButton } from "@/app/components/features/CreateRecipeButton";
 
-type IconLink = { label: string; href: string; icon: ReactNode };
+// An icon next to the menu button: a link, or the button that opens the create recipe modal.
+// The label is read by screen readers
+export type IconLink =
+  | { label: string; href: string; icon: ReactNode; createRecipe?: never }
+  | { label: string; createRecipe: true; icon: ReactNode; href?: never };
+
 type MenuLink = { label: string; href: string; icon: LucideIcon };
 
 type Props = {
-  iconLinks: readonly IconLink[]; // shown next to the menu button; label is read by screen readers
+  iconLinks: readonly IconLink[];
   isLoggedIn: boolean;
   // null when logged out, or for sessions created before the profile was saved
   profile: { name: string; avatarUrl?: string | null } | null;
@@ -36,7 +42,6 @@ const LOGGED_IN_LINKS: MenuLink[] = [
   { label: "Meal plan", href: "/meal-plan", icon: Calendar },
   { label: "Pantry", href: "/pantry", icon: ChefHat },
   { label: "Favorites", href: "/favorites", icon: Heart },
-  { label: "Create recipe", href: "/recipes/create", icon: CirclePlus },
 ];
 
 const LOGGED_OUT_LINKS = LOGGED_IN_LINKS.slice(0, 2);
@@ -50,6 +55,9 @@ const ACCOUNT_LINKS = [
 // enlarges the tap area to 40px without changing the layout.
 const ICON_BUTTON =
   "relative flex size-6 items-center justify-center rounded text-basil-500 hover:text-basil-700 before:absolute before:-inset-2";
+
+const MENU_ITEM =
+  "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium";
 
 const OUTLINE_BUTTON =
   "flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-basil-500 text-sm font-semibold text-basil-500 hover:bg-sprout-200";
@@ -73,7 +81,7 @@ export default function MobileMenu({
   const menuRef = useRef<HTMLDivElement>(null);
 
   const links = isLoggedIn ? LOGGED_IN_LINKS : LOGGED_OUT_LINKS;
-  // /recipes/create should highlight Create recipe, not Recipes, so the longest match wins
+  // The longest match wins, so a sub-page highlights the most specific link
   const currentHref = links
     .filter((link) => isCurrent(pathname, link.href))
     .sort((a, b) => b.href.length - a.href.length)[0]?.href;
@@ -105,6 +113,7 @@ export default function MobileMenu({
 
   // Close when keyboard focus moves outside the menu and its button. relatedTarget is
   // null when clicking a non-focusable spot, which the pointerdown handler covers.
+  // The create recipe modal is inside the menu, so moving focus into it keeps the menu open.
   function handleBlur(e: React.FocusEvent) {
     const next = e.relatedTarget;
     if (next && !menuRef.current?.contains(next)) setIsOpen(false);
@@ -114,16 +123,26 @@ export default function MobileMenu({
     <div
       className={`z-50 flex items-center gap-4 justify-self-end ${className}`}
     >
-      {iconLinks.map((link) => (
-        <Link
-          key={link.href}
-          href={link.href}
-          aria-label={link.label}
-          className={ICON_BUTTON}
-        >
-          {link.icon}
-        </Link>
-      ))}
+      {iconLinks.map((link) =>
+        link.createRecipe ? (
+          <CreateRecipeButton
+            key={link.label}
+            ariaLabel={link.label}
+            className={ICON_BUTTON}
+          >
+            {link.icon}
+          </CreateRecipeButton>
+        ) : (
+          <Link
+            key={link.href}
+            href={link.href}
+            aria-label={link.label}
+            className={ICON_BUTTON}
+          >
+            {link.icon}
+          </Link>
+        )
+      )}
       <div
         ref={menuRef}
         onKeyDown={handleKeyDown}
@@ -180,18 +199,38 @@ export default function MobileMenu({
                         href={href}
                         aria-current={isActive ? "page" : undefined}
                         onClick={() => setIsOpen(false)}
-                        className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium ${
+                        className={`${MENU_ITEM} ${
                           isActive
                             ? "bg-basil-500 text-white"
                             : "text-truffle-500 hover:bg-sprout-200"
                         }`}
                       >
-                        <Icon aria-hidden="true" className="size-5" strokeWidth={1.5} />
+                        <Icon
+                          aria-hidden="true"
+                          className="size-5"
+                          strokeWidth={1.5}
+                        />
                         {label}
                       </Link>
                     </li>
                   );
                 })}
+
+                {isLoggedIn && (
+                  <li>
+                    {/* Opens the create recipe modal. The menu stays open behind it */}
+                    <CreateRecipeButton
+                      className={`${MENU_ITEM} text-truffle-500 hover:bg-sprout-200`}
+                    >
+                      <CirclePlus
+                        aria-hidden="true"
+                        className="size-5"
+                        strokeWidth={1.5}
+                      />
+                      Create recipe
+                    </CreateRecipeButton>
+                  </li>
+                )}
               </ul>
             </nav>
 
