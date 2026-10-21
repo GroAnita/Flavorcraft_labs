@@ -4,26 +4,21 @@ import { useState } from "react";
 import Image from "next/image";
 import { ImagePlus } from "lucide-react";
 import type { RecipeFormSectionProps } from "@/app/types/recipeForm";
+import { isHttpUrl } from "@/app/lib/recipeFormValidation";
 import { RecipeFormSection } from "@/app/components/features/RecipeFormSection";
 import { FormField } from "@/app/components/ui/FormField";
 import { TextAreaField } from "@/app/components/ui/TextAreaField";
 
-// Only http and https URLs are previewed, so text like "pizza" doesn't try to load
-function isImageUrl(value: string) {
-  try {
-    const url = new URL(value.trim());
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
-
-export function RecipeFormBasics({ values, onChange }: RecipeFormSectionProps) {
+export function RecipeFormBasics({
+  values,
+  onChange,
+  errors,
+}: RecipeFormSectionProps) {
   // Track which URL failed so the error clears automatically when the URL changes
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const src = values.imageUrl.trim();
-  const showPreview = isImageUrl(src) && src !== failedSrc;
-  const hasFailed = isImageUrl(src) && src === failedSrc;
+  const showPreview = isHttpUrl(src) && src !== failedSrc;
+  const hasFailed = isHttpUrl(src) && src === failedSrc;
 
   return (
     <RecipeFormSection title="Basics">
@@ -37,6 +32,7 @@ export function RecipeFormBasics({ values, onChange }: RecipeFormSectionProps) {
               required
               placeholder="E.g. Pizza"
               value={values.title}
+              error={errors?.title}
               onChange={(e) => onChange({ title: e.target.value })}
             />
             <TextAreaField
@@ -45,6 +41,7 @@ export function RecipeFormBasics({ values, onChange }: RecipeFormSectionProps) {
               rows={3}
               placeholder="One or two sentences about the dish"
               value={values.description}
+              error={errors?.description}
               onChange={(e) => onChange({ description: e.target.value })}
             />
           </div>
@@ -57,10 +54,11 @@ export function RecipeFormBasics({ values, onChange }: RecipeFormSectionProps) {
               inputMode="url"
               placeholder="https://"
               value={values.imageUrl}
+              error={errors?.imageUrl}
               onChange={(e) => onChange({ imageUrl: e.target.value })}
             />
 
-            <div className="relative flex h-[145px] items-center justify-center overflow-hidden rounded-lg bg-mint-500">
+            <div className="relative flex h-36.25 items-center justify-center overflow-hidden rounded-lg bg-mint-500">
               {showPreview ? (
                 <Image
                   src={src}

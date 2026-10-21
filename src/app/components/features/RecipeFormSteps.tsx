@@ -13,6 +13,7 @@ import {
   RowNumber,
 } from "@/app/components/ui/EditableRowList";
 import { RowActions } from "@/app/components/ui/RowActions";
+import { FieldErrorMessage } from "@/app/components/ui/FieldErrorMessage";
 
 // Placeholders for the first steps, then a general one
 const PLACEHOLDERS = [
@@ -20,8 +21,13 @@ const PLACEHOLDERS = [
   "E.g. Roll out the dough on a floured surface.",
 ];
 
-export function RecipeFormSteps({ values, onChange }: RecipeFormSectionProps) {
+export function RecipeFormSteps({
+  values,
+  onChange,
+  errors,
+}: RecipeFormSectionProps) {
   const id = useId();
+  const listErrorId = `${id}-list-error`;
   const { steps } = values;
   const { containerRef, add, update, move, remove } = useRowList<StepRow>(
     steps,
@@ -37,6 +43,12 @@ export function RecipeFormSteps({ values, onChange }: RecipeFormSectionProps) {
       onAdd={add}
       containerRef={containerRef}
     >
+      {errors?.steps && (
+        <FieldErrorMessage id={listErrorId} focusable>
+          {errors.steps}
+        </FieldErrorMessage>
+      )}
+
       <ol role="list" className="flex flex-col gap-6 md:gap-3">
         {steps.map((step, index) => {
           const number = index + 1;
