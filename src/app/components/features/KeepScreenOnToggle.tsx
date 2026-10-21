@@ -156,7 +156,7 @@ export function KeepScreenOnToggle() {
         {error ? (
           <span className="text-error-text">{error}</span>
         ) : isActive ? (
-          <span className="text-muted-foreground">
+          <span className="text-muted-foreground sr-only">
             Your screen will stay on while this page is open.
           </span>
         ) : null}
