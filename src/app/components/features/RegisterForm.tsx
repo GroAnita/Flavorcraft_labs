@@ -86,7 +86,9 @@ export function RegisterForm() {
         label="Username"
         type="text"
         name="name"
-        autoComplete="username"
+        // "nickname", not "username": browsers treat "username" as the login
+        // identifier and would prefill it in the login form's email field
+        autoComplete="nickname"
         placeholder="Enter a username"
         required
         disabled={isLoading}
@@ -98,7 +100,8 @@ export function RegisterForm() {
         label="Email"
         type="email"
         name="email"
-        autoComplete="email"
+        // Users log in with their email, so it's the "username" for password managers
+        autoComplete="username"
         placeholder="Example@email.com"
         required
         disabled={isLoading}
