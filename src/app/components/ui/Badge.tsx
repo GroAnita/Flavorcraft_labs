@@ -10,6 +10,8 @@ type BadgeProps = {
   variant?: BadgeVariant;
   level?: DifficultyLevel;
   size?: BadgeSize;
+  // Filled style for a chosen tag, e.g. in the recipe form
+  selected?: boolean;
 };
 
 const smallSizes: Record<BadgeVariant, string> = {
@@ -37,13 +39,16 @@ export function Badge({
   variant = "category",
   level = "easy",
   size = "sm",
+  selected = false,
 }: BadgeProps) {
   const sizeClasses = size === "md" ? mediumSize : smallSizes[variant];
-  const colors = variant === "difficulty" ? difficultyColors[level] : "";
+  const colors = selected
+    ? "border border-primary bg-primary font-normal text-salt-50"
+    : `${variantStyles[variant]} ${variant === "difficulty" ? difficultyColors[level] : ""}`;
 
   return (
     <span
-      className={`inline-flex max-w-full items-center justify-center rounded-full font-aptly ${sizeClasses} ${variantStyles[variant]} ${colors}`}
+      className={`inline-flex max-w-full items-center justify-center gap-1 rounded-full font-aptly ${sizeClasses} ${colors}`}
     >
       <span className="truncate">{children}</span>
     </span>
