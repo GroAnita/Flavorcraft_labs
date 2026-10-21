@@ -22,6 +22,9 @@ const sizeStyles: Record<
   xl: { box: 'size-22 rounded-xl', text: 'text-4xl', px: '88px' },
 };
 
+// The Noroff API fills in this stock photo when a user has no avatar
+const DEFAULT_AVATAR_MARKER = 'photo-1579547945413-497e1b99dac0';
+
 function getInitial(name: string) {
   // Array.from keeps emoji and other multi-byte characters whole
   const first = Array.from(name.trim())[0];
@@ -33,7 +36,8 @@ export function Avatar({ name, src, alt, size = 'md' }: AvatarProps) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const label = alt ?? name;
   const isDecorative = label === '';
-  const showImage = src && src !== failedSrc;
+  const showImage =
+    src && src !== failedSrc && !src.includes(DEFAULT_AVATAR_MARKER);
   const styles = sizeStyles[size];
 
   return (
