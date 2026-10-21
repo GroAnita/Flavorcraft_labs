@@ -26,8 +26,12 @@ async function readApiMessage(response: Response) {
   }
 }
 
-export async function createRecipe(
-  values: RecipeFormValues
+// Shared by create and edit. failMessage starts the error shown when the API says no
+async function sendRecipe(
+  path: string,
+  method: "POST" | "PUT",
+  values: RecipeFormValues,
+  failMessage: string
 ): Promise<SubmitRecipeResult> {
   // Validated again here, since a Server Action can be called without the form
   const fieldErrors = validateRecipeForm(values);
@@ -37,8 +41,8 @@ export async function createRecipe(
 
   try {
     const accessToken = await getAccessToken();
-    const response = await authFetch("/recipe-book/recipes", accessToken, {
-      method: "POST",
+    const response = await authFetch(path, accessToken, {
+      method,
       body: JSON.stringify(toRecipePayload(values)),
     });
 
@@ -58,18 +62,26 @@ export async function createRecipe(
         };
       }
 
+      // Only the owner can change a recipe
+      if (response.status === 403) {
+        return { ok: false, error: "Only the owner can edit this recipe." };
+      }
+
       return {
         ok: false,
         error: message
-          ? `Couldn't publish the recipe: ${message}`
-          : "Couldn't publish the recipe. Please try again.",
+          ? `${failMessage}: ${message}`
+          : `${failMessage}. Please try again.`,
       };
     }
 
     // The API wraps the result as { data: Recipe, meta: {...} }
     const json = await response.json();
+    const id: string = json.data.id;
     revalidatePath("/recipes");
-    return { ok: true, id: json.data.id };
+    // Also updates the detail page when it is open behind the modal
+    revalidatePath(`/recipes/${id}`);
+    return { ok: true, id };
   } catch (error) {
     if (error instanceof AuthError) {
       // The session cookie is not deleted here. Changing cookies in a Server Action
@@ -81,4 +93,28 @@ export async function createRecipe(
       error: "Something went wrong. Check your connection and try again.",
     };
   }
+}
+
+export async function createRecipe(
+  values: RecipeFormValues
+): Promise<SubmitRecipeResult> {
+  return sendRecipe(
+    "/recipe-book/recipes",
+    "POST",
+    values,
+    "Couldn't publish the recipe"
+  );
+}
+
+// The id comes first, so the form can bind it: updateRecipe.bind(null, id)
+export async function updateRecipe(
+  id: string,
+  values: RecipeFormValues
+): Promise<SubmitRecipeResult> {
+  return sendRecipe(
+    `/recipe-book/recipes/${encodeURIComponent(id)}`,
+    "PUT",
+    values,
+    "Couldn't save the changes"
+  );
 }

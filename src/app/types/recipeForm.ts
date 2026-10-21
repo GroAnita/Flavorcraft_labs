@@ -1,4 +1,6 @@
-export type Difficulty = "Easy" | "Medium" | "Hard";
+import type { Recipe } from "@/app/types/recipe";
+
+export type Difficulty ="Easy" | "Medium" | "Hard";
 
 // Each row has a stable id, so rows keep their values when others are added, removed or moved
 export type IngredientRow = {
@@ -70,6 +72,44 @@ export function createEmptyIngredient(): IngredientRow {
 
 export function createEmptyStep(): StepRow {
   return { id: createRowId(), text: "" };
+}
+
+// The API keeps any text, so other spellings like "easy" become "Easy"
+function toDifficulty(value: string): Difficulty {
+  const level = value?.trim().toLowerCase();
+  if (level === "medium") return "Medium";
+  if (level === "hard") return "Hard";
+  return "Easy";
+}
+
+// Fills the edit form with the recipe's current values.
+// Empty lists get one empty row, like a new form
+export function toRecipeFormValues(recipe: Recipe): RecipeFormValues {
+  const ingredients = (recipe.ingredients ?? []).map((ingredient) => ({
+    id: createRowId(),
+    quantity: String(ingredient.quantity ?? ""),
+    unit: ingredient.unit ?? "",
+    name: ingredient.name ?? "",
+  }));
+  const steps = (recipe.instructions ?? []).map((text) => ({
+    id: createRowId(),
+    text,
+  }));
+
+  return {
+    title: recipe.title ?? "",
+    description: recipe.description ?? "",
+    imageUrl: recipe.image?.url ?? "",
+    imageAlt: recipe.image?.alt ?? "",
+    prepTime: String(recipe.prepTime ?? ""),
+    cookTime: String(recipe.cookTime ?? ""),
+    servings: recipe.servings || 4,
+    category: recipe.category ?? "",
+    difficulty: toDifficulty(recipe.difficulty),
+    ingredients: ingredients.length ? ingredients : [createEmptyIngredient()],
+    steps: steps.length ? steps : [createEmptyStep()],
+    tags: recipe.tags ?? [],
+  };
 }
 
 // The form starts with one empty ingredient and one empty step

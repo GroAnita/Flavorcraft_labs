@@ -86,7 +86,7 @@ export function RecipeForm({
     const found = validateRecipeForm(values);
     setErrors(found);
     if (hasErrors(found)) {
-      setFormError("Some fields need to be fixed before you can publish.");
+      setFormError("Some fields need to be fixed before you can save.");
       focusFirstError();
       return;
     }
