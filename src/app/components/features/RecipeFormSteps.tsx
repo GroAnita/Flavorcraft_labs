@@ -1,8 +1,11 @@
 "use client";
 
 import { useId } from "react";
-import type { StepFormRow } from "@/app/types/recipe";
-import { createStepRow } from "@/app/lib/recipeForm";
+import {
+  createEmptyStep,
+  type RecipeFormSectionProps,
+  type StepRow,
+} from "@/app/types/recipeForm";
 import { useRowList } from "@/app/hooks/useRowList";
 import {
   EditableRowList,
@@ -11,23 +14,19 @@ import {
 } from "@/app/components/ui/EditableRowList";
 import { RowActions } from "@/app/components/ui/RowActions";
 
-type RecipeFormStepsProps = {
-  steps: StepFormRow[];
-  onChange: (steps: StepFormRow[]) => void;
-};
-
 // Placeholders for the first steps, then a general one
 const PLACEHOLDERS = [
   "E.g. Preheat the oven to 250°C.",
   "E.g. Roll out the dough on a floured surface.",
 ];
 
-export function RecipeFormSteps({ steps, onChange }: RecipeFormStepsProps) {
+export function RecipeFormSteps({ values, onChange }: RecipeFormSectionProps) {
   const id = useId();
-  const { containerRef, add, update, move, remove } = useRowList(
+  const { steps } = values;
+  const { containerRef, add, update, move, remove } = useRowList<StepRow>(
     steps,
-    onChange,
-    createStepRow
+    (rows) => onChange({ steps: rows }),
+    createEmptyStep
   );
 
   return (

@@ -97,17 +97,3 @@ export interface DateRange {
   startDate: ISODateString;
   endDate: ISODateString;
 }
-
-// Rows in the create recipe form. The id stays the same while the row is
-// edited or moved, so React keeps each row's values with the right row.
-export interface IngredientFormRow {
-  id: string;
-  amount: string;
-  unit: string;
-  name: string;
-}
-
-export interface StepFormRow {
-  id: string;
-  text: string;
-}

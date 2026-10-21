@@ -2,8 +2,12 @@
 
 import { useId } from "react";
 import { ChevronDown } from "lucide-react";
-import type { IngredientFormRow } from "@/app/types/recipe";
-import { createIngredientRow, INGREDIENT_UNITS } from "@/app/lib/recipeForm";
+import {
+  createEmptyIngredient,
+  type IngredientRow,
+  type RecipeFormSectionProps,
+} from "@/app/types/recipeForm";
+import { INGREDIENT_UNITS } from "@/app/lib/recipeForm";
 import { useRowList } from "@/app/hooks/useRowList";
 import {
   EditableRowList,
@@ -11,11 +15,6 @@ import {
   RowNumber,
 } from "@/app/components/ui/EditableRowList";
 import { RowActions } from "@/app/components/ui/RowActions";
-
-type RecipeFormIngredientsProps = {
-  ingredients: IngredientFormRow[];
-  onChange: (ingredients: IngredientFormRow[]) => void;
-};
 
 // Number, amount, unit, ingredient and actions. The column header uses the
 // same columns, so the labels line up with the fields from md.
@@ -26,20 +25,21 @@ const ROW_GRID =
 const LABEL_CLASSES = "text-sm text-truffle-500 md:sr-only";
 
 export function RecipeFormIngredients({
-  ingredients,
+  values,
   onChange,
-}: RecipeFormIngredientsProps) {
+}: RecipeFormSectionProps) {
   const id = useId();
-  const { containerRef, add, update, move, remove } = useRowList(
+  const { ingredients } = values;
+  const { containerRef, add, update, move, remove } = useRowList<IngredientRow>(
     ingredients,
-    onChange,
-    createIngredientRow
+    (rows) => onChange({ ingredients: rows }),
+    createEmptyIngredient
   );
 
   return (
     <EditableRowList
       title="Ingredients"
-      description="One ingredient per row, with the amount and unit."
+      description="Add each ingredient with an amount and a unit."
       addLabel="Add ingredient"
       onAdd={add}
       containerRef={containerRef}
@@ -77,18 +77,21 @@ export function RecipeFormIngredients({
               {/* Name first on mobile, last from md */}
               <div className="grid grid-cols-2 gap-3 md:contents">
                 <div className="flex flex-col gap-2">
-                  <label htmlFor={`${fieldId}-amount`} className={LABEL_CLASSES}>
+                  <label
+                    htmlFor={`${fieldId}-quantity`}
+                    className={LABEL_CLASSES}
+                  >
                     Amount<span className="sr-only">, {rowLabel}</span>
                   </label>
                   <input
-                    id={`${fieldId}-amount`}
+                    id={`${fieldId}-quantity`}
                     data-row-first-field
                     type="text"
                     inputMode="decimal"
                     placeholder="200"
-                    value={ingredient.amount}
+                    value={ingredient.quantity}
                     onChange={(event) =>
-                      update(ingredient.id, { amount: event.target.value })
+                      update(ingredient.id, { quantity: event.target.value })
                     }
                     className={ROW_INPUT_CLASSES}
                   />

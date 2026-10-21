@@ -1,5 +1,6 @@
-import { useId, type ReactNode, type RefObject } from "react";
+import type { ReactNode, RefObject } from "react";
 import { CirclePlus } from "lucide-react";
+import { RecipeFormSection } from "@/app/components/features/RecipeFormSection";
 
 type EditableRowListProps = {
   title: string;
@@ -25,6 +26,7 @@ export function RowNumber({ number }: { number: number }) {
   );
 }
 
+// Uses the same heading and box as the other sections of the recipe form
 export function EditableRowList({
   title,
   description,
@@ -33,30 +35,9 @@ export function EditableRowList({
   containerRef,
   children,
 }: EditableRowListProps) {
-  const id = useId();
-  const headingId = `${id}-heading`;
-  const descriptionId = `${id}-description`;
-
   return (
-    <section
-      aria-labelledby={headingId}
-      aria-describedby={descriptionId}
-      className="flex flex-col gap-2"
-    >
-      <h3 id={headingId} className="text-xl text-foreground">
-        {title}
-        <span aria-hidden="true" className="ml-0.5 text-error-text">
-          *
-        </span>
-      </h3>
-      <p id={descriptionId} className="text-sm text-muted-foreground">
-        {description}
-      </p>
-
-      <div
-        ref={containerRef}
-        className="flex flex-col gap-4 rounded-xl border border-oat-500 bg-surface p-4"
-      >
+    <RecipeFormSection title={title} description={description} required>
+      <div ref={containerRef} className="flex flex-col gap-4">
         {children}
 
         {/* Lines up with the fields, past the row numbers, from md */}
@@ -70,6 +51,6 @@ export function EditableRowList({
           {addLabel}
         </button>
       </div>
-    </section>
+    </RecipeFormSection>
   );
 }
