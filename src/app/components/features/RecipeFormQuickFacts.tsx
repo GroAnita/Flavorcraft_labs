@@ -28,13 +28,15 @@ function onlyDigits(value: string) {
 export function RecipeFormQuickFacts({
   values,
   onChange,
+  errors,
 }: RecipeFormSectionProps) {
   return (
     <RecipeFormSection title="Quick facts">
       <div className="flex flex-col gap-6">
         {/* Mobile: prep and cook side by side, then servings and category on their own rows.
-            Desktop: one row, with 120px for each time and the category filling the rest */}
-        <div className="grid grid-cols-2 items-end gap-4 md:grid-cols-[120px_120px_auto_minmax(0,1fr)]">
+            Desktop: one row, with 120px for each time and the category filling the rest.
+            items-start keeps the labels in line when a field shows an error */}
+        <div className="grid grid-cols-2 items-start gap-4 md:grid-cols-[120px_120px_auto_minmax(0,1fr)]">
           <FormField
             size="sm"
             label="Prep time (min)"
@@ -42,6 +44,7 @@ export function RecipeFormQuickFacts({
             inputMode="numeric"
             placeholder="0"
             value={values.prepTime}
+            error={errors?.prepTime}
             onChange={(e) => onChange({ prepTime: onlyDigits(e.target.value) })}
           />
           <FormField
@@ -51,6 +54,7 @@ export function RecipeFormQuickFacts({
             inputMode="numeric"
             placeholder="0"
             value={values.cookTime}
+            error={errors?.cookTime}
             onChange={(e) => onChange({ cookTime: onlyDigits(e.target.value) })}
           />
 
@@ -61,7 +65,7 @@ export function RecipeFormQuickFacts({
             <span aria-hidden="true" className={FIELD_LABEL_SM}>
               Servings
             </span>
-            <div className="flex items-center md:h-9.5">
+            <div className="flex items-center md:h-[38px]">
               <ServingsControl
                 servings={values.servings}
                 onChange={(servings) => onChange({ servings })}

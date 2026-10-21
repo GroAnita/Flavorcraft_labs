@@ -15,6 +15,7 @@ import {
   RowNumber,
 } from "@/app/components/ui/EditableRowList";
 import { RowActions } from "@/app/components/ui/RowActions";
+import { FieldErrorMessage } from "@/app/components/ui/FieldErrorMessage";
 
 // Number, amount, unit, ingredient and actions. The column header uses the
 // same columns, so the labels line up with the fields from md.
@@ -24,11 +25,16 @@ const ROW_GRID =
 // Shown on every row on mobile, and only once above the rows from md
 const LABEL_CLASSES = "text-sm text-truffle-500 md:sr-only";
 
+// Red outline on fields with an error
+const INVALID_CLASSES = "aria-invalid:ring-1 aria-invalid:ring-error-text";
+
 export function RecipeFormIngredients({
   values,
   onChange,
+  errors,
 }: RecipeFormSectionProps) {
   const id = useId();
+  const listErrorId = `${id}-list-error`;
   const { ingredients } = values;
   const { containerRef, add, update, move, remove } = useRowList<IngredientRow>(
     ingredients,
@@ -44,6 +50,12 @@ export function RecipeFormIngredients({
       onAdd={add}
       containerRef={containerRef}
     >
+      {errors?.ingredients && (
+        <FieldErrorMessage id={listErrorId} focusable>
+          {errors.ingredients}
+        </FieldErrorMessage>
+      )}
+
       <div
         aria-hidden="true"
         className={`hidden text-sm text-truffle-500 ${ROW_GRID}`}
@@ -58,6 +70,9 @@ export function RecipeFormIngredients({
           const number = index + 1;
           const rowLabel = `ingredient ${number}`;
           const fieldId = `${id}-${ingredient.id}`;
+          const quantityErrorId = `${fieldId}-quantity-error`;
+          const nameErrorId = `${fieldId}-name-error`;
+          const rowErrors = errors?.ingredientRows?.[ingredient.id];
           // Keeps a unit from an existing recipe selectable when it isn't in the list
           const hasCustomUnit = !INGREDIENT_UNITS.includes(ingredient.unit);
 
@@ -90,10 +105,14 @@ export function RecipeFormIngredients({
                     inputMode="decimal"
                     placeholder="200"
                     value={ingredient.quantity}
+                    aria-invalid={rowErrors?.quantity ? true : undefined}
+                    aria-describedby={
+                      rowErrors?.quantity ? quantityErrorId : undefined
+                    }
                     onChange={(event) =>
                       update(ingredient.id, { quantity: event.target.value })
                     }
-                    className={ROW_INPUT_CLASSES}
+                    className={`${ROW_INPUT_CLASSES} ${INVALID_CLASSES}`}
                   />
                 </div>
 
@@ -128,7 +147,7 @@ export function RecipeFormIngredients({
                   </div>
                 </div>
 
-                <div className="order-first col-span-2 flex flex-col gap-2 md:order-none md:col-span-1">
+                <div className="order-first col-span-2 flex flex-col gap-2 md:order-0 md:col-span-1">
                   <label htmlFor={`${fieldId}-name`} className={LABEL_CLASSES}>
                     Ingredient<span className="sr-only"> {number}</span>
                   </label>
@@ -137,10 +156,12 @@ export function RecipeFormIngredients({
                     type="text"
                     placeholder="E.g. Fresh mozzarella"
                     value={ingredient.name}
+                    aria-invalid={rowErrors?.name ? true : undefined}
+                    aria-describedby={rowErrors?.name ? nameErrorId : undefined}
                     onChange={(event) =>
                       update(ingredient.id, { name: event.target.value })
                     }
-                    className={ROW_INPUT_CLASSES}
+                    className={`${ROW_INPUT_CLASSES} ${INVALID_CLASSES}`}
                   />
                 </div>
               </div>
@@ -152,6 +173,22 @@ export function RecipeFormIngredients({
                 onMove={(direction) => move(index, direction)}
                 onRemove={() => remove(index)}
               />
+
+              {(rowErrors?.quantity || rowErrors?.name) && (
+                // Under the fields, from the amount column to the end of the row
+                <div className="flex flex-col gap-1 md:col-start-2 md:col-end-6">
+                  {rowErrors?.quantity && (
+                    <FieldErrorMessage id={quantityErrorId}>
+                      {rowErrors.quantity}
+                    </FieldErrorMessage>
+                  )}
+                  {rowErrors?.name && (
+                    <FieldErrorMessage id={nameErrorId}>
+                      {rowErrors.name}
+                    </FieldErrorMessage>
+                  )}
+                </div>
+              )}
             </li>
           );
         })}

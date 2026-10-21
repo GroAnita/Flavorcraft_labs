@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useId, useRef, type KeyboardEvent } from "react";
+import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { RecipeForm } from "@/app/components/features/RecipeForm";
+import { createRecipe } from "@/app/actions/recipes";
 
 type RecipeFormDialogProps = {
   open: boolean;
@@ -18,6 +20,7 @@ export function RecipeFormDialog({
   onClose,
   title,
 }: RecipeFormDialogProps) {
+  const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const headingId = useId();
 
@@ -43,6 +46,13 @@ export function RecipeFormDialog({
   // The dialog still closes, since the browser handles Escape itself
   function handleKeyDown(event: KeyboardEvent<HTMLDialogElement>) {
     if (event.key === "Escape") event.stopPropagation();
+  }
+
+  // The dialog lives in the header, which stays when navigating,
+  // so it is closed before going to the new recipe
+  function handleSuccess(id: string) {
+    onClose();
+    router.push(`/recipes/${id}`);
   }
 
   return (
@@ -76,7 +86,11 @@ export function RecipeFormDialog({
             </button>
           </div>
 
-          <RecipeForm onCancel={onClose} />
+          <RecipeForm
+            onCancel={onClose}
+            onSubmit={createRecipe}
+            onSuccess={handleSuccess}
+          />
         </div>
       )}
     </dialog>
