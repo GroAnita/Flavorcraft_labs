@@ -30,23 +30,47 @@ const MOBILE_ICON_LINKS = [
   {
     label: "Favorites",
     href: "/favorites",
-    icon: <Heart aria-hidden="true" className={MOBILE_ICON} strokeWidth={MOBILE_ICON_STROKE} />,
+    icon: (
+      <Heart
+        aria-hidden="true"
+        className={MOBILE_ICON}
+        strokeWidth={MOBILE_ICON_STROKE}
+      />
+    ),
   },
   {
     label: "Create recipe",
     href: CREATE_LINK.href,
-    icon: <CirclePlus aria-hidden="true" className={MOBILE_ICON} strokeWidth={MOBILE_ICON_STROKE} />,
+    icon: (
+      <CirclePlus
+        aria-hidden="true"
+        className={MOBILE_ICON}
+        strokeWidth={MOBILE_ICON_STROKE}
+      />
+    ),
   },
   {
     ...PROFILE_LINK,
-    icon: <CircleUserRound aria-hidden="true" className={MOBILE_ICON} strokeWidth={MOBILE_ICON_STROKE} />,
+    icon: (
+      <CircleUserRound
+        aria-hidden="true"
+        className={MOBILE_ICON}
+        strokeWidth={MOBILE_ICON_STROKE}
+      />
+    ),
   },
 ];
 
 const MOBILE_LOGIN_LINK = {
   label: "Login",
   href: "/login",
-  icon: <CircleUserRound aria-hidden="true" className={MOBILE_ICON} strokeWidth={MOBILE_ICON_STROKE} />,
+  icon: (
+    <CircleUserRound
+      aria-hidden="true"
+      className={MOBILE_ICON}
+      strokeWidth={MOBILE_ICON_STROKE}
+    />
+  ),
 };
 
 const BUTTON_CLASSES =
@@ -71,10 +95,7 @@ const LAYOUT = {
 // Shown while SearchInput (which reads the URL) loads, so the header keeps its size.
 function SearchFallback() {
   return (
-    <div
-      aria-hidden="true"
-      className="h-11 w-full rounded-lg bg-surface"
-    />
+    <div aria-hidden="true" className="h-11 w-full rounded-lg bg-surface" />
   );
 }
 
@@ -87,7 +108,7 @@ export default async function Header() {
   const layout = isLoggedIn ? LAYOUT.loggedIn : LAYOUT.loggedOut;
 
   return (
-    <header className="relative bg-sprout-500">
+    <header className="bg-sprout-500 sticky top-0 z-40">
       <div
         className={`grid w-full grid-cols-[auto_1fr] items-center gap-x-4 gap-y-4 px-5 py-4 md:gap-x-12 md:px-8 md:py-5 ${layout.grid}`}
       >
@@ -118,7 +139,10 @@ export default async function Header() {
 
         <div className={`col-span-2 md:w-full md:max-w-2xl ${layout.search}`}>
           <Suspense fallback={<SearchFallback />}>
-            <SearchInput placeholder={SEARCH_PLACEHOLDER} resultsPath="/recipes" />
+            <SearchInput
+              placeholder={SEARCH_PLACEHOLDER}
+              resultsPath="/recipes"
+            />
           </Suspense>
         </div>
 
