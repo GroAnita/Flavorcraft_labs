@@ -1,16 +1,11 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Check,
-  ChevronDown,
-  SlidersHorizontal,
-  X,
-} from "lucide-react";
+import { ArrowLeft, SlidersHorizontal, X } from "lucide-react";
 import { RecipeCard } from "@/app/components/features/RecipeCard";
+import { Dropdown } from "@/app/components/ui/Dropdown";
 import { RecipeFilterSidebar } from "@/app/components/features/RecipeFilterSidebar";
 import { useRecipeFilters } from "@/app/hooks/useRecipeFilters";
 import {
@@ -45,152 +40,17 @@ type SortSelectProps = {
   className?: string;
 };
 
-const FOCUS_RING =
-  "focus-visible:border-basil-500 focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-basil-500";
-
-// Custom dropdown styled like the rest of the design. Follows the ARIA
-// listbox pattern: arrow keys move, Enter/Space selects, Escape closes.
+// Sort menu above the results, using the shared Dropdown
 function SortSelect({ value, onChange, className = "" }: SortSelectProps) {
-  const id = useId();
-  const listId = `${id}-list`;
-  const optionId = (index: number) => `${id}-option-${index}`;
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const rootRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
-  const selectedIndex = SORT_OPTIONS.findIndex(
-    (option) => option.value === value,
-  );
-  const selectedLabel = SORT_OPTIONS[selectedIndex]?.label;
-
-  // Move focus into the list when it opens
-  useEffect(() => {
-    if (isOpen) listRef.current?.focus();
-  }, [isOpen]);
-
-  // Close when clicking outside
-  useEffect(() => {
-    if (!isOpen) return;
-    function handlePointerDown(event: PointerEvent) {
-      if (!rootRef.current?.contains(event.target as Node)) setIsOpen(false);
-    }
-    document.addEventListener("pointerdown", handlePointerDown);
-    return () => document.removeEventListener("pointerdown", handlePointerDown);
-  }, [isOpen]);
-
-  function open() {
-    setActiveIndex(selectedIndex);
-    setIsOpen(true);
-  }
-
-  function close() {
-    setIsOpen(false);
-    buttonRef.current?.focus();
-  }
-
-  function select(index: number) {
-    onChange(SORT_OPTIONS[index].value);
-    close();
-  }
-
-  function handleButtonKeyDown(event: React.KeyboardEvent) {
-    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-      event.preventDefault();
-      open();
-    }
-  }
-
-  function handleListKeyDown(event: React.KeyboardEvent) {
-    const last = SORT_OPTIONS.length - 1;
-    switch (event.key) {
-      case "ArrowDown":
-        event.preventDefault();
-        setActiveIndex((index) => Math.min(index + 1, last));
-        break;
-      case "ArrowUp":
-        event.preventDefault();
-        setActiveIndex((index) => Math.max(index - 1, 0));
-        break;
-      case "Home":
-        event.preventDefault();
-        setActiveIndex(0);
-        break;
-      case "End":
-        event.preventDefault();
-        setActiveIndex(last);
-        break;
-      case "Enter":
-      case " ":
-        event.preventDefault();
-        select(activeIndex);
-        break;
-      case "Escape":
-        event.preventDefault();
-        close();
-        break;
-      case "Tab":
-        setIsOpen(false);
-        break;
-    }
-  }
-
   return (
-    <div ref={rootRef} className={`relative ${className}`}>
-      <button
-        ref={buttonRef}
-        type="button"
-        aria-haspopup="listbox"
-        aria-expanded={isOpen}
-        aria-controls={listId}
-        aria-label={`Sort recipes: ${selectedLabel}`}
-        onClick={() => (isOpen ? close() : open())}
-        onKeyDown={handleButtonKeyDown}
-        className={`flex h-full w-full items-center justify-between gap-2 rounded-lg border border-thyme-500 bg-salt-50 px-3.25 py-2 text-sm leading-5 font-medium text-thyme-500 ${FOCUS_RING}`}
-      >
-        {selectedLabel}
-        <ChevronDown
-          aria-hidden="true"
-          className={`size-4 shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`}
-        />
-      </button>
-
-      {isOpen && (
-        <ul
-          ref={listRef}
-          id={listId}
-          role="listbox"
-          tabIndex={-1}
-          aria-label="Sort recipes"
-          aria-activedescendant={optionId(activeIndex)}
-          onKeyDown={handleListKeyDown}
-          className="absolute top-full right-0 left-0 z-20 mt-1 flex flex-col gap-0.5 rounded-lg border border-oat-500 bg-salt-50 p-1 shadow-md focus-visible:outline-none"
-        >
-          {SORT_OPTIONS.map((option, index) => {
-            const isSelected = option.value === value;
-            const isActive = index === activeIndex;
-            return (
-              <li
-                key={option.value}
-                id={optionId(index)}
-                role="option"
-                aria-selected={isSelected}
-                onClick={() => select(index)}
-                onMouseMove={() => setActiveIndex(index)}
-                className={`flex cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2 text-sm leading-5 ${
-                  isSelected ? "font-medium text-basil-500" : "text-nori-500"
-                } ${isActive ? "bg-mint-500" : ""}`}
-              >
-                {option.label}
-                {isSelected && (
-                  <Check aria-hidden="true" className="size-4 shrink-0" />
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </div>
+    <Dropdown
+      options={SORT_OPTIONS}
+      value={value}
+      onChange={onChange}
+      ariaLabel="Sort recipes"
+      className={className}
+      buttonClassName="border border-thyme-500 bg-salt-50 px-3.25 py-2 font-medium text-thyme-500 focus-visible:border-basil-500"
+    />
   );
 }
 
