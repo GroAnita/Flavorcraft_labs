@@ -17,6 +17,14 @@ export const metadata: Metadata = {
   },
   description:
     "Discover delicious recipes, explore meal ideas, and save your favorites with FlavorCraft Labs.",
+  // favicon.ico in this folder is linked automatically; these add sharper PNGs and the iOS icon
+  icons: {
+    icon: [
+      { url: "/images/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/images/favicon/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: { url: "/images/favicon/apple-touch-icon.png", sizes: "180x180" },
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
