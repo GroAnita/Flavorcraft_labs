@@ -4641,3 +4641,45 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - Branch: `comp/profileSidebar#156`
 - Commit: `7536b88`
 - Related logs: AI-016 and AI-019
+
+---
+
+### AI-066 - Recipe Page Opening at the Comments (#274)
+
+**Date:** 2026-10-22
+
+**Team Member:** Gro Anita / `GroAnita`
+
+**Related Tasks / Files:**
+
+- Ticket #274 - Recipe page opens scrolled to the comments when clicked from far down a page
+- Branch: `fix/recipe-scroll-position-274`
+- `src/app/(pages)/recipes/[id]/loading.tsx`
+- `src/app/(pages)/recipes/loading.tsx`
+
+**AI Tool / Model:** Claude Code (Anthropic), VS Code extension, Claude Opus 5.5
+
+**Purpose:** Find out why recipes opened at the comments section when clicked from further down a page, and fix it.
+
+**Key Prompt(s):** _(Summary of prompts; not exact original wording)_
+
+- Described that recipes clicked near the top open correctly, but recipes clicked further down open at the comments section, and asked for the cause without changes.
+- Asked for a ticket, a branch and the best fix.
+
+**Outcome and Decisions:**
+
+- **Found:** The recipe loading screen was shorter than the screen plus the header. Replacing a long, scrolled list with it clamped the scroll position to its bottom, where its top was still visible, so Next.js skipped scrolling to the top. When the recipe arrived, the browser's scroll anchoring kept the footer in place and pushed the view to the bottom of the recipe.
+- **Accepted:** Added `min-h-svh` to the recipe and recipes loading screens, with comments explaining why. This fixes the cause instead of adding scroll code or turning off scroll anchoring for the whole site.
+- **Rejected:** A component that forces `window.scrollTo(0, 0)` on the recipe page, because it would also break returning to the list with the back button and works around Next.js instead of with it.
+
+**Verification / Status:**
+
+- `npm run build` passes.
+- Reproduced on the deployed `develop` site with Playwright by tracing scroll events, and confirmed the scroll anchoring part by turning it off in the test browser only.
+- 10 automated checks in Chromium at 1280px and 390px against a production build: cards near the top and far down on `/recipes` and in the last home page section open at the top, and the back button returns to the previous position. The same test without the fix failed on desktop (opened at the bottom), confirming the fix.
+
+**References:**
+
+- [Ticket #274 - Recipe page opens scrolled to the comments](https://github.com/GroAnita/Flavorcraft_labs/issues/274)
+- Branch: `fix/recipe-scroll-position-274`
+- [Next.js scrolling behavior on navigation](https://nextjs.org/docs/app/api-reference/components/link#scroll)

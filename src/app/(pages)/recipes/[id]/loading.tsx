@@ -1,8 +1,11 @@
 // Shown while the recipe is fetched on the server.
-// Without this file, the loading.tsx for the recipes grid would be shown instead
+// Without this file, the loading.tsx for the recipes grid would be shown instead.
+// min-h-svh keeps it at least as tall as the screen. A shorter loading screen pulls the
+// scroll position up to its bottom, where its top is still visible, so Next.js skips
+// scrolling to the top and the recipe opens at the comments (#274)
 export default function RecipeLoading() {
   return (
-    <main aria-busy="true" className="flex flex-1 flex-col bg-salt-500">
+    <main aria-busy="true" className="flex min-h-svh flex-1 flex-col bg-salt-500">
       <div className="mx-auto flex w-full max-w-359.5 flex-col gap-6 pt-6 pb-20 md:gap-9 md:px-8 md:pt-8 lg:px-16">
         <p className="sr-only" role="status">
           Loading recipe…
