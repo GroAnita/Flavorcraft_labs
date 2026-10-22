@@ -11,6 +11,23 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://flavorcraftlabs.netlify.app"),
+  openGraph: {
+    siteName: "FlavorCraft Labs",
+    type: "website",
+    locale: "en_US",
+    images: [
+      {
+        url: "/images/categories/dessert.jpg",
+        width: 1843,
+        height: 1230,
+        alt: "Chocolate lava cake with vanilla ice cream and chocolate sauce",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
   title: {
     default: "FlavorCraft Labs | Discover Delicious Recipes",
     template: "%s | FlavorCraft Labs",
@@ -20,8 +37,16 @@ export const metadata: Metadata = {
   // favicon.ico in this folder is linked automatically; these add sharper PNGs and the iOS icon
   icons: {
     icon: [
-      { url: "/images/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/images/favicon/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      {
+        url: "/images/favicon/favicon-16x16.png",
+        sizes: "16x16",
+        type: "image/png",
+      },
+      {
+        url: "/images/favicon/favicon-32x32.png",
+        sizes: "32x32",
+        type: "image/png",
+      },
     ],
     apple: { url: "/images/favicon/apple-touch-icon.png", sizes: "180x180" },
   },
