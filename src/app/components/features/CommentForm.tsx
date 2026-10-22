@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useId, useRef, useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { CircleAlert, Send } from 'lucide-react';
-import { createComment } from '@/app/actions/comments';
-import { Avatar } from '@/app/components/ui/Avatar';
-import type { Comment } from '@/app/types/recipe';
+import { useId, useRef, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { CircleAlert } from "lucide-react";
+import { createComment } from "@/app/actions/comments";
+import { Avatar } from "@/app/components/ui/Avatar";
+import type { Comment } from "@/app/types/recipe";
 
 type CommentFormProps = {
   recipeId: string;
@@ -20,10 +20,10 @@ export function CommentForm({
   onCommentAdded,
 }: CommentFormProps) {
   const router = useRouter();
-  const [text, setText] = useState('');
-  const [error, setError] = useState('');
+  const [text, setText] = useState("");
+  const [error, setError] = useState("");
   const [needsLogin, setNeedsLogin] = useState(false);
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -34,21 +34,21 @@ export function CommentForm({
   async function submitComment() {
     if (isLoading) return;
 
-    setStatus('');
+    setStatus("");
     if (!text.trim()) {
-      setError('Write a comment before posting');
+      setError("Write a comment before posting");
       setNeedsLogin(false);
       textareaRef.current?.focus();
       return;
     }
 
-    setError('');
+    setError("");
     setNeedsLogin(false);
     setIsLoading(true);
     const result = await createComment(recipeId, text);
     setIsLoading(false);
 
-    if ('error' in result) {
+    if ("error" in result) {
       // Keep the text so the user can log in again or retry without retyping
       setError(result.error);
       setNeedsLogin(Boolean(result.needsLogin));
@@ -56,8 +56,8 @@ export function CommentForm({
       return;
     }
 
-    setText('');
-    setStatus('Your comment was posted');
+    setText("");
+    setStatus("Your comment was posted");
     onCommentAdded?.(result.comment);
     // Re-runs the server components so the list fetches the new comment
     router.refresh();
@@ -71,7 +71,7 @@ export function CommentForm({
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     // Ctrl/Cmd + Enter posts the comment, plain Enter adds a new line
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       submitComment();
     }
@@ -84,7 +84,7 @@ export function CommentForm({
       className="w-full rounded-md border border-basil-500 p-3"
     >
       <div className="flex items-start gap-3">
-        <Avatar name={author.name || 'You'} src={author.avatarUrl} alt="" />
+        <Avatar name={author.name || "You"} src={author.avatarUrl} alt="" />
 
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <label
@@ -105,7 +105,7 @@ export function CommentForm({
             value={text}
             onChange={(e) => {
               setText(e.target.value);
-              if (error && !needsLogin) setError('');
+              if (error && !needsLogin) setError("");
             }}
             onKeyDown={handleKeyDown}
             aria-invalid={error ? true : undefined}
@@ -146,7 +146,7 @@ export function CommentForm({
             aria-busy={isLoading}
             className="inline-flex h-8 w-fit items-center justify-center gap-2 rounded-md bg-primary px-3 text-xs font-semibold text-white hover:bg-basil-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isLoading ? 'Posting...' : 'Send comment'}
+            {isLoading ? "Posting..." : "Send comment"}
           </button>
         </div>
       </div>
