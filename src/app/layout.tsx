@@ -26,7 +26,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <link rel="preconnect" href="https://use.typekit.net" crossOrigin="" />
         {/* The Typekit stylesheet @imports p.typekit.net, so connect early */}
         <link rel="preconnect" href="https://p.typekit.net" />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link rel="stylesheet" href="https://use.typekit.net/xnz3twu.css" />
       </head>
       <body className="min-h-svh flex flex-col">
