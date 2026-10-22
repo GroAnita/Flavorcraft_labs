@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { authFetch, AuthError } from "@/app/lib/api";
 import { deleteSession, getAccessToken } from "@/app/lib/session";
 
@@ -30,7 +31,12 @@ export async function setFavorite(
       (favorite && response.status === 409) ||
       (!favorite && response.status === 404);
 
-    if (response.ok || alreadyDone) return { ok: true };
+    if (response.ok || alreadyDone) {
+      // Hearts are shown on many pages (recipe list, favorites, profile), and the
+      // client keeps visited pages cached. Without this, going back shows the old state
+      revalidatePath("/", "layout");
+      return { ok: true };
+    }
 
     return {
       ok: false,
