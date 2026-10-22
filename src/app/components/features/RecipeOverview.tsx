@@ -18,7 +18,7 @@ export type RecipeOverviewProps = Pick<
 > & {
   // Pass recipe.comments.length. Hidden when not passed
   commentCount?: number;
-  // Edit and delete buttons for the owner, added in the recipe actions issue
+  // Edit and delete buttons, only passed when the logged in user owns the recipe
   ownerActions?: ReactNode;
 };
 

@@ -2,13 +2,15 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { fetchRecipe, RecipeNotFoundError } from "@/app/lib/recipe";
 import { fetchIsFavorite } from "@/app/lib/favorites";
-import { getAccessToken } from "@/app/lib/session";
+import { getAccessToken, getProfile } from "@/app/lib/session";
+import { toRecipeFormValues } from "@/app/types/recipeForm";
 import { createRecipeJsonLd } from "@/app/lib/seo/recipeJsonLd";
 import Breadcrumb from "@/app/components/ui/Breadcrumb";
 import { RecipeHero } from "@/app/components/features/RecipeHero";
 import { RecipeOverview } from "@/app/components/features/RecipeOverview";
 import { RecipeFavoriteProvider } from "@/app/components/features/RecipeFavoriteProvider";
 import { RecipeDetailActions } from "@/app/components/features/RecipeDetailActions";
+import { EditRecipeButton } from "@/app/components/features/EditRecipeButton";
 import { RecipeMobileActions } from "@/app/components/features/RecipeMobileActions";
 import { RecipeIngredientsAndInstructions } from "@/app/components/features/RecipeIngredientsAndInstructions";
 import { RecipeIngredients } from "@/app/components/features/RecipeIngredients";
@@ -56,6 +58,11 @@ export default async function RecipePage({ params }: RecipePageProps) {
   const accessToken = await getAccessToken();
   const isLoggedIn = Boolean(accessToken);
 
+  // Profile names are unique in the API, so the name tells who owns the recipe.
+  // The API also checks the owner when the changes are saved
+  const profile = isLoggedIn ? await getProfile() : null;
+  const isOwner = Boolean(profile && profile.name === recipe.owner?.name);
+
   let isFavorite = false;
   if (accessToken) {
     try {
@@ -102,6 +109,14 @@ export default async function RecipePage({ params }: RecipePageProps) {
               <RecipeOverview
                 {...recipe}
                 commentCount={recipe.comments?.length ?? 0}
+                ownerActions={
+                  isOwner && (
+                    <EditRecipeButton
+                      recipeId={recipe.id}
+                      initialValues={toRecipeFormValues(recipe)}
+                    />
+                  )
+                }
               />
               <RecipeDetailActions
                 title={recipe.title}

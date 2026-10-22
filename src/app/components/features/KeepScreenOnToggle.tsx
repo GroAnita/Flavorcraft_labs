@@ -134,18 +134,19 @@ export function KeepScreenOnToggle() {
             <Info aria-hidden="true" className="size-5 md:size-6" />
           </button>
 
-          {/* Always in the DOM so aria-describedby works, only shown on hover, focus or tap */}
+          {/* Always in the DOM so aria-describedby works, only shown on hover, focus or tap.
+              Anchored to the icon's right edge so it grows left instead of past the viewport */}
           <p
             id={tooltipId}
             role="tooltip"
-            className={`absolute bottom-full left-1/2 z-10 mb-3 w-56 -translate-x-1/2 rounded-lg bg-surface px-4 py-2 text-center text-sm text-truffle-500 shadow-md md:w-72 md:text-base ${
+            className={`absolute right-0 bottom-full z-10 mb-3 w-56 rounded-lg bg-surface px-4 py-2 text-center text-sm text-truffle-500 shadow-md md:w-72 md:text-base ${
               showTooltip ? "block" : "hidden"
             }`}
           >
             Turn this on to prevent the screen from going to sleep.
             <span
               aria-hidden="true"
-              className="absolute top-full left-1/2 size-3 -translate-x-1/2 -translate-y-1.5 rotate-45 bg-surface"
+              className="absolute top-full right-1 size-3 -translate-y-1.5 rotate-45 bg-surface md:right-1.5"
             />
           </p>
         </div>
@@ -156,7 +157,7 @@ export function KeepScreenOnToggle() {
         {error ? (
           <span className="text-error-text">{error}</span>
         ) : isActive ? (
-          <span className="text-muted-foreground">
+          <span className="text-muted-foreground sr-only">
             Your screen will stay on while this page is open.
           </span>
         ) : null}

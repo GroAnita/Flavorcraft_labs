@@ -1,13 +1,13 @@
-import { Suspense } from "react";
-import Link from "next/link";
-import { Lock } from "lucide-react";
-import { fetchComments } from "@/app/lib/recipe";
-import { getAccessToken } from "@/app/lib/session";
+import { Suspense } from 'react';
+import Link from 'next/link';
+import { Lock } from 'lucide-react';
+import { fetchComments } from '@/app/lib/recipe';
+import { getAccessToken, getProfile } from '@/app/lib/session';
 import {
   CommentList,
   type CommentsResult,
-} from "@/app/components/features/CommentList";
-import { CommentForm } from "@/app/components/features/CommentForm";
+} from '@/app/components/features/CommentList';
+import { CommentForm } from '@/app/components/features/CommentForm';
 
 type CommentSectionProps = {
   recipeId: string;
@@ -19,12 +19,16 @@ export async function CommentSection({ recipeId }: CommentSectionProps) {
   // Errors are turned into a value so CommentList can show a friendly message.
   const commentsPromise: Promise<CommentsResult> = fetchComments(recipeId).then(
     (comments) => ({ ok: true, comments }),
-    () => ({ ok: false })
+    () => ({ ok: false }),
   );
 
   // Only checks that a session cookie exists. An expired token is caught
   // when the comment is posted, and the user is asked to log in again.
-  const isLoggedIn = Boolean(await getAccessToken());
+  const [accessToken, profile] = await Promise.all([
+    getAccessToken(),
+    getProfile(),
+  ]);
+  const isLoggedIn = Boolean(accessToken);
 
   return (
     <section aria-labelledby="comments-heading" className="flex flex-col gap-4">
@@ -35,7 +39,17 @@ export async function CommentSection({ recipeId }: CommentSectionProps) {
         Comments
       </h2>
 
-      {isLoggedIn ? <CommentForm recipeId={recipeId} /> : <LoginPrompt />}
+      {isLoggedIn ? (
+        <CommentForm
+          recipeId={recipeId}
+          author={{
+            name: profile?.name ?? '',
+            avatarUrl: profile?.avatar?.url,
+          }}
+        />
+      ) : (
+        <LoginPrompt />
+      )}
 
       <Suspense fallback={<CommentListSkeleton />}>
         <CommentList commentsPromise={commentsPromise} />
@@ -54,13 +68,13 @@ function LoginPrompt() {
         <Lock className="size-4.5" />
       </span>
       <p className="text-sm font-medium leading-none text-primary">
-        You have to be{" "}
+        You have to be{' '}
         <Link
           href="/login"
           className="font-bold text-sprout-600 underline decoration-[1.5px] underline-offset-2 hover:text-sprout-700"
         >
           logged in
-        </Link>{" "}
+        </Link>{' '}
         to comment
       </p>
     </div>

@@ -3,7 +3,8 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { CirclePlus, CircleUserRound, Heart, Plus } from "lucide-react";
 import SearchInput from "@/app/components/features/SearchInput";
-import MobileMenu from "@/app/components/layout/MobileMenu";
+import { CreateRecipeButton } from "@/app/components/features/CreateRecipeButton";
+import MobileMenu, { type IconLink } from "@/app/components/layout/MobileMenu";
 import { getAccessToken, getProfile } from "@/app/lib/session";
 
 const SEARCH_PLACEHOLDER = "What do you want to make today?";
@@ -20,13 +21,12 @@ const NAV_LINKS = [
   { label: "Favorites", href: "/favorites" },
 ] as const;
 
-const CREATE_LINK = { label: "Create", href: "/recipes/create" } as const;
 const PROFILE_LINK = { label: "Profile", href: "/profile" } as const;
 
 const MOBILE_ICON = "size-6";
 const MOBILE_ICON_STROKE = 1.5; // thinner outline, as in Figma
 
-const MOBILE_ICON_LINKS = [
+const MOBILE_ICON_LINKS: IconLink[] = [
   {
     label: "Favorites",
     href: "/favorites",
@@ -39,8 +39,9 @@ const MOBILE_ICON_LINKS = [
     ),
   },
   {
+    // Opens the create recipe modal instead of going to a page
     label: "Create recipe",
-    href: CREATE_LINK.href,
+    createRecipe: true,
     icon: (
       <CirclePlus
         aria-hidden="true"
@@ -61,7 +62,7 @@ const MOBILE_ICON_LINKS = [
   },
 ];
 
-const MOBILE_LOGIN_LINK = {
+const MOBILE_LOGIN_LINK: IconLink = {
   label: "Login",
   href: "/login",
   icon: (
@@ -160,13 +161,10 @@ export default async function Header() {
                 </li>
               ))}
               <li>
-                <Link
-                  href={CREATE_LINK.href}
-                  className="inline-flex h-9 items-center gap-1.5 rounded-full bg-basil-500 px-3.5 font-inter text-xs leading-[15px] font-semibold text-white hover:bg-basil-700"
-                >
+                <CreateRecipeButton className="inline-flex h-9 items-center gap-1.5 rounded-full bg-basil-500 px-3.5 font-inter text-xs leading-[15px] font-semibold text-white hover:bg-basil-700">
                   <Plus aria-hidden="true" className="size-4" />
-                  {CREATE_LINK.label}
-                </Link>
+                  Create
+                </CreateRecipeButton>
               </li>
               <li>
                 <Link

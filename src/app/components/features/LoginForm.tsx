@@ -50,7 +50,8 @@ export function LoginForm() {
         label="Email"
         type="email"
         name="email"
-        autoComplete="email"
+        // Matches the register form, so the saved email is filled in here
+        autoComplete="username"
         placeholder="Example@email.com"
         required
         disabled={isLoading}

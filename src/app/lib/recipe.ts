@@ -8,8 +8,15 @@ export class RecipeNotFoundError extends Error {
   }
 }
 
+// The recipe list is the same for everyone, so it's cached for 60 seconds.
+// Pages then get it without waiting for the API on every visit; new or
+// changed recipes can take up to a minute to show up in the lists.
+const RECIPES_REVALIDATE_SECONDS = 60;
+
 export async function fetchRecipes(): Promise<Recipe[]> {
-  const response = await fetch(`${BASE_URL}/recipe-book/recipes`);
+  const response = await fetch(`${BASE_URL}/recipe-book/recipes`, {
+    next: { revalidate: RECIPES_REVALIDATE_SECONDS },
+  });
   if (!response.ok) {
     throw new Error("Failed to fetch recipes");
   }
