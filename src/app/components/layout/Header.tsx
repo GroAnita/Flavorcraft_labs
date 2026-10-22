@@ -109,7 +109,7 @@ export default async function Header() {
   const layout = isLoggedIn ? LAYOUT.loggedIn : LAYOUT.loggedOut;
 
   return (
-    <header className="relative bg-sprout-500">
+    <header className="bg-sprout-500 sticky top-0 z-40">
       <div
         className={`grid w-full grid-cols-[auto_1fr] items-center gap-x-4 gap-y-4 px-5 py-4 md:gap-x-12 md:px-8 md:py-5 ${layout.grid}`}
       >
