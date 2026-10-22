@@ -191,6 +191,12 @@
     @apply bg-background font-inter text-foreground;
   }
 
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href] {
+    @apply cursor-pointer;
+  }
+
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-foreground;
   }
