@@ -52,6 +52,7 @@ export async function generateMetadata({
       title: recipe.title,
       description,
       openGraph: {
+        siteName: "FlavorCraft Labs",
         title: recipe.title,
         description,
         type: "article",
