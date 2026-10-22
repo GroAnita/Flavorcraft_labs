@@ -329,3 +329,172 @@ before final QA.
 **Testing note:** An earlier mobile run scored 63 and reported potentially interfering IndexedDB data. The Incognito retest scored 93. Performance results can vary between runs.
 
 **Status:** Initial baseline completed. Remaining accessibility findings should be reviewed before final QA.
+
+## Follow-up Performance Investigation — 21 October 2026
+
+### Overview
+
+Following the initial Lighthouse baseline audit on 16 October 2026, additional investigations were conducted to identify potential causes of slow mobile performance.
+
+The investigation focused on server response time, render-blocking font resources, image delivery, and responsive hero image loading.
+
+The findings were documented and communicated to the development team through GitHub tickets.
+
+### 1. Slow Server Response
+
+**Finding:** Lighthouse reported a document response time of approximately 797 ms, with an estimated improvement opportunity of 700 ms.
+
+**Investigation:**
+
+The homepage server component (`src/app/(pages)/page.tsx`) performs asynchronous operations to retrieve recipe data and authentication-related information.
+
+The implementation currently awaits `fetchRecipes()` and `getAccessToken()` sequentially.
+
+The recipe API request in `src/app/lib/recipe.ts` does not explicitly configure Next.js fetch caching.
+
+These observations identify areas worth investigating, but do not independently establish the cause of the server response delay. API latency, authentication processing, and deployment infrastructure may also contribute.
+
+**Recommendations:**
+
+- Profile server-side operations to identify the main source of latency.
+- Review whether independent asynchronous operations can execute concurrently.
+- Evaluate appropriate caching strategies for publicly available recipe data.
+- Compare response times before and after changes.
+
+**GitHub ticket:** #229 — Fix Slow Server Response  
+**Priority:** P1  
+**Status:** Reported to development team; optimization not yet verified.
+
+### 2. Render-Blocking Adobe Fonts
+
+**Finding:** Lighthouse identified render-blocking font-related resources, including an Adobe Typekit stylesheet.
+
+**Affected resources:**
+
+- `use.typekit.net/xnz3twu.css`
+- Resources loaded through `p.typekit.net`
+
+**Investigation:**
+
+The root layout (`src/app/layout.tsx`) loads an external Adobe Fonts stylesheet.
+
+The application also uses Next.js font loading for Inter.
+
+The external stylesheet introduces an additional dependency during initial page rendering.
+
+Lighthouse reported approximately 770 ms associated with the identified stylesheet request and an estimated render-blocking improvement opportunity of approximately 930 ms.
+
+These figures are diagnostic estimates rather than confirmed savings.
+
+**Recommendations:**
+
+- Review whether all externally loaded font families and weights are necessary.
+- Investigate whether the stylesheet can be loaded in a less render-blocking manner.
+- Evaluate suitable font-loading alternatives while preserving the approved visual design.
+- Rerun Lighthouse after any changes.
+
+**GitHub ticket:** #232 — Fix Adobe Fonts  
+**Status:** Reported to development team; optimization not yet verified.
+
+### 3. External Recipe Image Optimization
+
+**Finding:** Lighthouse identified substantial potential transfer savings from oversized recipe images.
+
+A subsequent audit reported approximately 2,308 KiB of potential image savings.
+
+**Investigation:**
+
+Many recipe images are hosted externally and supplied through the recipe API.
+
+The shared `RecipeImage.tsx` component already uses Next.js `<Image>`, including the `fill` property.
+
+However, the component uses `unoptimized`, meaning Next.js does not automatically resize or compress these images through its image optimization pipeline.
+
+Therefore, simply replacing standard HTML images with Next.js `<Image>` would not resolve the underlying issue.
+
+**Recommendations:**
+
+- Investigate whether supported external image hosts can provide appropriately sized images.
+- Evaluate a controlled image optimization or proxy strategy.
+- Consider responsive image delivery and suitable image formats.
+- Preserve fallback handling for missing or broken recipe images.
+- Assess implementation complexity against the remaining project timeframe.
+
+**Status:** Finding documented; optimization deferred.
+
+**Limitation:** No verified reduction in image transfer size has been recorded.
+
+### 4. Responsive Hero Image Loading
+
+**Finding:** Both desktop and mobile homepage hero images were downloaded during mobile testing.
+
+**Affected resources:**
+
+- `Header-Image-Mobile.png`
+- `Header-Image-Desktop.png`
+
+**Investigation:**
+
+Chrome DevTools Network inspection confirmed requests for both images on a mobile viewport.
+
+The observed transfer sizes were approximately:
+
+- Mobile hero image: 9.5 KB
+- Desktop hero image: 21.0 KB
+
+Although the transferred files are relatively small, downloading both images introduces unnecessary network activity.
+
+The investigation also identified hero image preload behavior as a potential optimization opportunity.
+
+Lighthouse's LCP request discovery diagnostics indicated that the mobile hero image was not being prioritized as expected.
+
+**Recommendations:**
+
+- Review responsive hero image rendering and preload configuration.
+- Ensure the browser prioritizes the image appropriate to the current viewport.
+- Avoid unnecessary downloads of images intended for other viewport sizes.
+- Recheck Largest Contentful Paint and network requests after changes.
+
+**Status:** Duplicate mobile downloads confirmed; optimization not yet verified.
+
+### 5. Development Follow-up
+
+The following tickets were created to communicate relevant issues to the development team:
+
+| Ticket | Description              | Category           |
+| ------ | ------------------------ | ------------------ |
+| #229   | Fix Slow Server Response | Performance        |
+| #232   | Fix Adobe Fonts          | Performance        |
+| #228   | Fix Sticky Navbar        | Usability / UI     |
+| #243   | Fix Favorites            | Functionality / UX |
+
+The server response and font-loading tickets address performance findings investigated during the Lighthouse follow-up.
+
+The sticky navbar and Favorites tickets address separate usability and functionality concerns.
+
+### 6. Overall Assessment
+
+The follow-up investigation identified several opportunities to improve mobile performance.
+
+The most significant areas for further technical review are:
+
+- Server-side response time and data fetching.
+- Render-blocking external font resources.
+- Oversized externally hosted recipe images.
+- Responsive hero image loading and prioritization.
+
+These findings have been documented, and relevant issues have been communicated to the development team.
+
+**Status:** Investigation and reporting completed. Performance improvements remain subject to developer implementation and subsequent verification.
+
+### 7. Recommended Final Verification
+
+Before submission, where time and development progress permit:
+
+1. Repeat the mobile Lighthouse audit on the latest deployed version.
+2. Record the Performance, Accessibility, Best Practices, and SEO scores.
+3. Compare the results with the original baseline, noting differences in test environment and reliability.
+4. Check whether completed developer fixes address the reported findings.
+5. Document unresolved issues as known limitations rather than marking them as resolved.
+
+**Note:** Lighthouse scores can vary between runs and environments. Changes in scores should not automatically be attributed to individual code changes without further investigation.
