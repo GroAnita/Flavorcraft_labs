@@ -5,6 +5,8 @@ type RowActionsProps = {
   rowLabel: string;
   canMoveUp: boolean;
   canMoveDown: boolean;
+  // False on the last row of a list that needs at least one row
+  canRemove?: boolean;
   onMove: (direction: "up" | "down") => void;
   onRemove: () => void;
 };
@@ -14,10 +16,13 @@ const BUTTON_CLASSES =
 
 const MOVE_CLASSES = `${BUTTON_CLASSES} bg-olive-500 text-salt-50 hover:bg-olive-700 aria-disabled:cursor-not-allowed aria-disabled:bg-olive-100 aria-disabled:hover:bg-olive-100`;
 
+const REMOVE_CLASSES = `${BUTTON_CLASSES} bg-error-bg text-error-text hover:bg-error-text/15 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 aria-disabled:hover:bg-error-bg`;
+
 export function RowActions({
   rowLabel,
   canMoveUp,
   canMoveDown,
+  canRemove = true,
   onMove,
   onRemove,
 }: RowActionsProps) {
@@ -50,9 +55,19 @@ export function RowActions({
       </button>
       <button
         type="button"
-        aria-label={`Remove ${rowLabel}`}
-        onClick={onRemove}
-        className={`${BUTTON_CLASSES} bg-error-bg text-error-text hover:bg-error-text/15`}
+        aria-label={
+          canRemove
+            ? `Remove ${rowLabel}`
+            : `Remove ${rowLabel}, not available. At least one is required`
+        }
+        // aria-disabled instead of disabled, so the button can still be reached
+        // with the keyboard and screen readers say why it can't be used
+        aria-disabled={!canRemove}
+        title={canRemove ? undefined : "At least one is required"}
+        onClick={() => {
+          if (canRemove) onRemove();
+        }}
+        className={REMOVE_CLASSES}
       >
         <Trash2 aria-hidden="true" className="size-4" />
       </button>

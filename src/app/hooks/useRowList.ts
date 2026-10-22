@@ -10,6 +10,11 @@ function rowSelector(id: string, target: string) {
 const FIRST_FIELD = "data-row-first-field";
 const ADD_BUTTON = "[data-row-add]";
 
+type RowListOptions = {
+  // The fewest rows the list can have. Removing stops at this number
+  minRows?: number;
+};
+
 // Add, edit, move and remove rows in a list that lives in the form state.
 // Focus is set after the parent has re-rendered with the new rows: moving a
 // row moves its DOM node, which drops focus, and a removed row takes its
@@ -17,10 +22,12 @@ const ADD_BUTTON = "[data-row-add]";
 export function useRowList<T extends { id: string }>(
   rows: T[],
   onChange: (rows: T[]) => void,
-  createRow: () => T
+  createRow: () => T,
+  { minRows = 0 }: RowListOptions = {}
 ) {
   const containerRef = useRef<HTMLDivElement>(null);
   const pendingFocus = useRef<string | null>(null);
+  const canRemove = rows.length > minRows;
 
   useEffect(() => {
     if (!pendingFocus.current) return;
@@ -52,6 +59,8 @@ export function useRowList<T extends { id: string }>(
   }
 
   function remove(index: number) {
+    // The list keeps at least minRows rows, even if the button is pressed
+    if (!canRemove) return;
     // Focus the row that takes its place, the row before it, or the add button
     const neighbour = rows[index + 1] ?? rows[index - 1];
     pendingFocus.current = neighbour
@@ -60,5 +69,5 @@ export function useRowList<T extends { id: string }>(
     onChange(rows.filter((_, i) => i !== index));
   }
 
-  return { containerRef, add, update, move, remove };
+  return { containerRef, add, update, move, remove, canRemove };
 }
