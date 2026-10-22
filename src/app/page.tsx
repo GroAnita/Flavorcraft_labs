@@ -1,16 +1,16 @@
-import type { Metadata } from 'next';
-import HeroSection from './components/HeroSection';
-import FeaturedRecipeSection from './components/FeaturedRecipe';
-import CategoryNavigation from './components/features/CategoryNavigation';
-import { RecipeSection } from './components/features/RecipeSection';
-import { FavoritesBoundary } from './components/features/FavoritesBoundary';
-import { fetchRecipes } from './lib/recipe';
-import type { Recipe } from './types/recipe';
+import type { Metadata } from "next";
+import HeroSection from "./components/HeroSection";
+import FeaturedRecipeSection from "./components/FeaturedRecipe";
+import CategoryNavigation from "./components/features/CategoryNavigation";
+import { RecipeSection } from "./components/features/RecipeSection";
+import { FavoritesBoundary } from "./components/features/FavoritesBoundary";
+import { fetchRecipes } from "./lib/recipe";
+import type { Recipe } from "./types/recipe";
 
 export const metadata: Metadata = {
-  title: 'Flavorcraft Labs – Good food starts here',
+  title: { absolute: "FlavorCraft Labs – Good food starts here" },
   description:
-    'Discover your next favourite meal, find inspiration for tonight, and make something delicious.',
+    "Discover your next favorite meal, find inspiration for tonight, and make something delicious.",
 };
 
 const SECTION_SIZE = 8;
@@ -35,7 +35,7 @@ export default async function Home() {
 
   // Popular: dinners with the most favorites first. The API has both "Dinner" and "dinner".
   const dinnerRecipes = recipes
-    .filter((r) => r.category?.toLowerCase() === 'dinner')
+    .filter((r) => r.category?.toLowerCase() === "dinner")
     .sort((a, b) => (b._count?.favorites ?? 0) - (a._count?.favorites ?? 0))
     .slice(0, SECTION_SIZE);
 
