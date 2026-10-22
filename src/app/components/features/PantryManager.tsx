@@ -1,14 +1,21 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { AddPantryItemForm } from "@/app/components/features/AddPantryItemForm";
-import { PantryCategorySection } from "@/app/components/features/PantryCategorySection";
-import { ALL_CATEGORIES, PantryFilters } from "@/app/components/features/PantryFilters";
-import { PantryHeader } from "@/app/components/features/PantryHeader";
-import { PantryRecipeSuggestions } from "@/app/components/features/PantryRecipeSuggestions";
-import { isOutOfStock } from "@/app/lib/pantryOptions";
-import { categoryOf, groupByCategory, matchRecipes } from "@/app/lib/pantryUtils";
-import type { PantryItems, Recipe } from "@/app/types/recipe";
+import { useState } from 'react';
+import { AddPantryItemForm } from '@/app/components/features/AddPantryItemForm';
+import { PantryCategorySection } from '@/app/components/features/PantryCategorySection';
+import {
+  ALL_CATEGORIES,
+  PantryFilters,
+} from '@/app/components/features/PantryFilters';
+import { PantryHeader } from '@/app/components/features/PantryHeader';
+import { PantryRecipeSuggestions } from '@/app/components/features/PantryRecipeSuggestions';
+import { isOutOfStock } from '@/app/lib/pantryOptions';
+import {
+  categoryOf,
+  groupByCategory,
+  matchRecipes,
+} from '@/app/lib/pantryUtils';
+import type { PantryItems, Recipe } from '@/app/types/recipe';
 
 type PantryManagerProps = {
   initialItems: PantryItems[];
@@ -18,9 +25,13 @@ type PantryManagerProps = {
 
 // The single source of pantry state. Counts, search, filters and recipe
 // suggestions are all derived from `items`, so they always stay in sync.
-export function PantryManager({ initialItems, recipes, recipesFailed }: PantryManagerProps) {
+export function PantryManager({
+  initialItems,
+  recipes,
+  recipesFailed,
+}: PantryManagerProps) {
   const [items, setItems] = useState(initialItems);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [category, setCategory] = useState(ALL_CATEGORIES);
   // Used for "Updated 2 days ago"; fixed per page load so rows don't change while you look
   const [now] = useState(() => Date.now());
@@ -32,7 +43,7 @@ export function PantryManager({ initialItems, recipes, recipesFailed }: PantryMa
   const results = items.filter(
     (item) =>
       (!query || item.name.toLowerCase().includes(query)) &&
-      (category === ALL_CATEGORIES || categoryOf(item) === category)
+      (category === ALL_CATEGORIES || categoryOf(item) === category),
   );
 
   // Chip counts come from the whole pantry, so they don't change while searching
@@ -46,18 +57,23 @@ export function PantryManager({ initialItems, recipes, recipesFailed }: PantryMa
     setItems((current) => [item, ...current]);
   }
   function handleUpdated(updated: PantryItems) {
-    setItems((current) => current.map((item) => (item.id === updated.id ? updated : item)));
+    setItems((current) =>
+      current.map((item) => (item.id === updated.id ? updated : item)),
+    );
   }
   function handleDeleted(id: string) {
     const next = items.filter((item) => item.id !== id);
     setItems(next);
     // Don't stay on a category chip that no longer has items
-    if (category !== ALL_CATEGORIES && !next.some((item) => categoryOf(item) === category)) {
+    if (
+      category !== ALL_CATEGORIES &&
+      !next.some((item) => categoryOf(item) === category)
+    ) {
       setCategory(ALL_CATEGORIES);
     }
   }
   function clearSearchAndFilters() {
-    setSearch("");
+    setSearch('');
     setCategory(ALL_CATEGORIES);
   }
 
@@ -92,17 +108,20 @@ export function PantryManager({ initialItems, recipes, recipesFailed }: PantryMa
           <div className="flex flex-col gap-6 md:flex-row md:items-start">
             {/* On mobile the suggestions come first, above the list */}
             <div className="md:order-2 md:w-80.5 md:shrink-0">
-              <PantryRecipeSuggestions matches={matches} failed={recipesFailed} />
+              <PantryRecipeSuggestions
+                matches={matches}
+                failed={recipesFailed}
+              />
             </div>
 
             <div className="flex min-w-0 flex-1 flex-col gap-6 md:order-1">
               <p className="sr-only" role="status">
-                {results.length} {results.length === 1 ? "item" : "items"} shown
+                {results.length} {results.length === 1 ? 'item' : 'items'} shown
               </p>
 
               {results.length === 0 ? (
                 <div className="flex flex-col items-start gap-4 rounded-lg bg-salt-50 p-6">
-                  <p className="text-base text-oat-800">
+                  <p className="text-base text-nori-400">
                     No items match your search or filter.
                   </p>
                   <button

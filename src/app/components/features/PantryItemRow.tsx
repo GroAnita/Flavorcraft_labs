@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useId, useRef, useState } from "react";
-import Link from "next/link";
-import { Check, CircleAlert, SquarePen, Trash2 } from "lucide-react";
-import { deletePantryItem, updatePantryItem } from "@/app/actions/pantry";
-import { Badge } from "@/app/components/ui/Badge";
-import { Dropdown } from "@/app/components/ui/Dropdown";
-import { PANTRY_UNITS, isOutOfStock } from "@/app/lib/pantryOptions";
-import { formatUpdated } from "@/app/lib/pantryUtils";
-import type { PantryItems } from "@/app/types/recipe";
+import { useId, useRef, useState } from 'react';
+import Link from 'next/link';
+import { Check, CircleAlert, SquarePen, Trash2 } from 'lucide-react';
+import { deletePantryItem, updatePantryItem } from '@/app/actions/pantry';
+import { Badge } from '@/app/components/ui/Badge';
+import { Dropdown } from '@/app/components/ui/Dropdown';
+import { PANTRY_UNITS, isOutOfStock } from '@/app/lib/pantryOptions';
+import { formatUpdated } from '@/app/lib/pantryUtils';
+import type { PantryItems } from '@/app/types/recipe';
 
 type PantryItemRowProps = {
   item: PantryItems;
@@ -18,22 +18,27 @@ type PantryItemRowProps = {
 };
 
 const FIELD =
-  "h-9.5 w-full rounded-lg bg-salt-100 px-3 text-sm leading-none text-nori-500 inset-shadow-sm disabled:cursor-not-allowed disabled:opacity-60 aria-invalid:outline-2 aria-invalid:outline-error-text";
+  'h-9.5 w-full rounded-lg bg-salt-100 px-3 text-sm leading-none text-nori-500 inset-shadow-sm disabled:cursor-not-allowed disabled:opacity-60 aria-invalid:outline-2 aria-invalid:outline-error-text';
 const ACTION =
-  "flex size-8 shrink-0 items-center justify-center rounded-lg disabled:cursor-not-allowed disabled:opacity-60";
+  'flex size-8 shrink-0 items-center justify-center rounded-lg disabled:cursor-not-allowed disabled:opacity-60';
 
-export function PantryItemRow({ item, now, onUpdated, onDeleted }: PantryItemRowProps) {
+export function PantryItemRow({
+  item,
+  now,
+  onUpdated,
+  onDeleted,
+}: PantryItemRowProps) {
   const id = useId();
   const quantityRef = useRef<HTMLInputElement>(null);
   const [quantity, setQuantity] = useState(String(item.quantity));
   const [unit, setUnit] = useState(item.unit);
-  const [status, setStatus] = useState<"idle" | "saving" | "deleting">("idle");
-  const [error, setError] = useState("");
+  const [status, setStatus] = useState<'idle' | 'saving' | 'deleting'>('idle');
+  const [error, setError] = useState('');
   const [needsLogin, setNeedsLogin] = useState(false);
 
-  const amount = Number(quantity.replace(",", "."));
+  const amount = Number(quantity.replace(',', '.'));
   const isDirty = amount !== item.quantity || unit !== item.unit;
-  const isBusy = status !== "idle";
+  const isBusy = status !== 'idle';
   const outOfStock = isOutOfStock(item);
 
   // Keep a unit from the API that isn't in our list, so it isn't lost
@@ -51,27 +56,27 @@ export function PantryItemRow({ item, now, onUpdated, onDeleted }: PantryItemRow
 
   async function handleSave() {
     if (!quantity.trim() || !Number.isFinite(amount) || amount < 0) {
-      setError("Enter a quantity of 0 or more");
+      setError('Enter a quantity of 0 or more');
       quantityRef.current?.focus();
       return;
     }
-    setError("");
-    setStatus("saving");
+    setError('');
+    setStatus('saving');
     const result = await updatePantryItem(item.id, { quantity: amount, unit });
-    setStatus("idle");
+    setStatus('idle');
     if (result.ok) onUpdated(result.item);
     else showError(result);
   }
 
   async function handleDelete() {
-    setError("");
-    setStatus("deleting");
+    setError('');
+    setStatus('deleting');
     const result = await deletePantryItem(item.id);
     if (result.ok) {
       onDeleted(item.id);
       return;
     }
-    setStatus("idle");
+    setStatus('idle');
     showError(result);
   }
 
@@ -82,7 +87,7 @@ export function PantryItemRow({ item, now, onUpdated, onDeleted }: PantryItemRow
         <div className="flex min-w-0 flex-col md:self-center">
           <p
             className={`flex items-center gap-2 text-lg leading-7 font-semibold ${
-              outOfStock ? "text-oat-800" : "text-nori-500"
+              outOfStock ? 'text-nori-400' : 'text-nori-500'
             }`}
           >
             <span className="truncate">{item.name}</span>
@@ -94,7 +99,10 @@ export function PantryItemRow({ item, now, onUpdated, onDeleted }: PantryItemRow
             )}
           </p>
           {/* suppressHydrationWarning: the server and browser clocks can differ by a minute */}
-          <p suppressHydrationWarning className="text-base leading-6 text-nori-300">
+          <p
+            suppressHydrationWarning
+            className="text-base leading-6 text-nori-300"
+          >
             {formatUpdated(item.updated, now)}
           </p>
         </div>
@@ -105,7 +113,7 @@ export function PantryItemRow({ item, now, onUpdated, onDeleted }: PantryItemRow
               type="button"
               onClick={handleSave}
               disabled={isBusy}
-              aria-busy={status === "saving"}
+              aria-busy={status === 'saving'}
               aria-label={`Save changes to ${item.name}`}
               className={`${ACTION} bg-mint-500 text-basil-500 hover:bg-mint-600`}
             >
@@ -127,7 +135,7 @@ export function PantryItemRow({ item, now, onUpdated, onDeleted }: PantryItemRow
             type="button"
             onClick={handleDelete}
             disabled={isBusy}
-            aria-busy={status === "deleting"}
+            aria-busy={status === 'deleting'}
             aria-label={`Delete ${item.name}`}
             className={`${ACTION} bg-error-bg text-error-text hover:brightness-95`}
           >
@@ -135,12 +143,21 @@ export function PantryItemRow({ item, now, onUpdated, onDeleted }: PantryItemRow
           </button>
         </div>
 
-        <div aria-hidden="true" className="col-span-2 border-t border-oat-500 md:hidden" />
+        <div
+          aria-hidden="true"
+          className="col-span-2 border-t border-oat-500 md:hidden"
+        />
 
         <div className="col-span-2 flex gap-4 md:col-span-1 md:col-start-2 md:row-start-1">
           <div className="flex flex-1 flex-col gap-2 md:w-30 md:flex-none">
-            <label htmlFor={`${id}-quantity`} className="text-sm leading-none text-nori-500">
-              Quantity<span aria-hidden="true" className="ml-0.5 text-error-text">*</span>
+            <label
+              htmlFor={`${id}-quantity`}
+              className="text-sm leading-none text-nori-500"
+            >
+              Quantity
+              <span aria-hidden="true" className="ml-0.5 text-error-text">
+                *
+              </span>
             </label>
             <input
               ref={quantityRef}
@@ -159,8 +176,14 @@ export function PantryItemRow({ item, now, onUpdated, onDeleted }: PantryItemRow
           </div>
 
           <div className="flex flex-1 flex-col gap-2 md:w-30 md:flex-none">
-            <span id={`${id}-unit-label`} className="text-sm leading-none text-nori-500">
-              Unit<span aria-hidden="true" className="ml-0.5 text-error-text">*</span>
+            <span
+              id={`${id}-unit-label`}
+              className="text-sm leading-none text-nori-500"
+            >
+              Unit
+              <span aria-hidden="true" className="ml-0.5 text-error-text">
+                *
+              </span>
             </span>
             <Dropdown
               labelId={`${id}-unit-label`}
@@ -175,13 +198,16 @@ export function PantryItemRow({ item, now, onUpdated, onDeleted }: PantryItemRow
         </div>
       </div>
 
-      {status === "saving" && (
-        <p role="status" className="text-xs text-oat-800">
+      {status === 'saving' && (
+        <p role="status" className="text-xs text-nori-400">
           Saving…
         </p>
       )}
       {error && (
-        <p role="alert" className="flex items-center gap-1.5 text-xs font-medium text-error-text">
+        <p
+          role="alert"
+          className="flex items-center gap-1.5 text-xs font-medium text-error-text"
+        >
           <CircleAlert aria-hidden="true" className="size-4 shrink-0" />
           {error}
           {needsLogin && (

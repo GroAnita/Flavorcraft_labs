@@ -1,4 +1,4 @@
-import { useId, type ReactNode } from "react";
+import { useId, type ReactNode } from 'react';
 
 type RecipeFormSectionProps = {
   title: string;
@@ -30,7 +30,7 @@ export function RecipeFormSection({
             </span>
           )}
         </h3>
-        {description && <p className="text-sm text-oat-800">{description}</p>}
+        {description && <p className="text-sm text-nori-400">{description}</p>}
       </div>
 
       <div className="rounded-lg border border-oat-500 p-4">{children}</div>

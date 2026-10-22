@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useRef } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowLeft, SlidersHorizontal, X } from "lucide-react";
-import { RecipeCard } from "@/app/components/features/RecipeCard";
-import { Dropdown } from "@/app/components/ui/Dropdown";
-import { RecipeFilterSidebar } from "@/app/components/features/RecipeFilterSidebar";
-import { useRecipeFilters } from "@/app/hooks/useRecipeFilters";
+import { useRef } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowLeft, SlidersHorizontal, X } from 'lucide-react';
+import { RecipeCard } from '@/app/components/features/RecipeCard';
+import { Dropdown } from '@/app/components/ui/Dropdown';
+import { RecipeFilterSidebar } from '@/app/components/features/RecipeFilterSidebar';
+import { useRecipeFilters } from '@/app/hooks/useRecipeFilters';
 import {
   SORT_OPTIONS,
   filterRecipes,
@@ -15,9 +15,9 @@ import {
   searchRecipes,
   sortRecipes,
   type SortValue,
-} from "@/app/lib/recipeFilters";
-import type { Recipe } from "@/app/types/recipe";
-import { trackClarityEvent } from "@/app/components/analytics/trackClarityEvent";
+} from '@/app/lib/recipeFilters';
+import type { Recipe } from '@/app/types/recipe';
+import { trackClarityEvent } from '@/app/components/analytics/trackClarityEvent';
 
 type RecipeBrowserProps = {
   recipes: Recipe[];
@@ -26,12 +26,12 @@ type RecipeBrowserProps = {
 
 // Shortcuts shown in the Suggestion row, using the same values as the sidebar
 const SUGGESTIONS = [
-  "tag:quick",
-  "difficulty:easy",
-  "category:lunch",
-  "category:dinner",
-  "category:dessert",
-  "tag:cake",
+  'tag:quick',
+  'difficulty:easy',
+  'category:lunch',
+  'category:dinner',
+  'category:dessert',
+  'tag:cake',
 ];
 
 type SortSelectProps = {
@@ -41,7 +41,7 @@ type SortSelectProps = {
 };
 
 // Sort menu above the results, using the shared Dropdown
-function SortSelect({ value, onChange, className = "" }: SortSelectProps) {
+function SortSelect({ value, onChange, className = '' }: SortSelectProps) {
   return (
     <Dropdown
       options={SORT_OPTIONS}
@@ -81,7 +81,7 @@ export function RecipeBrowser({ recipes, isLoggedIn }: RecipeBrowserProps) {
         {/* Active filters, and the sort menu on desktop */}
         <div
           className={`mb-4 items-center gap-4 md:mb-6 ${
-            selected.length > 0 ? "flex" : "hidden md:flex"
+            selected.length > 0 ? 'flex' : 'hidden md:flex'
           }`}
         >
           {selected.length > 0 && (
@@ -142,7 +142,7 @@ export function RecipeBrowser({ recipes, isLoggedIn }: RecipeBrowserProps) {
                       onClick={() => toggle(value, !isActive)}
                       aria-pressed={isActive}
                       className={`font-medium text-basil-500 hover:underline ${
-                        isActive ? "underline underline-offset-4" : ""
+                        isActive ? 'underline underline-offset-4' : ''
                       }`}
                     >
                       {getFilterLabel(value)}
@@ -156,8 +156,8 @@ export function RecipeBrowser({ recipes, isLoggedIn }: RecipeBrowserProps) {
           <p role="status" className="text-nori-200">
             <span className="font-semibold text-nori-500">
               {results.length}
-            </span>{" "}
-            {results.length === 1 ? "result" : "results"}
+            </span>{' '}
+            {results.length === 1 ? 'result' : 'results'}
             {search && <> for &ldquo;{search}&rdquo;</>}
           </p>
         </div>
@@ -213,7 +213,7 @@ export function RecipeBrowser({ recipes, isLoggedIn }: RecipeBrowserProps) {
               <h2 className="mt-8 text-[2rem] leading-none font-medium tracking-[0.01em] text-truffle-500">
                 No recipes matched the search or filter.
               </h2>
-              <p className="mt-6 text-sm leading-tight tracking-[0.01em] text-oat-800 md:max-w-80">
+              <p className="mt-6 text-sm leading-tight tracking-[0.01em] text-nori-400 md:max-w-80">
                 Try again with other words, remove the filter or choose another
                 page.
               </p>
@@ -241,7 +241,7 @@ export function RecipeBrowser({ recipes, isLoggedIn }: RecipeBrowserProps) {
                     recipe={recipe}
                     onOpen={
                       search.trim()
-                        ? () => trackClarityEvent("recipe_opened_from_search")
+                        ? () => trackClarityEvent('recipe_opened_from_search')
                         : undefined
                     }
                   />

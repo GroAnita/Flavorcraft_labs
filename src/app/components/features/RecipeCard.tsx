@@ -1,26 +1,26 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import type { Recipe } from "@/app/types/recipe";
-import { RecipeImage } from "@/app/components/ui/RecipeImage";
-import { RecipeMeta } from "@/app/components/features/RecipeMeta";
-import { TagList } from "@/app/components/features/TagList";
-import { FavoriteButton } from "@/app/components/ui/FavoriteButton";
-import { useFavorites } from "@/app/components/features/FavoritesProvider";
+import Link from 'next/link';
+import type { Recipe } from '@/app/types/recipe';
+import { RecipeImage } from '@/app/components/ui/RecipeImage';
+import { RecipeMeta } from '@/app/components/features/RecipeMeta';
+import { TagList } from '@/app/components/features/TagList';
+import { FavoriteButton } from '@/app/components/ui/FavoriteButton';
+import { useFavorites } from '@/app/components/features/FavoritesProvider';
 
 type RecipeCardProps = {
   recipe: Pick<
     Recipe,
-    | "id"
-    | "title"
-    | "description"
-    | "image"
-    | "category"
-    | "prepTime"
-    | "cookTime"
-    | "servings"
-    | "difficulty"
-    | "tags"
+    | 'id'
+    | 'title'
+    | 'description'
+    | 'image'
+    | 'category'
+    | 'prepTime'
+    | 'cookTime'
+    | 'servings'
+    | 'difficulty'
+    | 'tags'
   >;
   onOpen?: () => void;
 };
@@ -30,7 +30,7 @@ export function RecipeCard({ recipe, onOpen }: RecipeCardProps) {
   const favorites = useFavorites();
 
   const href = `/recipes/${recipe.id}`;
-  const title = recipe.title?.trim() || "Untitled recipe";
+  const title = recipe.title?.trim() || 'Untitled recipe';
   const description = recipe.description?.trim();
 
   return (
@@ -68,7 +68,7 @@ export function RecipeCard({ recipe, onOpen }: RecipeCardProps) {
             </h3>
 
             {description && (
-              <p className="line-clamp-2 wrap-break-word text-sm leading-5 text-oat-800">
+              <p className="line-clamp-2 wrap-break-word text-sm leading-5 text-nori-400">
                 {description}
               </p>
             )}

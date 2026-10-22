@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 type RecipeErrorProps = {
   error: Error & { digest?: string };
@@ -16,7 +16,7 @@ export default function RecipeError({ reset }: RecipeErrorProps) {
       <h1 className="text-[2rem] text-truffle-500 md:text-[40px]">
         We couldn&apos;t load this recipe
       </h1>
-      <p className="my-4 text-sm text-oat-800">
+      <p className="my-4 text-sm text-nori-400">
         Something went wrong on our side. Please try again in a moment.
       </p>
       <div className="flex flex-col gap-2 sm:flex-row">

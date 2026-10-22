@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { useRef, useState, type FormEvent } from "react";
-import Link from "next/link";
-import { CircleAlert } from "lucide-react";
+import { useRef, useState, type FormEvent } from 'react';
+import Link from 'next/link';
+import { CircleAlert } from 'lucide-react';
 import {
   createEmptyRecipeForm,
   type RecipeFormErrors,
   type RecipeFormValues,
   type SubmitRecipeResult,
-} from "@/app/types/recipeForm";
-import { hasErrors, validateRecipeForm } from "@/app/lib/recipeFormValidation";
-import { RecipeFormBasics } from "@/app/components/features/RecipeFormBasics";
-import { RecipeFormQuickFacts } from "@/app/components/features/RecipeFormQuickFacts";
-import { RecipeFormIngredients } from "@/app/components/features/RecipeFormIngredients";
-import { RecipeFormSteps } from "@/app/components/features/RecipeFormSteps";
-import { RecipeFormTags } from "@/app/components/features/RecipeFormTags";
+} from '@/app/types/recipeForm';
+import { hasErrors, validateRecipeForm } from '@/app/lib/recipeFormValidation';
+import { RecipeFormBasics } from '@/app/components/features/RecipeFormBasics';
+import { RecipeFormQuickFacts } from '@/app/components/features/RecipeFormQuickFacts';
+import { RecipeFormIngredients } from '@/app/components/features/RecipeFormIngredients';
+import { RecipeFormSteps } from '@/app/components/features/RecipeFormSteps';
+import { RecipeFormTags } from '@/app/components/features/RecipeFormTags';
 
 type RecipeFormProps = {
   onCancel: () => void;
@@ -36,14 +36,14 @@ export function RecipeForm({
   onSubmit,
   onSuccess,
   initialValues,
-  submitLabel = "Publish recipe",
-  pendingLabel = "Publishing…",
+  submitLabel = 'Publish recipe',
+  pendingLabel = 'Publishing…',
 }: RecipeFormProps) {
   const [values, setValues] = useState<RecipeFormValues>(
-    () => initialValues ?? createEmptyRecipeForm()
+    () => initialValues ?? createEmptyRecipeForm(),
   );
   const [errors, setErrors] = useState<RecipeFormErrors>({});
-  const [formError, setFormError] = useState("");
+  const [formError, setFormError] = useState('');
   const [needsLogin, setNeedsLogin] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   // A ref changes at once, so a fast double click can't send twice
@@ -59,7 +59,7 @@ export function RecipeForm({
       const next: Record<string, unknown> = { ...previous };
       for (const key of Object.keys(changes)) {
         delete next[key];
-        if (key === "ingredients") delete next.ingredientRows;
+        if (key === 'ingredients') delete next.ingredientRows;
       }
       return next as RecipeFormErrors;
     });
@@ -70,7 +70,7 @@ export function RecipeForm({
   function focusFirstError() {
     requestAnimationFrame(() => {
       const first = formRef.current?.querySelector<HTMLElement>(
-        '[aria-invalid="true"], [data-form-error]'
+        '[aria-invalid="true"], [data-form-error]',
       );
       (first ?? formErrorRef.current)?.focus();
     });
@@ -80,13 +80,13 @@ export function RecipeForm({
     event.preventDefault();
     if (submittingRef.current) return;
 
-    setFormError("");
+    setFormError('');
     setNeedsLogin(false);
 
     const found = validateRecipeForm(values);
     setErrors(found);
     if (hasErrors(found)) {
-      setFormError("Some fields need to be fixed before you can save.");
+      setFormError('Some fields need to be fixed before you can save.');
       focusFirstError();
       return;
     }
@@ -106,13 +106,13 @@ export function RecipeForm({
       // The values are kept, so the user can fix the problem and try again
       setErrors(result.fieldErrors ?? {});
       setFormError(
-        result.error ?? "Couldn't save the recipe. Please try again."
+        result.error ?? "Couldn't save the recipe. Please try again.",
       );
       setNeedsLogin(Boolean(result.needsLogin));
       focusFirstError();
     } catch {
       setFormError(
-        "Something went wrong. Check your connection and try again."
+        'Something went wrong. Check your connection and try again.',
       );
       focusFirstError();
     }
@@ -166,7 +166,7 @@ export function RecipeForm({
         </p>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-oat-800">
+          <p className="text-xs text-nori-400">
             <span aria-hidden="true" className="mr-0.5 text-error-text">
               *
             </span>

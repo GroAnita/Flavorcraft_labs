@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { useId, useState, type KeyboardEvent } from "react";
-import { X } from "lucide-react";
-import type { RecipeFormSectionProps } from "@/app/types/recipeForm";
-import { RecipeFormSection } from "@/app/components/features/RecipeFormSection";
-import { Badge } from "@/app/components/ui/Badge";
-import { ROW_INPUT_CLASSES } from "@/app/components/ui/EditableRowList";
+import { useId, useState, type KeyboardEvent } from 'react';
+import { X } from 'lucide-react';
+import type { RecipeFormSectionProps } from '@/app/types/recipeForm';
+import { RecipeFormSection } from '@/app/components/features/RecipeFormSection';
+import { Badge } from '@/app/components/ui/Badge';
+import { ROW_INPUT_CLASSES } from '@/app/components/ui/EditableRowList';
 
 // The filters compare tags in lowercase, so "Gluten-free" matches the
 // "diet:gluten-free" filter in recipeFilters.ts. "Healthy" has no filter yet.
 export const SUGGESTED_TAGS = [
-  "Vegetarian",
-  "Vegan",
-  "Gluten-free",
-  "Lactose-free",
-  "Quick",
-  "Healthy",
+  'Vegetarian',
+  'Vegan',
+  'Gluten-free',
+  'Lactose-free',
+  'Quick',
+  'Healthy',
 ];
 
 const MAX_TAG_LENGTH = 30;
@@ -23,21 +23,24 @@ const MAX_TAG_LENGTH = 30;
 const normalize = (tag: string) => tag.trim().toLowerCase();
 
 const TAG_BUTTON_CLASSES =
-  "flex max-w-full cursor-pointer rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
+  'flex max-w-full cursor-pointer rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
 
 export function RecipeFormTags({ values, onChange }: RecipeFormSectionProps) {
   const id = useId();
   const inputId = `${id}-input`;
   const messageId = `${id}-message`;
   const { tags } = values;
-  const [draft, setDraft] = useState("");
-  const [message, setMessage] = useState("");
+  const [draft, setDraft] = useState('');
+  const [message, setMessage] = useState('');
 
   const hasTag = (tag: string) =>
     tags.some((existing) => normalize(existing) === normalize(tag));
 
   const customTags = tags.filter(
-    (tag) => !SUGGESTED_TAGS.some((suggested) => normalize(suggested) === normalize(tag))
+    (tag) =>
+      !SUGGESTED_TAGS.some(
+        (suggested) => normalize(suggested) === normalize(tag),
+      ),
   );
 
   function toggleSuggested(tag: string) {
@@ -58,15 +61,17 @@ export function RecipeFormTags({ values, onChange }: RecipeFormSectionProps) {
     }
 
     // Typing a suggested tag selects it, so it keeps the same spelling as the filters
-    const suggested = SUGGESTED_TAGS.find((tag) => normalize(tag) === normalize(text));
+    const suggested = SUGGESTED_TAGS.find(
+      (tag) => normalize(tag) === normalize(text),
+    );
     onChange({ tags: [...tags, suggested ?? text] });
-    setDraft("");
-    setMessage("");
+    setDraft('');
+    setMessage('');
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     // Enter adds the tag instead of sending the form
-    if (event.key === "Enter" && !event.nativeEvent.isComposing) {
+    if (event.key === 'Enter' && !event.nativeEvent.isComposing) {
       event.preventDefault();
       addCustomTag();
     }
@@ -111,7 +116,10 @@ export function RecipeFormTags({ values, onChange }: RecipeFormSectionProps) {
               >
                 <Badge variant="tag" size="md" selected>
                   {tag}
-                  <X aria-hidden="true" className="ml-1 inline size-3.5 align-middle" />
+                  <X
+                    aria-hidden="true"
+                    className="ml-1 inline size-3.5 align-middle"
+                  />
                 </Badge>
               </button>
             </li>
@@ -131,7 +139,7 @@ export function RecipeFormTags({ values, onChange }: RecipeFormSectionProps) {
               value={draft}
               onChange={(event) => {
                 setDraft(event.target.value);
-                setMessage("");
+                setMessage('');
               }}
               onKeyDown={handleKeyDown}
               aria-describedby={message ? messageId : undefined}
@@ -145,7 +153,11 @@ export function RecipeFormTags({ values, onChange }: RecipeFormSectionProps) {
               Add
             </button>
           </div>
-          <p id={messageId} aria-live="polite" className="text-xs text-oat-800 empty:hidden">
+          <p
+            id={messageId}
+            aria-live="polite"
+            className="text-xs text-nori-400 empty:hidden"
+          >
             {message}
           </p>
         </div>

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useId } from "react";
-import { Search } from "lucide-react";
+import { useId } from 'react';
+import { Search } from 'lucide-react';
 
 type PantryHeaderProps = {
   totalCount: number;
@@ -24,8 +24,8 @@ export function PantryHeader({
         <h1 className="text-[2.5rem] leading-none font-medium tracking-[0.01em] text-truffle-500">
           Your pantry
         </h1>
-        <p className="text-base leading-6 text-oat-800">
-          {totalCount} {totalCount === 1 ? "item" : "items"} &bull;{" "}
+        <p className="text-base leading-6 text-nori-400">
+          {totalCount} {totalCount === 1 ? 'item' : 'items'} &bull;{' '}
           {outOfStockCount} out of stock
         </p>
       </div>

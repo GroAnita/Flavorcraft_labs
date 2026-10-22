@@ -1,6 +1,6 @@
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowLeft, Heart } from "lucide-react";
+import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowLeft, Heart } from 'lucide-react';
 
 export default function NotFound() {
   return (
@@ -16,7 +16,7 @@ export default function NotFound() {
       <h1 className="text-[40px] text-truffle-500">
         We couldn&apos;t find that page
       </h1>
-      <p className="text-oat-800 text-sm my-4">
+      <p className="text-nori-400 text-sm my-4">
         The recipe may have been removed, or the link has a typo.
       </p>
       <div className="flex flex-col sm:flex-row gap-2 ">
