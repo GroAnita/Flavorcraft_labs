@@ -1,28 +1,28 @@
-"use client";
+'use client';
 
 import type {
   Difficulty,
   RecipeFormSectionProps,
-} from "@/app/types/recipeForm";
-import { RECIPE_FILTER_GROUPS } from "@/app/lib/recipeFilters";
-import { FIELD_LABEL_SM } from "@/app/lib/fieldStyles";
-import { RecipeFormSection } from "@/app/components/features/RecipeFormSection";
-import { FormField } from "@/app/components/ui/FormField";
-import { SelectField } from "@/app/components/ui/SelectField";
-import { ServingsControl } from "@/app/components/ui/ServingsControl";
+} from '@/app/types/recipeForm';
+import { RECIPE_FILTER_GROUPS } from '@/app/lib/recipeFilters';
+import { FIELD_LABEL_SM } from '@/app/lib/fieldStyles';
+import { RecipeFormSection } from '@/app/components/features/RecipeFormSection';
+import { FormField } from '@/app/components/ui/FormField';
+import { SelectField } from '@/app/components/ui/SelectField';
+import { ServingsControl } from '@/app/components/ui/ServingsControl';
 
 // The same categories as the Mealtype filter, so new recipes can be found with it.
 // Only the category options are used (Cakes is a tag, not a category)
 const CATEGORY_OPTIONS =
-  RECIPE_FILTER_GROUPS.find((group) => group.id === "mealtype")
-    ?.options.filter((option) => option.value.startsWith("category:"))
+  RECIPE_FILTER_GROUPS.find((group) => group.id === 'mealtype')
+    ?.options.filter((option) => option.value.startsWith('category:'))
     .map((option) => ({ label: option.label, value: option.label })) ?? [];
 
-const DIFFICULTIES: Difficulty[] = ["Easy", "Medium", "Hard"];
+const DIFFICULTIES: Difficulty[] = ['Easy', 'Medium', 'Hard'];
 
 // Only digits, so the field can't get letters, "e" or minus signs
 function onlyDigits(value: string) {
-  return value.replace(/\D/g, "");
+  return value.replace(/\D/g, '');
 }
 
 export function RecipeFormQuickFacts({
@@ -94,7 +94,7 @@ export function RecipeFormQuickFacts({
               {DIFFICULTIES.map((difficulty) => (
                 <label
                   key={difficulty}
-                  className="flex h-9 cursor-pointer items-center justify-center rounded-lg px-4 py-2 text-sm leading-5 font-medium text-oat-800 transition-colors hover:bg-oat-100 has-checked:bg-primary has-checked:font-semibold has-checked:text-salt-500 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-foreground"
+                  className="flex h-9 cursor-pointer items-center justify-center rounded-lg px-4 py-2 text-sm leading-5 font-medium text-nori-400 transition-colors hover:bg-oat-100 has-checked:bg-primary has-checked:font-semibold has-checked:text-salt-500 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-foreground"
                 >
                   <input
                     type="radio"

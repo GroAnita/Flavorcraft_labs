@@ -1,5 +1,5 @@
-import Image from "next/image";
-import type { ReactNode } from "react";
+import Image from 'next/image';
+import type { ReactNode } from 'react';
 
 type AuthLayoutProps = {
   heading: string;
@@ -32,7 +32,7 @@ export default function AuthLayout({
           <h1 className="text-3xl leading-none font-medium text-truffle-500 md:text-4xl">
             {heading}
           </h1>
-          <p className="text-sm leading-tight text-oat-800 md:text-lg">
+          <p className="text-sm leading-tight text-nori-400 md:text-lg">
             {description}
           </p>
         </div>

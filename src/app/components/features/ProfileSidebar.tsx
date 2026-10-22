@@ -54,7 +54,7 @@ export function ProfileSidebar({ profile, stats }: ProfileSidebarProps) {
             </p>
           </header>
 
-          <p className="text-sm text-oat-800">
+          <p className="text-sm text-nori-400">
             {profile.bio?.trim() || 'No profile description yet.'}
           </p>
 
@@ -62,7 +62,10 @@ export function ProfileSidebar({ profile, stats }: ProfileSidebarProps) {
 
           <div className="flex flex-col gap-2">
             {/* There is no separate edit page yet, so this jumps to the form on the profile page */}
-            <Link href="/profile#general-information" className={BUTTON_CLASSES}>
+            <Link
+              href="/profile#general-information"
+              className={BUTTON_CLASSES}
+            >
               Edit profile
               <SquarePen aria-hidden="true" className="size-[18px]" />
             </Link>

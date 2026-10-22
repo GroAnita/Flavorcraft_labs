@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
-import type { BreadcrumbItem } from "@/app/types/breadcrumb";
+import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
+import type { BreadcrumbItem } from '@/app/types/breadcrumb';
 
 type BreadcrumbProps = {
   items: BreadcrumbItem[];
@@ -18,7 +18,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
             <li
               key={`${item.label}-${index}`}
               className={`flex items-center gap-1 ${
-                isLast ? "min-w-0" : "shrink-0"
+                isLast ? 'min-w-0' : 'shrink-0'
               }`}
             >
               {!isFirst && (
@@ -26,24 +26,24 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
                   aria-hidden="true"
                   size={24}
                   strokeWidth={1.5}
-                  className="shrink-0 text-oat-800"
+                  className="shrink-0 text-nori-400"
                 />
               )}
 
               {isLast || !item.href ? (
                 <span
-                  aria-current={isLast ? "page" : undefined}
+                  aria-current={isLast ? 'page' : undefined}
                   title={item.label}
                   className={
                     isLast
-                      ? "truncate font-semibold text-primary"
-                      : "font-medium text-oat-800"
+                      ? 'truncate font-semibold text-primary'
+                      : 'font-medium text-nori-400'
                   }
                 >
                   {item.label}
                 </span>
               ) : (
-                <Link href={item.href} className="font-medium text-oat-800">
+                <Link href={item.href} className="font-medium text-nori-400">
                   {item.label}
                 </Link>
               )}

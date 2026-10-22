@@ -1,11 +1,11 @@
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function HeroSection() {
   return (
     <section className="relative w-full z-10 bg-salt-500 pt-6 md:flex md:aspect-595/219 md:items-center md:pt-0 md:pb-6">
       <div className="relative z-10 container mx-auto px-6">
-        <p className="text-xs uppercase tracking-wide font-medium text-basil-300 md:text-sm">
+        <p className="text-xs uppercase tracking-wide font-medium text-basil-400 md:text-sm">
           Let&apos;s make something delicious
         </p>
         <h1 className="mt-1 text-[2.5rem] leading-tight font-bold text-basil-500 md:text-5xl">

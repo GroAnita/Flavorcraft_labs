@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useId, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useId, useState, type KeyboardEvent, type ReactNode } from 'react';
 
-type Tab = "ingredients" | "instructions";
+type Tab = 'ingredients' | 'instructions';
 
 type RecipeIngredientsAndInstructionsProps = {
   ingredients: ReactNode;
@@ -12,8 +12,8 @@ type RecipeIngredientsAndInstructionsProps = {
 };
 
 const TABS: { key: Tab; label: string }[] = [
-  { key: "ingredients", label: "Ingredients" },
-  { key: "instructions", label: "Instructions" },
+  { key: 'ingredients', label: 'Ingredients' },
+  { key: 'instructions', label: 'Instructions' },
 ];
 
 // Tabs on mobile, side by side from md. The hidden panel stays mounted,
@@ -23,19 +23,19 @@ export function RecipeIngredientsAndInstructions({
   instructions,
   mobileFooter,
 }: RecipeIngredientsAndInstructionsProps) {
-  const [active, setActive] = useState<Tab>("ingredients");
+  const [active, setActive] = useState<Tab>('ingredients');
   const id = useId();
 
   // Left and right arrows move between the tabs, as in the ARIA tabs pattern
   function handleKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
-    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
     event.preventDefault();
-    const next: Tab = active === "ingredients" ? "instructions" : "ingredients";
+    const next: Tab = active === 'ingredients' ? 'instructions' : 'ingredients';
     setActive(next);
     document.getElementById(`${id}-${next}-tab`)?.focus();
   }
 
-  const panelClass = (tab: Tab) => (active === tab ? "" : "hidden md:block");
+  const panelClass = (tab: Tab) => (active === tab ? '' : 'hidden md:block');
 
   return (
     <div className="flex flex-col gap-14 md:gap-0">
@@ -60,8 +60,8 @@ export function RecipeIngredientsAndInstructions({
               onKeyDown={handleKeyDown}
               className={`cursor-pointer rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                 isSelected
-                  ? "bg-primary text-salt-500"
-                  : "text-oat-800 hover:bg-oat-200"
+                  ? 'bg-primary text-salt-500'
+                  : 'text-nori-400 hover:bg-oat-200'
               }`}
             >
               {tab.label}
@@ -75,7 +75,7 @@ export function RecipeIngredientsAndInstructions({
           id={`${id}-ingredients-panel`}
           role="tabpanel"
           aria-labelledby={`${id}-ingredients-tab`}
-          className={panelClass("ingredients")}
+          className={panelClass('ingredients')}
         >
           {ingredients}
         </div>
@@ -83,7 +83,7 @@ export function RecipeIngredientsAndInstructions({
           id={`${id}-instructions-panel`}
           role="tabpanel"
           aria-labelledby={`${id}-instructions-tab`}
-          className={panelClass("instructions")}
+          className={panelClass('instructions')}
         >
           {instructions}
         </div>
