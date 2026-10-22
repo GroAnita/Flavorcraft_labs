@@ -36,11 +36,14 @@ export function RecipeFormIngredients({
   const id = useId();
   const listErrorId = `${id}-list-error`;
   const { ingredients } = values;
-  const { containerRef, add, update, move, remove } = useRowList<IngredientRow>(
-    ingredients,
-    (rows) => onChange({ ingredients: rows }),
-    createEmptyIngredient
-  );
+  // At least one ingredient is required, so the last row can't be removed
+  const { containerRef, add, update, move, remove, canRemove } =
+    useRowList<IngredientRow>(
+      ingredients,
+      (rows) => onChange({ ingredients: rows }),
+      createEmptyIngredient,
+      { minRows: 1 }
+    );
 
   return (
     <EditableRowList
@@ -170,6 +173,7 @@ export function RecipeFormIngredients({
                 rowLabel={rowLabel}
                 canMoveUp={index > 0}
                 canMoveDown={index < ingredients.length - 1}
+                canRemove={canRemove}
                 onMove={(direction) => move(index, direction)}
                 onRemove={() => remove(index)}
               />

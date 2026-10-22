@@ -29,11 +29,14 @@ export function RecipeFormSteps({
   const id = useId();
   const listErrorId = `${id}-list-error`;
   const { steps } = values;
-  const { containerRef, add, update, move, remove } = useRowList<StepRow>(
-    steps,
-    (rows) => onChange({ steps: rows }),
-    createEmptyStep
-  );
+  // At least one step is required, so the last row can't be removed
+  const { containerRef, add, update, move, remove, canRemove } =
+    useRowList<StepRow>(
+      steps,
+      (rows) => onChange({ steps: rows }),
+      createEmptyStep,
+      { minRows: 1 }
+    );
 
   return (
     <EditableRowList
@@ -88,6 +91,7 @@ export function RecipeFormSteps({
                   rowLabel={`step ${number}`}
                   canMoveUp={index > 0}
                   canMoveDown={index < steps.length - 1}
+                  canRemove={canRemove}
                   onMove={(direction) => move(index, direction)}
                   onRemove={() => remove(index)}
                 />
