@@ -1,37 +1,37 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import Link from "next/link"
-import type { Recipe } from "@/app/types/recipe"
-import { RecipeImage } from "@/app/components/ui/RecipeImage"
-import { RecipeMeta } from "@/app/components/features/RecipeMeta"
-import { TagList } from "@/app/components/features/TagList"
-import { FavoriteButton } from "@/app/components/ui/FavoriteButton"
+import Link from 'next/link';
+import type { Recipe } from '@/app/types/recipe';
+import { RecipeImage } from '@/app/components/ui/RecipeImage';
+import { RecipeMeta } from '@/app/components/features/RecipeMeta';
+import { TagList } from '@/app/components/features/TagList';
+import { FavoriteButton } from '@/app/components/ui/FavoriteButton';
+import { useFavorites } from '@/app/components/features/FavoritesProvider';
 
 type RecipeCardProps = {
   recipe: Pick<
     Recipe,
-    | "id"
-    | "title"
-    | "description"
-    | "image"
-    | "category"
-    | "prepTime"
-    | "cookTime"
-    | "servings"
-    | "difficulty"
-    | "tags"
-  >
-  isLoggedIn?: boolean
-}
+    | 'id'
+    | 'title'
+    | 'description'
+    | 'image'
+    | 'category'
+    | 'prepTime'
+    | 'cookTime'
+    | 'servings'
+    | 'difficulty'
+    | 'tags'
+  >;
+  onOpen?: () => void;
+};
 
-export function RecipeCard({ recipe, isLoggedIn = false }: RecipeCardProps) {
-  // Placeholder: saving and removing likes is a separate issue
-  const [isLiked, setIsLiked] = useState(false)
+export function RecipeCard({ recipe, onOpen }: RecipeCardProps) {
+  // null when the user is logged out, so no heart is shown
+  const favorites = useFavorites();
 
-  const href = `/recipes/${recipe.id}`
-  const title = recipe.title?.trim() || "Untitled recipe"
-  const description = recipe.description?.trim()
+  const href = `/recipes/${recipe.id}`;
+  const title = recipe.title?.trim() || 'Untitled recipe';
+  const description = recipe.description?.trim();
 
   return (
     <article className="relative flex h-full flex-col overflow-hidden rounded-2xl bg-white has-[a:focus-visible]:outline-3 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-primary">
@@ -40,9 +40,10 @@ export function RecipeCard({ recipe, isLoggedIn = false }: RecipeCardProps) {
       {/* z-10 keeps the heart above the clickable area of the title link */}
       <FavoriteButton
         className="z-10"
-        isLiked={isLiked}
-        onToggle={() => setIsLiked((value) => !value)}
-        isLoggedIn={isLoggedIn}
+        label={`Save ${title} to favorites`}
+        isLiked={favorites?.isFavorite(recipe.id) ?? false}
+        onToggle={() => favorites?.toggleFavorite(recipe.id, title)}
+        isLoggedIn={favorites !== null}
       />
 
       <div className="flex flex-1 flex-col gap-6 p-4">
@@ -59,6 +60,7 @@ export function RecipeCard({ recipe, isLoggedIn = false }: RecipeCardProps) {
               {/* The ::after layer makes the whole card clickable */}
               <Link
                 href={href}
+                onClick={onOpen}
                 className="after:absolute after:inset-0 focus-visible:outline-none"
               >
                 {title}
@@ -66,7 +68,7 @@ export function RecipeCard({ recipe, isLoggedIn = false }: RecipeCardProps) {
             </h3>
 
             {description && (
-              <p className="line-clamp-2 wrap-break-word text-sm leading-5 text-oat-800">
+              <p className="line-clamp-2 wrap-break-word text-sm leading-5 text-nori-400">
                 {description}
               </p>
             )}
@@ -78,5 +80,5 @@ export function RecipeCard({ recipe, isLoggedIn = false }: RecipeCardProps) {
         </div>
       </div>
     </article>
-  )
+  );
 }

@@ -1,8 +1,22 @@
 import type { Comment, Recipe } from "../types/recipe";
 import { BASE_URL } from "./config";
 
+export class RecipeNotFoundError extends Error {
+  constructor() {
+    super("Recipe not found");
+    this.name = "RecipeNotFoundError";
+  }
+}
+
+// The recipe list is the same for everyone, so it's cached for 60 seconds.
+// Pages then get it without waiting for the API on every visit; new or
+// changed recipes can take up to a minute to show up in the lists.
+const RECIPES_REVALIDATE_SECONDS = 60;
+
 export async function fetchRecipes(): Promise<Recipe[]> {
-  const response = await fetch(`${BASE_URL}/recipe-book/recipes`);
+  const response = await fetch(`${BASE_URL}/recipe-book/recipes`, {
+    next: { revalidate: RECIPES_REVALIDATE_SECONDS },
+  });
   if (!response.ok) {
     throw new Error("Failed to fetch recipes");
   }
@@ -13,6 +27,10 @@ export async function fetchRecipes(): Promise<Recipe[]> {
 
 export async function fetchRecipe(id: string): Promise<Recipe> {
   const response = await fetch(`${BASE_URL}/recipe-book/recipes/${id}`);
+  // 400 is returned for ids that aren't valid, 404 for ids that don't exist
+  if (response.status === 400 || response.status === 404) {
+    throw new RecipeNotFoundError();
+  }
   if (!response.ok) {
     throw new Error("Failed to fetch recipe");
   }
@@ -23,7 +41,7 @@ export async function fetchRecipe(id: string): Promise<Recipe> {
 
 export async function fetchComments(recipeId: string): Promise<Comment[]> {
   const response = await fetch(
-    `${BASE_URL}/recipe-book/recipes/${recipeId}/comments`,
+    `${BASE_URL}/recipe-book/recipes/${recipeId}/comments`
   );
   if (!response.ok) {
     throw new Error("Failed to fetch comments");

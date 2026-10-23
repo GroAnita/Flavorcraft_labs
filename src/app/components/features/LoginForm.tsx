@@ -41,12 +41,17 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+    <form
+      onSubmit={handleSubmit}
+      noValidate
+      className="flex flex-col gap-4 md:gap-6"
+    >
       <FormField
         label="Email"
         type="email"
         name="email"
-        autoComplete="email"
+        // Matches the register form, so the saved email is filled in here
+        autoComplete="username"
         placeholder="Example@email.com"
         required
         disabled={isLoading}

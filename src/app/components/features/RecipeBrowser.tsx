@@ -1,75 +1,256 @@
-"use client";
+'use client';
 
-import { RecipeCard } from "@/app/components/features/RecipeCard";
-import { FilterGroup } from "@/app/components/ui/FilterGroup";
-import { SavedRecipesLink } from "@/app/components/ui/SavedRecipesLink";
-import { useRecipeFilters } from "@/app/hooks/useRecipeFilters";
+import { useRef } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowLeft, SlidersHorizontal, X } from 'lucide-react';
+import { RecipeCard } from '@/app/components/features/RecipeCard';
+import { Dropdown } from '@/app/components/ui/Dropdown';
+import { RecipeFilterSidebar } from '@/app/components/features/RecipeFilterSidebar';
+import { useRecipeFilters } from '@/app/hooks/useRecipeFilters';
 import {
-  RECIPE_FILTER_GROUPS,
+  SORT_OPTIONS,
   filterRecipes,
-  getGroupOptionsWithCounts,
-} from "@/app/lib/recipeFilters";
-import type { Recipe } from "@/app/types/recipe";
+  getFilterLabel,
+  searchRecipes,
+  sortRecipes,
+  type SortValue,
+} from '@/app/lib/recipeFilters';
+import type { Recipe } from '@/app/types/recipe';
+import { trackClarityEvent } from '@/app/components/analytics/trackClarityEvent';
 
 type RecipeBrowserProps = {
   recipes: Recipe[];
+  isLoggedIn: boolean;
 };
 
-export function RecipeBrowser({ recipes }: RecipeBrowserProps) {
+// Shortcuts shown in the Suggestion row, using the same values as the sidebar
+const SUGGESTIONS = [
+  'tag:quick',
+  'difficulty:easy',
+  'category:lunch',
+  'category:dinner',
+  'category:dessert',
+  'tag:cake',
+];
+
+type SortSelectProps = {
+  value: SortValue;
+  onChange: (value: SortValue) => void;
+  className?: string;
+};
+
+// Sort menu above the results, using the shared Dropdown
+function SortSelect({ value, onChange, className = '' }: SortSelectProps) {
+  return (
+    <Dropdown
+      options={SORT_OPTIONS}
+      value={value}
+      onChange={onChange}
+      ariaLabel="Sort recipes"
+      className={className}
+      buttonClassName="border border-thyme-500 bg-salt-50 px-3.25 py-2 font-medium text-thyme-500 focus-visible:border-basil-500"
+    />
+  );
+}
+
+export function RecipeBrowser({ recipes, isLoggedIn }: RecipeBrowserProps) {
   // Shared state for every group, so equivalent options stay in sync
-  const { selected, toggle, clear } = useRecipeFilters();
-  const results = filterRecipes(recipes, selected);
+  const { selected, search, sort, toggle, clearAll, setSort } =
+    useRecipeFilters();
+  // Search and filters combine: a recipe must match both
+  const results = sortRecipes(
+    filterRecipes(searchRecipes(recipes, search), selected),
+    sort,
+  );
+  // Native <dialog> traps focus, closes on Escape and hides the page behind it
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  const sidebar = (
+    <RecipeFilterSidebar
+      recipes={recipes}
+      selected={selected}
+      onChange={toggle}
+      isLoggedIn={isLoggedIn}
+    />
+  );
 
   return (
-    <>
-      {/* Basic layout; the styled sidebar comes in card 6 */}
-      <aside
-        aria-label="Filters"
-        className="flex flex-col gap-4 md:w-80.5 md:shrink-0"
-      >
-        <SavedRecipesLink />
-
-        {RECIPE_FILTER_GROUPS.map((group) => (
-          <FilterGroup
-            key={group.id}
-            title={group.title}
-            // Counts are based on all recipes
-            options={getGroupOptionsWithCounts(group, recipes)}
-            selectedValues={selected}
-            onChange={toggle}
-            defaultOpen={group.defaultOpen}
+    <div className="flex flex-col gap-10 md:gap-14">
+      <div className="flex flex-col">
+        {/* Active filters, and the sort menu on desktop */}
+        <div
+          className={`mb-4 items-center gap-4 md:mb-6 ${
+            selected.length > 0 ? 'flex' : 'hidden md:flex'
+          }`}
+        >
+          {selected.length > 0 && (
+            <ul aria-label="Active filters" className="flex flex-wrap gap-4">
+              {selected.map((value) => {
+                const label = getFilterLabel(value) ?? value;
+                return (
+                  <li key={value}>
+                    <button
+                      type="button"
+                      onClick={() => toggle(value, false)}
+                      aria-label={`Remove filter: ${label}`}
+                      className="inline-flex h-7 items-center gap-1 rounded-lg border border-mint-600 bg-mint-500 py-1 pr-2 pl-3 font-aptly text-sm leading-5 font-medium text-basil-500 hover:bg-mint-600"
+                    >
+                      {label}
+                      <X
+                        aria-hidden="true"
+                        strokeWidth={2.25}
+                        className="size-4"
+                      />
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+          <SortSelect
+            value={sort}
+            onChange={setSort}
+            className="hidden w-50 shrink-0 md:ml-auto md:block"
           />
-        ))}
-      </aside>
+        </div>
 
-      <section aria-label="Recipe results" className="flex-1">
-        <p aria-live="polite" className="sr-only">
-          {results.length} {results.length === 1 ? "recipe" : "recipes"} found
-        </p>
+        {/* Mobile: filter button and sort menu share a row */}
+        <div className="mb-6 flex gap-2 md:hidden">
+          <button
+            type="button"
+            onClick={() => dialogRef.current?.showModal()}
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-thyme-500 bg-salt-50 px-3.25 py-2.5 text-sm leading-none font-medium text-thyme-500"
+          >
+            <SlidersHorizontal aria-hidden="true" className="size-4.5" />
+            Filter{selected.length > 0 && ` (${selected.length})`}
+          </button>
+          <SortSelect value={sort} onChange={setSort} className="flex-1" />
+        </div>
 
-        {results.length === 0 ? (
-          <div className="flex flex-col items-center gap-4 rounded-lg bg-surface p-6 text-center">
-            <p className="text-muted-foreground">
-              No recipes match your filters.
-            </p>
-            <button
-              type="button"
-              onClick={clear}
-              className="inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-semibold text-salt-500 hover:bg-basil-700"
-            >
-              Clear filters
-            </button>
+        <div className="flex flex-col gap-4 text-sm leading-none md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-4">
+            <span className="text-nori-200">Suggestion:</span>
+            {/* role="list" keeps the list semantics that display: contents can remove */}
+            <ul role="list" aria-label="Suggested filters" className="contents">
+              {SUGGESTIONS.map((value) => {
+                const isActive = selected.includes(value);
+                return (
+                  <li key={value}>
+                    <button
+                      type="button"
+                      onClick={() => toggle(value, !isActive)}
+                      aria-pressed={isActive}
+                      className={`font-medium text-basil-500 hover:underline ${
+                        isActive ? 'underline underline-offset-4' : ''
+                      }`}
+                    >
+                      {getFilterLabel(value)}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-        ) : (
-          <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {results.map((recipe) => (
-              <li key={recipe.id}>
-                <RecipeCard recipe={recipe} />
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-    </>
+
+          <p role="status" className="text-nori-200">
+            <span className="font-semibold text-nori-500">
+              {results.length}
+            </span>{' '}
+            {results.length === 1 ? 'result' : 'results'}
+            {search && <> for &ldquo;{search}&rdquo;</>}
+          </p>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-6 md:flex-row">
+        {/* Desktop: sidebar next to the results */}
+        <aside
+          aria-label="Filters"
+          className="hidden md:block md:w-80.5 md:shrink-0"
+        >
+          {sidebar}
+        </aside>
+
+        {/* Mobile: the filters open as a full-screen overlay */}
+        <dialog
+          ref={dialogRef}
+          aria-labelledby="mobile-filters-title"
+          className="m-0 h-full max-h-none w-full max-w-none overscroll-contain bg-salt-500 p-6 md:hidden"
+        >
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => dialogRef.current?.close()}
+                aria-label="Close filters"
+                className="flex size-8 items-center justify-center rounded-lg text-truffle-500"
+              >
+                <ArrowLeft aria-hidden="true" className="size-5" />
+              </button>
+              <h2
+                id="mobile-filters-title"
+                className="text-2xl leading-none font-medium text-truffle-500"
+              >
+                Filter recipes
+              </h2>
+            </div>
+            {sidebar}
+          </div>
+        </dialog>
+
+        <section aria-label="Recipe results" className="flex-1">
+          {results.length === 0 ? (
+            // -mt-4 gives 24px (mobile) / 40px (desktop) up to the result count
+            <div className="-mt-4 flex flex-col items-center text-center">
+              <Image
+                src="/images/categories/no-results.png"
+                alt=""
+                width={402}
+                height={263}
+                className="h-auto w-70 md:w-100.5"
+              />
+              <h2 className="mt-8 text-[2rem] leading-none font-medium tracking-[0.01em] text-truffle-500">
+                No recipes matched the search or filter.
+              </h2>
+              <p className="mt-6 text-sm leading-tight tracking-[0.01em] text-nori-400 md:max-w-80">
+                Try again with other words, remove the filter or choose another
+                page.
+              </p>
+              <div className="mt-6 flex flex-wrap justify-center gap-4">
+                <Link
+                  href="/"
+                  className="inline-flex h-9 items-center rounded-lg bg-basil-500 px-3 py-1.5 text-sm leading-6 font-semibold text-mint-500 hover:bg-basil-700"
+                >
+                  Look at other recipes
+                </Link>
+                <button
+                  type="button"
+                  onClick={clearAll}
+                  className="inline-flex h-9 items-center rounded-lg border border-basil-500 px-3 py-1.5 text-sm leading-6 font-semibold text-basil-500 hover:bg-mint-500"
+                >
+                  Clear search &amp; filters
+                </button>
+              </div>
+            </div>
+          ) : (
+            <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {results.map((recipe) => (
+                <li key={recipe.id}>
+                  <RecipeCard
+                    recipe={recipe}
+                    onOpen={
+                      search.trim()
+                        ? () => trackClarityEvent('recipe_opened_from_search')
+                        : undefined
+                    }
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+    </div>
   );
 }

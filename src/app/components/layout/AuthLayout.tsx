@@ -1,5 +1,5 @@
-import Image from "next/image";
-import type { ReactNode } from "react";
+import Image from 'next/image';
+import type { ReactNode } from 'react';
 
 type AuthLayoutProps = {
   heading: string;
@@ -15,7 +15,8 @@ export default function AuthLayout({
   children,
 }: AuthLayoutProps) {
   return (
-    <main className="mx-auto grid w-full max-w-6xl flex-1 gap-6 px-5 py-6 md:grid-cols-2 md:items-center md:gap-16 md:px-8 md:py-10">
+    // Desktop: two 668px columns at 1440px (40px sides, 24px gap), as in Figma
+    <main className="mx-auto grid w-full max-w-360 flex-1 gap-6 px-5 py-6 md:grid-cols-2 md:items-center md:px-10">
       <div className="relative h-45 overflow-hidden rounded-2xl md:aspect-3/4 md:h-auto">
         <Image
           src={imageSrc}
@@ -31,7 +32,7 @@ export default function AuthLayout({
           <h1 className="text-3xl leading-none font-medium text-truffle-500 md:text-4xl">
             {heading}
           </h1>
-          <p className="text-sm leading-tight text-oat-800 md:text-lg">
+          <p className="text-sm leading-tight text-nori-400 md:text-lg">
             {description}
           </p>
         </div>

@@ -1,14 +1,20 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Check } from "lucide-react";
+import { useState, type ReactNode } from 'react';
+import { Check } from 'lucide-react';
 
 type InstructionsListProps = {
   recipeId: string;
   steps: string[];
+  // Shown next to the heading, e.g. the keep-screen-on toggle
+  headerAction?: ReactNode;
 };
 
-export function InstructionsList({ recipeId, steps }: InstructionsListProps) {
+export function InstructionsList({
+  recipeId,
+  steps,
+  headerAction,
+}: InstructionsListProps) {
   const [completed, setCompleted] = useState<Set<number>>(new Set());
   const [prevRecipeId, setPrevRecipeId] = useState(recipeId);
 
@@ -33,9 +39,13 @@ export function InstructionsList({ recipeId, steps }: InstructionsListProps) {
       aria-labelledby="instructions-heading"
       className="flex flex-col gap-4"
     >
-      <h2 id="instructions-heading" className="text-3xl text-truffle-500">
-        Instructions <span className="text-thyme-400">({steps.length})</span>
-      </h2>
+      {/* Under each other on mobile, side by side from md */}
+      <div className="flex flex-col items-start gap-3 md:flex-row md:flex-wrap md:items-center md:justify-between md:gap-x-6">
+        <h2 id="instructions-heading" className="text-3xl text-truffle-500">
+          Instructions <span className="text-nori-400">({steps.length})</span>
+        </h2>
+        {headerAction}
+      </div>
 
       {steps.length === 0 ? (
         <p className="rounded-lg bg-surface p-4 text-muted-foreground">
@@ -66,7 +76,7 @@ export function InstructionsList({ recipeId, steps }: InstructionsListProps) {
                   <span
                     aria-hidden="true"
                     className={`flex size-5 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white ${
-                      isDone ? "bg-sprout-500" : "bg-primary"
+                      isDone ? 'bg-sprout-500' : 'bg-primary'
                     }`}
                   >
                     {index + 1}
@@ -74,7 +84,7 @@ export function InstructionsList({ recipeId, steps }: InstructionsListProps) {
 
                   <span
                     className={`text-sm md:text-base ${
-                      isDone ? "text-sprout-500 line-through" : ""
+                      isDone ? 'text-sprout-500 line-through' : ''
                     }`}
                   >
                     <span className="sr-only">Step {index + 1}: </span>

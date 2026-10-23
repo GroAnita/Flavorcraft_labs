@@ -1,43 +1,43 @@
-import { Fragment, type ReactNode } from "react";
-import { Clock, CookingPot, MessageCircle, User } from "lucide-react";
-import type { Recipe } from "@/app/types/recipe";
-import { Avatar } from "@/app/components/ui/Avatar";
-import { Badge } from "@/app/components/ui/Badge";
+import { Fragment, type ReactNode } from 'react';
+import { Clock, CookingPot, MessageCircle, User } from 'lucide-react';
+import type { Recipe } from '@/app/types/recipe';
+import { Avatar } from '@/app/components/ui/Avatar';
+import { Badge } from '@/app/components/ui/Badge';
 
 export type RecipeOverviewProps = Pick<
   Recipe,
-  | "title"
-  | "description"
-  | "prepTime"
-  | "cookTime"
-  | "servings"
-  | "difficulty"
-  | "category"
-  | "tags"
-  | "owner"
+  | 'title'
+  | 'description'
+  | 'prepTime'
+  | 'cookTime'
+  | 'servings'
+  | 'difficulty'
+  | 'category'
+  | 'tags'
+  | 'owner'
 > & {
   // Pass recipe.comments.length. Hidden when not passed
   commentCount?: number;
-  // Edit and delete buttons for the owner, added in the recipe actions issue
+  // Edit and delete buttons, only passed when the logged in user owns the recipe
   ownerActions?: ReactNode;
 };
 
 const difficultyLabels = {
-  easy: "Easy",
-  medium: "Medium",
-  hard: "Hard",
+  easy: 'Easy',
+  medium: 'Medium',
+  hard: 'Hard',
 } as const;
 
 type Level = keyof typeof difficultyLabels;
 
 function toLevel(difficulty?: string | null): Level | null {
   const value = difficulty?.trim().toLowerCase();
-  if (value === "easy" || value === "medium" || value === "hard") return value;
+  if (value === 'easy' || value === 'medium' || value === 'hard') return value;
   return null;
 }
 
 function isAvailable(value?: number | null): value is number {
-  return typeof value === "number" && value > 0;
+  return typeof value === 'number' && value > 0;
 }
 
 type MetaItem = {
@@ -47,7 +47,7 @@ type MetaItem = {
 };
 
 // Same icon size and separator style as RecipeMeta on the recipe card
-const iconClass = "size-[18px] shrink-0";
+const iconClass = 'size-[18px] shrink-0';
 
 export function RecipeOverview({
   title,
@@ -70,7 +70,7 @@ export function RecipeOverview({
   const seen = new Set(
     [difficultyText, categoryText]
       .filter((value): value is string => Boolean(value))
-      .map((value) => value.toLowerCase())
+      .map((value) => value.toLowerCase()),
   );
   const uniqueTags = (tags ?? [])
     .map((tag) => tag.trim())
@@ -85,36 +85,36 @@ export function RecipeOverview({
 
   if (isAvailable(prepTime)) {
     meta.push({
-      key: "prep",
+      key: 'prep',
       icon: <Clock aria-hidden="true" className={iconClass} />,
       text: `Prep: ${prepTime} min`,
     });
   }
   if (isAvailable(cookTime)) {
     meta.push({
-      key: "cook",
+      key: 'cook',
       icon: <CookingPot aria-hidden="true" className={iconClass} />,
       text: `Cook: ${cookTime} min`,
     });
   }
   if (isAvailable(servings)) {
     meta.push({
-      key: "servings",
+      key: 'servings',
       icon: <User aria-hidden="true" className={iconClass} />,
-      text: `${servings} ${servings === 1 ? "serving" : "servings"}`,
+      text: `${servings} ${servings === 1 ? 'serving' : 'servings'}`,
     });
   }
   // 0 is shown too, so users can see that nobody has commented yet
-  if (typeof commentCount === "number" && commentCount >= 0) {
+  if (typeof commentCount === 'number' && commentCount >= 0) {
     meta.push({
-      key: "comments",
+      key: 'comments',
       icon: <MessageCircle aria-hidden="true" className={iconClass} />,
-      text: `${commentCount} ${commentCount === 1 ? "comment" : "comments"}`,
+      text: `${commentCount} ${commentCount === 1 ? 'comment' : 'comments'}`,
     });
   }
 
   const hasBadges = Boolean(
-    difficultyText || categoryText || uniqueTags.length
+    difficultyText || categoryText || uniqueTags.length,
   );
 
   return (
@@ -161,7 +161,7 @@ export function RecipeOverview({
           </h1>
 
           {description?.trim() && (
-            <p className="text-base wrap-break-word leading-[1.2] text-oat-800 md:leading-6">
+            <p className="text-base wrap-break-word leading-[1.2] text-nori-400 md:leading-6">
               {description}
             </p>
           )}
@@ -194,7 +194,7 @@ export function RecipeOverview({
             <p className="truncate font-aptly text-xl font-medium leading-6 text-foreground">
               {owner.name}
             </p>
-            <p className="truncate text-base leading-tight text-oat-800">
+            <p className="truncate text-base leading-tight text-nori-400">
               @{owner.name}
             </p>
           </div>

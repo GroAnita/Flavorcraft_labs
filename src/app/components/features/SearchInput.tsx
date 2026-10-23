@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { useSetSearchParam } from "@/app/hooks/useSetSearchParam";
+import { trackClarityEvent } from "@/app/components/analytics/trackClarityEvent";
 
 const DEBOUNCE_MS = 300;
 
@@ -25,6 +26,7 @@ export default function SearchInput({
   const [value, setValue] = useState(urlSearch);
   const [prevUrlSearch, setPrevUrlSearch] = useState(urlSearch);
   const isResultsPage = pathname === resultsPath;
+  const lastTrackedSearch = useRef<string | null>(null);
 
   // Keep the input in sync when the URL changes from outside (e.g. back
   // button or clicking the logo), without overwriting what is being typed.
@@ -33,24 +35,54 @@ export default function SearchInput({
     if (urlSearch !== value.trim()) setValue(urlSearch);
   }
 
+  const trackSearch = useCallback((query: string) => {
+    if (!query) {
+      lastTrackedSearch.current = null;
+      return;
+    }
+
+    if (lastTrackedSearch.current === query) {
+      return;
+    }
+
+    trackClarityEvent("recipe_searched");
+    lastTrackedSearch.current = query;
+  }, []);
+
   useEffect(() => {
     if (!isResultsPage) return;
+
     const trimmedValue = value.trim();
     if (trimmedValue === urlSearch) return;
-    const id = setTimeout(() => setParam("search", trimmedValue), DEBOUNCE_MS);
+
+    const id = setTimeout(() => {
+      setParam("search", trimmedValue);
+
+      trackSearch(trimmedValue);
+    }, DEBOUNCE_MS);
+
     return () => clearTimeout(id);
-  }, [value, urlSearch, setParam, isResultsPage]);
+  }, [value, urlSearch, setParam, isResultsPage, trackSearch]);
 
   function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
+
     const trimmedValue = value.trim();
+
     if (isResultsPage) {
-      if (trimmedValue !== urlSearch) setParam("search", trimmedValue);
+      if (trimmedValue !== urlSearch) {
+        setParam("search", trimmedValue);
+
+        trackSearch(trimmedValue);
+      }
       return;
     }
     const query = trimmedValue
       ? `?${new URLSearchParams({ search: trimmedValue })}`
       : "";
+
+    trackSearch(trimmedValue);
+
     push(`${resultsPath}${query}`);
   }
 

@@ -23,7 +23,9 @@ export function createRecipeJsonLd(recipe: Recipe) {
     keywords: recipe.tags.join(", "),
     description: recipe.description,
     recipeIngredient: recipe.ingredients.map((ingredient) => {
-      return `${ingredient.quantity} ${ingredient.unit} ${ingredient.name}`.trim();
+      return [ingredient.quantity, ingredient.unit, ingredient.name]
+        .filter((value) => value !== "" && value != null)
+        .join(" ");
     }),
     recipeInstructions: recipe.instructions.map((instruction) => {
       return {

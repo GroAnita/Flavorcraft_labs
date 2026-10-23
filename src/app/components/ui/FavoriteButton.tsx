@@ -62,11 +62,11 @@ export function FavoriteButton({
       aria-pressed={isLiked}
       aria-disabled={disabled || undefined}
       onClick={handleClick}
-      className={`absolute right-3 top-3 flex size-8 items-center justify-center rounded-xl bg-oat-500 text-truffle-500 ${className}`}
+      className={`absolute right-3 top-3 flex size-10 items-center justify-center rounded-xl bg-oat-300 text-truffle-500 hover:bg-oat-500 ${className}`}
     >
       <Heart
         aria-hidden="true"
-        className={`size-4 ${isLiked ? "fill-current" : "fill-none"}`}
+        className={`size-5 ${isLiked ? "fill-current" : "fill-none"}`}
       />
     </button>
   );

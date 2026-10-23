@@ -8,6 +8,8 @@ export type RecipeFilterOption = {
   label: string;
   value: string;
   matches: (recipe: Recipe) => boolean;
+  // Field to combine with when it differs from the value's own field
+  combineWith?: string;
 };
 
 export type RecipeFilterGroup = {
@@ -67,6 +69,8 @@ const CAKES: RecipeFilterOption = {
   label: "Cakes",
   value: "tag:cake",
   matches: (r) => hasTag(r, "cake", "cakes"),
+  // Shown as a meal type, so "Dinner + Cakes" means Dinner OR Cakes
+  combineWith: "category",
 };
 const MEAT: RecipeFilterOption = {
   label: "Meat",
@@ -316,6 +320,11 @@ export function parseFilters(param: string | null): string[] {
   return [...new Set(values)];
 }
 
+// Display label for a filter value, e.g. "difficulty:easy" → "Easy"
+export function getFilterLabel(value: string): string | undefined {
+  return OPTIONS_BY_VALUE.get(value)?.label;
+}
+
 export function serializeFilters(values: string[]): string {
   return values.join(",");
 }
@@ -352,6 +361,60 @@ export function tagToFilterValue(text: string): string | null {
   return null;
 }
 
+// --- Sorting ---
+
+export const SORT_OPTIONS = [
+  { value: "trending", label: "Trending" },
+  { value: "newest", label: "Newest" },
+  { value: "quickest", label: "Quickest" },
+  { value: "a-z", label: "A–Z" },
+] as const;
+
+export type SortValue = (typeof SORT_OPTIONS)[number]["value"];
+
+export const DEFAULT_SORT: SortValue = "trending";
+
+// Reads the "sort" URL parameter; unknown values fall back to the default
+export function parseSort(param: string | null): SortValue {
+  return SORT_OPTIONS.find((option) => option.value === param)?.value ?? DEFAULT_SORT;
+}
+
+export function sortRecipes(recipes: Recipe[], sort: SortValue): Recipe[] {
+  const sorted = [...recipes];
+  switch (sort) {
+    case "trending":
+      // Most favorited first; the API has no "trending" value
+      return sorted.sort(
+        (a, b) => (b._count?.favorites ?? 0) - (a._count?.favorites ?? 0),
+      );
+    case "newest":
+      return sorted.sort(
+        (a, b) => new Date(b.created).getTime() - new Date(a.created).getTime(),
+      );
+    case "quickest":
+      // Recipes without time info (0 min) go last
+      return sorted.sort(
+        (a, b) =>
+          (totalTime(a) || Infinity) - (totalTime(b) || Infinity),
+      );
+    case "a-z":
+      return sorted.sort((a, b) => a.title.localeCompare(b.title));
+  }
+}
+
+// Search in title, description and tags. Case-insensitive and ignores
+// surrounding spaces, so "  Pasta " finds the same recipes as "pasta".
+export function searchRecipes(recipes: Recipe[], term: string): Recipe[] {
+  const query = normalize(term);
+  if (!query) return recipes;
+
+  return recipes.filter((recipe) =>
+    [recipe.title, recipe.description, ...(recipe.tags ?? [])].some((text) =>
+      normalize(text).includes(query),
+    ),
+  );
+}
+
 // Different fields combine with AND (Dinner AND Easy)
 export function filterRecipes(recipes: Recipe[], selected: string[]): Recipe[] {
   if (selected.length === 0) return recipes;
@@ -360,7 +423,7 @@ export function filterRecipes(recipes: Recipe[], selected: string[]): Recipe[] {
   for (const value of selected) {
     const option = OPTIONS_BY_VALUE.get(value);
     if (!option) continue;
-    const field = fieldOf(value);
+    const field = option.combineWith ?? fieldOf(value);
     byField.set(field, [...(byField.get(field) ?? []), option]);
   }
 

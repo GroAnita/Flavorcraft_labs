@@ -4,7 +4,13 @@ import { LoginForm } from "@/app/components/features/LoginForm";
 import AlternativeAuth from "@/app/components/ui/AlternativeAuth";
 
 export const metadata: Metadata = {
-  title: "Login | FlavorCraft Labs",
+  title: "Login",
+  description:
+    "Sign in to FlavorCraft Labs to access your favorite recipes and continue your cooking journey.",
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function LoginPage() {

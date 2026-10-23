@@ -1,10 +1,11 @@
-import Image from "next/image";
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function HeroSection() {
   return (
     <section className="relative w-full z-10 bg-salt-500 pt-6 md:flex md:aspect-595/219 md:items-center md:pt-0 md:pb-6">
       <div className="relative z-10 container mx-auto px-6">
-        <p className="text-xs uppercase tracking-wide font-medium text-basil-300 md:text-sm">
+        <p className="text-xs uppercase tracking-wide font-medium text-basil-400 md:text-sm">
           Let&apos;s make something delicious
         </p>
         <h1 className="mt-1 text-[2.5rem] leading-tight font-bold text-basil-500 md:text-5xl">
@@ -14,12 +15,13 @@ export default function HeroSection() {
           Discover your next favourite meal, find inspiration for tonight, and
           make something delicious.
         </p>
-        <a
+        {/* Link navigates inside the app without reloading the whole page */}
+        <Link
           href="/recipes"
           className="mt-6 inline-flex h-9 items-center rounded-md bg-basil-500 px-4 font-semibold text-salt-500 transition-colors hover:bg-basil-600"
         >
           Look at recipes
-        </a>
+        </Link>
       </div>
 
       {/* Mobile */}

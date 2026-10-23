@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Heart } from "lucide-react";
 
 type SavedRecipesLinkProps = {
-  // TODO: send logged-out users to /login (with the destination) once session handling is in place
+  // Pass "/login" for logged-out users (see RecipeFilterSidebar)
   href?: string;
 };
 
