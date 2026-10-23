@@ -348,7 +348,7 @@ Although the Accessibility score remained consistently high at 97/100, the ident
 | Hero label (`bg-salt-500`)           | `text-basil-300` (#628d78): 3.44:1 | `text-basil-400` (#44775d): 4.76:1 | Passes          |
 | Recipe card description (`bg-white`) | `text-oat-800` (#807d74): 4.11:1   | `text-nori-400` (#434d48): 8.77:1  | Passes          |
 
-**Re-measured (23 October 2026):** A mobile Lighthouse Accessibility audit of the homepage on the `develop` deployment scored **100/100**, up from 97. The color contrast audit now passes. Desktop was not re-measured. The report was not saved.
+**Re-measured (23 October 2026):** A mobile Lighthouse audit of the homepage on the `develop` deployment scored Accessibility **100/100**, up from 97, and the color contrast audit now passes. The same run scored Performance 88, Best Practices 96 and SEO 100. Desktop was not re-measured. Report: [homepage-mobile-2026-10-23.html](lighthouse-reports/homepage-mobile-2026-10-23.html).
 
 ## Additional Page Audits
 
