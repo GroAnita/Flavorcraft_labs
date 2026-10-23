@@ -44,6 +44,7 @@ This condensed log is made by Claude Code (Anthropic), and reviewed by the team,
 - **Expired sessions in forms:** Server Actions return `needsLogin: true` and **do not change cookies**, because changing a cookie refreshes the page and would close the modal and lose the user's input. Users get a "Log in again (opens in a new tab)" link. _(AI-049, AI-059)_
 - **Profile area:** the `(profile)` route group shares a layout (sidebar, navigation, redirect to login) for `/profile`, `/profile/recipes`, `/profile/settings` and `/favorites`. Profile form and diet choices are saved to `localStorage` per user with `useLocalStorage` (`useSyncExternalStore`). _(AI-016, AI-019)_
 - **Analytics:** Microsoft Clarity loads only after opt-in consent stored in `localStorage`. Withdrawing consent clears the Clarity cookies. The privacy modal uses Radix Dialog. _(AI-006, AI-012)_
+- **SEO metadata:** the root `layout.tsx` sets `metadataBase` (the production URL) and a default `openGraph` block (site name, `en_US` locale, default image) plus a `summary_large_image` Twitter card. Recipe pages define their own `openGraph`, which **replaces** the default instead of merging with it, so recipes without an image have no `og:image` (a deliberate choice). Recipe JSON-LD is rendered in the page body, which Google supports. _(AI-011, AI-046, AI-067)_
 - **Styling:** design tokens are defined in `globals.css` (`@theme`, 50–900 scale, Figma base = 500) and documented in `docs/styles.md`. Avoid arbitrary Tailwind values. The documented exceptions are `text-[2rem]`/`text-[2.5rem]` on the homepage and `bottom-[-2.1vw]` in the hero. _(AI-005, AI-023, AI-038)_
 
 ### Conventions the team settled on
@@ -69,29 +70,30 @@ These came up repeatedly. Check for them when you use AI on this codebase:
 - The comments API ignores `limit`/`page`, so comments are expanded client-side.
 - For login autofill, use `autoComplete="username"` on **email** fields and `nickname` on the registration username field. `"username email"` is not a valid value.
 
-### Open items (checked against the code on 2026-10-22)
+### Open items (checked against the code on 2026-10-23)
 
-| Item                                                                                                                                                                                                                                                                   | Source                     |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
-| Full `npm run lint` fails on `react-hooks/set-state-in-effect` in `HeroSection.tsx` and `AnalyticsManager.tsx`                                                                                                                                                         | AI-046–049                 |
-| Recipe **delete** for owners has not been implemented (edit has)                                                                                                                                                                                                       | AI-046, AI-059             |
-| Completed instruction text (`sprout-500`) has ~1.9:1 contrast, which fails WCAG 4.5:1                                                                                                                                                                                  | AI-053                     |
-| Badge clips descenders ("g", "y") because of `truncate` + `leading-none`                                                                                                                                                                                               | AI-058                     |
-| "Healthy" suggested tag has no matching filter                                                                                                                                                                                                                         | AI-058                     |
-| Create-recipe servings buttons should be 40px without changing the shared `ServingsControl`                                                                                                                                                                            | AI-048                     |
-| Remove test recipes created in the API during verification                                                                                                                                                                                                             | AI-049                     |
-| Header reads cookies, so every page is dynamic. A possible performance ticket                                                                                                                                                                                          | AI-029                     |
-| Rerun Lighthouse on the deployed site after the caching change                                                                                                                                                                                                         | AI-029                     |
-| Redirect back to the recipe after logging in from comments                                                                                                                                                                                                             | AI-041                     |
-| Social sign-in buttons are visual only (disabled). The Google icon needs a gradient SVG                                                                                                                                                                                | AI-022                     |
-| Pantry and Meal Planner are page shells with no content. The page title format still needs agreeing                                                                                                                                                                    | AI-044, AI-045             |
-| Profile sections My recipes and Settings are placeholders                                                                                                                                                                                                              | AI-016, AI-019             |
-| Footer social links go to the platforms' homepages, not FlavorCraft accounts. No Recipes dropdown                                                                                                                                                                      | AI-009                     |
-| Hero call-to-action is a plain `<a>`, not `next/link`                                                                                                                                                                                                                  | AI-063                     |
-| Validate recipe JSON-LD with Google Rich Results Test and Schema Markup Validator                                                                                                                                                                                      | AI-011                     |
-| AI tool and prompts for the Featured Recipe section are not documented                                                                                                                                                                                                 | AI-064                     |
-| **Designer confirmation pending:** mobile tabs and action buttons on detail page, sort dropdown, keep-screen-on "on" color, selected tag style and 30-char limit, comment count and order (3, newest first), ingredient decimals (`1` vs `1.0`), RecipeImage 2:1 ratio | various                    |
-| **Not yet tested:** Safari position of the hero illustration, screen reader on ServingsControl, Safari/Firefox and screen reader on the mobile menu, browser and screen reader on AlternativeAuth, Clarity on the deployed site                                        | AI-038, 052, 014, 061, 012 |
+| Item                                                                                                                                                                                                                                                                   | Source                        |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| **Lighthouse 90+ not met for mobile Performance** (average 86.3, range 81–92). Desktop 98 / 97 / 100 / 100. Mobile Accessibility re-measured at 100                                                                                                                    | AI-029, `lighthouse-audit.md` |
+| Performance findings without a fix: both hero images have `priority` (both are downloaded), Adobe Fonts stylesheet still blocks rendering, external recipe images are `unoptimized`                                                                                    | `lighthouse-audit.md`         |
+| Header reads cookies, so every page is dynamic, and server response time is still flagged (700–900 ms)                                                                                                                                                                 | AI-029                        |
+| Recipe **delete** for owners has not been implemented (edit has)                                                                                                                                                                                                       | AI-046, AI-059                |
+| Completed instruction text (`sprout-500`) has ~1.9:1 contrast, which fails WCAG 4.5:1                                                                                                                                                                                  | AI-053                        |
+| Badge clips descenders ("g", "y") because of `truncate` + `leading-none`                                                                                                                                                                                               | AI-058                        |
+| "Healthy" suggested tag has no matching filter                                                                                                                                                                                                                         | AI-058                        |
+| Create-recipe servings buttons should be 40px without changing the shared `ServingsControl`                                                                                                                                                                            | AI-048                        |
+| Remove test recipes created in the API during verification                                                                                                                                                                                                             | AI-049                        |
+| Redirect back to the recipe after logging in from comments                                                                                                                                                                                                             | AI-041                        |
+| Social sign-in buttons are visual only (disabled). The Google icon needs a gradient SVG                                                                                                                                                                                | AI-022                        |
+| Meal Planner is a page shell with no content. The page title format still needs agreeing                                                                                                                                                                               | AI-045                        |
+| Profile sections My recipes and Settings are placeholders                                                                                                                                                                                                              | AI-016, AI-019                |
+| Footer social links go to the platforms' homepages, not FlavorCraft accounts. No Recipes dropdown                                                                                                                                                                      | AI-009                        |
+| SEO for future work: `sitemap.xml`, `robots.txt`, canonical URLs (especially `/recipes?filters=…`), Lighthouse audit of a recipe detail page                                                                                                                           | AI-067                        |
+| AI tool and prompts for the Featured Recipe section are not documented, and the Claude model in AI-063 is not confirmed                                                                                                                                                | AI-063, AI-064                |
+| **Designer confirmation pending:** mobile tabs and action buttons on detail page, sort dropdown, keep-screen-on "on" color, selected tag style and 30-char limit, comment count and order (3, newest first), ingredient decimals (`1` vs `1.0`), RecipeImage 2:1 ratio | various                       |
+| **Not yet tested:** Safari position of the hero illustration, screen reader on ServingsControl, Safari/Firefox and screen reader on the mobile menu, browser and screen reader on AlternativeAuth                                                                      | AI-038, 052, 014, 061         |
+
+**Resolved since 2026-10-22:** full `npm run lint` passes (#260, PR #262, which also switched the hero link to `next/link`), Lighthouse rerun on the deployed site (22–23 Oct), Pantry built as a full feature (PR #264), recipe JSON-LD validated with the Rich Results Test (21 Oct), Clarity consent and custom events verified after deployment (21 Oct), color contrast on the hero and recipe cards fixed (PR #273), default Open Graph metadata added (PR #271).
 
 ---
 
@@ -603,6 +605,16 @@ Date · GitHub user · Tool / model
 - ✔ Explicit `RecipePageProps` (generated types vanish with `.next`). ✘ Placeholder edit/delete buttons.
   **Verified:** card navigation, direct URL and refresh, logged in and out, favorites (repeat clicks, expired session, desktop/mobile sync), 404/error/loading, heading order, keyboard tabs, 1440/402px against Figma.
 
+#### AI-066 · Recipe page opening at the comments (#274, PR #275)
+
+2026-10-22 · GroAnita · Claude Code (VS Code), Opus 5.5
+**Prompt:** Find out, without changing code, why recipes clicked far down a page opened at the comments. Then create a ticket and branch, and fix it.
+
+- AI found the cause: the recipe loading screen was shorter than the viewport plus header, so the scroll position was clamped to its bottom and Next.js skipped scrolling to the top. When the recipe loaded, scroll anchoring pushed the view to the bottom.
+- ✔ `min-h-svh` on the recipe and recipes loading screens, with comments explaining why.
+- ✘ Forcing `window.scrollTo(0, 0)` on the recipe page (it would break the back button and works against Next.js).
+  **Verified:** reproduced on the `develop` site with Playwright. 10 automated checks at 1280/390px; the same test failed without the fix.
+
 ---
 
 ### 7. Favorites and Profile
@@ -717,7 +729,7 @@ Date · GitHub user · Tool / model
 
 ### 9. SEO and Analytics
 
-**Current state:** recipe JSON-LD is rendered on `/recipes/[id]` (`lib/seo/recipeJsonLd`). Clarity loads after consent, and the custom events (`recipe_searched`, `recipe_favorited`, …) are typed in `trackClarityEvent.ts`.
+**Current state:** recipe JSON-LD is rendered on `/recipes/[id]` (`lib/seo/recipeJsonLd`) and validated with the Rich Results Test. Every page has Open Graph and Twitter card metadata. Clarity loads after consent, and the custom events (`recipe_searched`, `recipe_favorited`, …) are typed in `trackClarityEvent.ts`. Audit results are in `src/app/docs/seo/lighthouse-audit.md`, and research, testing and handover are in `src/app/docs/seo/seo-analytics-research-and-planning.pdf`.
 
 #### AI-006 · SEO and analytics research and planning
 
@@ -752,3 +764,17 @@ Date · GitHub user · Tool / model
 - ✔ Clarity's AI summaries were used to find patterns in test users' recordings faster.
 - Human check: every issue in a summary was compared with the actual recording before it was reported. For example, when a dead click was reported, the recording was watched to confirm whether it was a real dead click.
   **Verified:** summaries checked against the recordings. Report contents checked against the team member's own findings.
+
+#### AI-067 · SEO & Analytics handover: AI log, Lighthouse audit, report review and Open Graph (#55, #56, #252)
+
+2026-10-21–23 · Tunegj (SEO & Analytics Lead) · Claude Code (VS Code), Opus 5.5
+**Prompt:** Shorten the AI log and check outstanding items against the code. Update the README and the Lighthouse audit from the saved reports. Review the SEO & Analytics report against the client brief. Show and review the code for default Open Graph metadata.
+
+- ✔ Created this condensed log and added dated status updates to the full log. AI found that AI-060 was missing from `AI_LOG.md` and restored it.
+- ✔ Lighthouse audit updated from the JSON in the saved reports. AI found that the 22 Oct runs tested the `develop` preview and that one "mobile" report was a desktop run. Human decision: keep the baseline of 46 with a note that the saved 16 Oct report (66) is a different run.
+- ✔ AI identified the likely cause of the double hero image download (`priority` on both images) and calculated the contrast ratios before and after PR #273.
+- Human decision: performance fixes belong to the development team. The SEO & Analytics Lead audits, reports and creates tickets.
+- ✔ Report review against the brief: outcomes per client requirement, mobile 90+ not met, no ratings in JSON-LD (no API data), JSON-LD in the body, heatmaps with limitations. AI flagged personal information before the PDF was committed. Human fix: removed a favorites row AI added to the follow-up table without a matching finding.
+- Human implementation of the Open Graph code, with AI's example as a guide and AI review. AI found the duplicated homepage brand in the title and a duplicated `alt:` key before commit. ✘ AI's suggested default image for recipes without one. Human fix: AI's claim that `og:title` would be missing on the homepage was wrong, as the production build showed.
+- ✘ Removing the `(pages)`/`(profile)` parentheses (they are route groups). Kept `AGENTS.md`/`CLAUDE.md`.
+  **Verified:** lint and build, Open Graph tags in a local production build, all audit numbers against the report files, mobile Accessibility 100 on 23 Oct. AI briefly detached HEAD with a git command; no work was lost.
