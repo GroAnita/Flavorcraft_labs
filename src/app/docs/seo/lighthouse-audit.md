@@ -16,15 +16,15 @@
 
 Status of each finding, based on the final production audit (22 October 2026) and the code on `develop` (updated 23 October 2026).
 
-| Finding                                   | Ticket / PR    | Status                                                                                                                |
-| ----------------------------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Slow server response                      | #229           | Partly fixed: recipe list cached for 60 seconds, but the final audit still flags server response time (700–900 ms)    |
-| Render-blocking Adobe Fonts               | #232 (PR #258) | Partly fixed: preconnect hints added. The stylesheet still blocks rendering (about 770 ms on mobile)                  |
-| Missing category routes (404)             | –              | Fixed: category links now go to `/recipes?filters=category:…`. No console errors in the final audit                   |
-| Third-party cookies and DevTools issues   | –              | Fixed: both audits pass in the final audit                                                                            |
-| Hero images preloaded and both downloaded | –              | Open: confirmed in the final audit. Likely cause: `priority` on both images                                           |
-| Oversized external recipe images          | –              | Open: deferred. About 6,000 KiB estimated savings in the final audit                                                  |
-| Insufficient color contrast               | –              | Fixed after the final audit (PR #273, 22 Oct): both text colors now meet WCAG AA. Not yet re-measured with Lighthouse |
+| Finding                                   | Ticket / PR    | Status                                                                                                             |
+| ----------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Slow server response                      | #229           | Partly fixed: recipe list cached for 60 seconds, but the final audit still flags server response time (700–900 ms) |
+| Render-blocking Adobe Fonts               | #232 (PR #258) | Partly fixed: preconnect hints added. The stylesheet still blocks rendering (about 770 ms on mobile)               |
+| Missing category routes (404)             | –              | Fixed: category links now go to `/recipes?filters=category:…`. No console errors in the final audit                |
+| Third-party cookies and DevTools issues   | –              | Fixed: both audits pass in the final audit                                                                         |
+| Hero images preloaded and both downloaded | –              | Open: confirmed in the final audit. Likely cause: `priority` on both images                                        |
+| Oversized external recipe images          | –              | Open: deferred. About 6,000 KiB estimated savings in the final audit                                               |
+| Insufficient color contrast               | –              | Fixed after the final audit (PR #273, 22 Oct). Mobile Accessibility re-measured at 100 on 23 Oct                   |
 
 **Final scores (homepage, 22 October 2026):** Mobile Performance 86.3 (average of three runs: 84, 86, 89), Accessibility 97, Best Practices 96, SEO 100. Desktop Performance 98, Accessibility 97, Best Practices 100, SEO 100. See [section 7](#7-final-production-lighthouse-verification--22-october-2026).
 
@@ -348,7 +348,7 @@ Although the Accessibility score remained consistently high at 97/100, the ident
 | Hero label (`bg-salt-500`)           | `text-basil-300` (#628d78): 3.44:1 | `text-basil-400` (#44775d): 4.76:1 | Passes          |
 | Recipe card description (`bg-white`) | `text-oat-800` (#807d74): 4.11:1   | `text-nori-400` (#434d48): 8.77:1  | Passes          |
 
-The fix has not been re-measured with Lighthouse. A new Accessibility audit is needed to confirm that the color contrast audit passes and to record the updated score.
+**Re-measured (23 October 2026):** A mobile Lighthouse Accessibility audit of the homepage on the `develop` deployment scored **100/100**, up from 97. The color contrast audit now passes. Desktop was not re-measured. The report was not saved.
 
 ## Additional Page Audits
 
@@ -532,7 +532,7 @@ The server response and font-loading tickets address performance findings invest
 
 The sticky navbar and Favorites tickets address separate usability and functionality concerns.
 
-**Status update (23 October 2026):** All four tickets have been worked on and merged into `develop`: #229 (PR #242), #232 (PR #258), #228 (PR #235) and the Favorites fix (PR #257, `fix/favorites`). The hero image and external image findings do not have their own tickets.
+**Status update (23 October 2026):** All four tickets have been worked on and merged into `develop`: #229 (PR #242), #232 (PR #258), #228 (PR #235) and #243 (PR #257). The hero image and external image findings do not have their own tickets.
 
 ### 6. Overall Assessment
 
