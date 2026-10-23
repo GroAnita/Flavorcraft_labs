@@ -74,10 +74,10 @@ A recipe discovery web app built with Next.js and the Noroff API – Team Alpha'
 
 ## Environment variables
 
-| Variable                         | Required | Used for                                                                                        |
-| -------------------------------- | -------- | ----------------------------------------------------------------------------------------------- |
-| `API_KEY`                        | Yes      | Noroff API key. Needed for logging in, favorites, comments, pantry and creating/editing recipes |
-| `NEXT_PUBLIC_CLARITY_PROJECT_ID` | No       | Microsoft Clarity project ID. If it isn't set, analytics is turned off                          |
+| Variable                         | Required | Used for                                                                                          |
+| -------------------------------- | -------- | ------------------------------------------------------------------------------------------------- |
+| `API_KEY`                        | Yes      | Noroff API key. Needed for logging in, favorites, comments, pantry and creating/editing recipes   |
+| `NEXT_PUBLIC_CLARITY_PROJECT_ID` | No       | Microsoft Clarity project ID. If it isn't set, analytics is turned off and the app works normally |
 
 Reading recipes is public and works without an API key.
 
@@ -129,21 +129,26 @@ src/app/
 
 ## Documentation
 
-| Document                                                   | Contents                                                   |
-| ---------------------------------------------------------- | ---------------------------------------------------------- |
-| [Contributing guidelines](src/app/docs/contributing.md)    | Folder structure, naming, branches, commits, PRs, QA       |
-| [Styles](src/app/docs/styles.md)                           | Colors, fonts and design tokens                            |
-| [Authentication](src/app/docs/auth.md)                     | How authenticated API requests work                        |
-| [Recipe API](src/app/docs/recipe-api.md)                   | How the app uses the Noroff Recipe Book API                |
-| [Clarity integration](src/app/docs/clarity-integration.md) | Analytics, consent and custom events                       |
-| [Lighthouse audit](src/app/docs/seo/lighthouse-audit.md)   | Performance, accessibility, best practices and SEO results |
-| [AI usage log](AI_LOG.md)                                  | How AI was used, decisions made and what is still open     |
+| Document                                                                           | Contents                                                                                                                      |
+| ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| [Contributing guidelines](src/app/docs/contributing.md)                            | Folder structure, naming, branches, commits, PRs, QA                                                                          |
+| [Styles](src/app/docs/styles.md)                                                   | Colors, fonts and design tokens                                                                                               |
+| [Authentication](src/app/docs/auth.md)                                             | How authenticated API requests work                                                                                           |
+| [Recipe API](src/app/docs/recipe-api.md)                                           | How the app uses the Noroff Recipe Book API                                                                                   |
+| [Clarity integration](src/app/docs/clarity-integration.md)                         | Analytics, consent and custom events                                                                                          |
+| [Lighthouse audit](src/app/docs/seo/lighthouse-audit.md)                           | Performance, accessibility, best practices and SEO results                                                                    |
+| [SEO & Analytics report](src/app/docs/seo/seo-analytics-research-and-planning.pdf) | Customer research, SEO and analytics plans, Clarity testing, usability testing results and the SEO & Analytics handover (PDF) |
+| [AI usage log, condensed](AI_LOG_SHORT.md)                                         | **Start here:** handover summary, architecture decisions, known pitfalls and open items                                       |
+| [AI usage log, full](AI_LOG.md)                                                    | Every AI log entry in full                                                                                                    |
 
 The [Figma design](https://www.figma.com/design/oMdxPzpCg2wMrJvZqLbrUo/Agency-2?node-id=0-1&t=vy2V6XUbuabd5Sb6-1) is the source of truth for how the app should look.
 
 ## AI usage
 
-The team used AI tools (Claude, Claude Code, ChatGPT and Microsoft Clarity's built-in AI) as assistants for research, planning, coding, reviewing and documentation. Team members reviewed, corrected and tested all AI output. The [AI usage log](AI_LOG.md) records what AI was asked to do, which suggestions were accepted, changed or rejected, and how the results were verified.
+The team used AI tools (Claude, Claude Code, ChatGPT and Microsoft Clarity's built-in AI) as assistants for research, planning, coding, reviewing and documentation. Team members reviewed, corrected and tested all AI output. The AI usage log records what AI was asked to do, which suggestions were accepted, changed or rejected, and how the results were verified:
+
+- [Condensed AI log](AI_LOG_SHORT.md): a short handover version, grouped by feature area. Start here.
+- [Full AI log](AI_LOG.md): every entry in full.
 
 ## Future features
 
@@ -152,11 +157,24 @@ The team used AI tools (Claude, Claude Code, ChatGPT and Microsoft Clarity's bui
 - **Profile sections:** "My recipes" and "Settings" are placeholders.
 - **Social sign-in:** the Google and Facebook buttons exist but are disabled.
 - **Redirect back after login,** so users return to the page they came from.
+- **Recipe wheel ("Can't decide? Spin the wheel!"):** a wheel of fortune–style randomizer. Users pick criteria such as meal type or diet (for example dinner and vegan), spin the wheel, and get a random recipe that matches. It could reuse the existing filters in `lib/recipeFilters.ts`.
 - **Dynamic filter counts** that update as other filters are selected.
 - **Password recovery,** if the API adds support for it.
-- **Performance:** the header reads the session cookie, which makes every page dynamic. Moving this would allow more caching.
+- **Mobile performance:** the header reads the session cookie, which makes every page dynamic. The [Lighthouse audit](src/app/docs/seo/lighthouse-audit.md) also lists the hero images (both are preloaded), render-blocking Adobe Fonts and unoptimized external recipe images.
+- **SEO:** `sitemap.xml`, `robots.txt` and canonical URLs (especially for filtered `/recipes` URLs).
 
-Known issues and items waiting for designer confirmation are listed in the [AI usage log](AI_LOG.md).
+Known issues and items waiting for designer confirmation are listed under [Open items in the condensed AI log](AI_LOG_SHORT.md#open-items-checked-against-the-code-on-2026-10-23).
+
+## Lighthouse results
+
+Final audit of the homepage on the deployed `develop` site (22–23 October 2026):
+
+| Device  |                Performance | Accessibility | Best Practices | SEO |
+| ------- | -------------------------: | ------------: | -------------: | --: |
+| Desktop |                         98 |            97 |            100 | 100 |
+| Mobile  | 86 (average of three runs) |           100 |             96 | 100 |
+
+The client target of 90+ in Performance, Accessibility and SEO is met on desktop. Mobile Performance is below 90; the causes and the work still to do are described in the [Lighthouse audit](src/app/docs/seo/lighthouse-audit.md). Mobile Accessibility was re-measured at 100 on 23 October after the color contrast fix; desktop was not re-measured.
 
 ## Team
 
@@ -166,6 +184,7 @@ Team Alpha:
 | ------------------ | ---------------------------------------------------------- |
 | Gro Anita          | [@GroAnita](https://github.com/GroAnita)                   |
 | Emilie Sofie Fosmo | [@Emifos](https://github.com/Emifos)                       |
+| Emilie Holden      | [@EmilieHolden](https://github.com/EmilieHolden)           |
 | Thea               | [@Theanordhoy](https://github.com/Theanordhoy)             |
 | Alexander Lislelid | [@AlexanderLislelid](https://github.com/AlexanderLislelid) |
 | Lise Ervik         | [@Liz-nor](https://github.com/Liz-nor)                     |
