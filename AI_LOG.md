@@ -625,6 +625,7 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - Committed and pushed the implementation to the feature branch.
 - At the time of this work, integration into the dynamic recipe detail page and validation using Google Rich Results Test and Schema Markup Validator remained unfinished.
   - **Status update (2026-10-22):** Recipe JSON-LD is now rendered on `/recipes/[id]` (AI-046). Validation with Google Rich Results Test and Schema Markup Validator has not been confirmed.
+  - **Status update (2026-10-23):** Validated on 21 October 2026 with Google's Rich Results Test on two deployed recipe pages (Banana Split 2 and Banana Smoothie): one valid Recipe item each, with non-critical warnings for optional properties. Details in `src/app/docs/seo/seo-analytics-research-and-planning.pdf`.
 
 **References:**
 
@@ -684,6 +685,7 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - Tested the privacy modal's keyboard interactions, Escape-key behavior, and focus restoration.
 - Committed and pushed the implementation to the feature branch.
 - Verification of Clarity behavior on the deployed application remained pending.
+  - **Status update (2026-10-23):** Consent behavior (reject, accept, withdraw) was verified with Chrome DevTools on 21 October 2026, and all four custom events were confirmed in the Clarity dashboard after deployment. Details in `src/app/docs/seo/seo-analytics-research-and-planning.pdf`.
 
 **References:**
 
@@ -1664,6 +1666,7 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - **Measured improvement:** Homepage TTFB decreased from approximately 0.27 seconds to 0.09 seconds in the local production environment.
 - The change was limited to one file.
 - **Outstanding:** Rerun Lighthouse against the deployed website after the pull request is merged, in coordination with the SEO/Analytics Lead, to verify whether the improvement is reflected in production measurements.
+  - **Status update (2026-10-23):** Done. Lighthouse was rerun on the deployed `develop` site on 22 and 23 October 2026. Mobile Performance averaged 86.3 (84, 86, 89), and server response time was still flagged (700–900 ms). See `src/app/docs/seo/lighthouse-audit.md`.
 
 **References:**
 
@@ -2917,6 +2920,7 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - ESLint passed for the changed files.
 - `npm run build` completed successfully.
 - **Outstanding:** Add the "Coming Soon" content when the design becomes available.
+  - **Status update (2026-10-23):** The Pantry page was built as a full feature (add, edit and remove items, recipe suggestions) in PR #264.
 - **Outstanding:** Agree on a consistent page title format with the team.
 
 **References:**
@@ -3126,6 +3130,7 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - ESLint passed for the files changed in this pull request.
 - `npm run build` completed successfully.
 - **Known unrelated issue:** The full `npm run lint` command failed because of errors in `HeroSection.tsx` and `AnalyticsManager.tsx`, neither of which was part of this pull request.
+  - **Status update (2026-10-23):** Fixed in #260 (PR #262). `npm run lint` now passes.
 - **Team communication:** Reported the unrelated lint errors to the team.
 - **Outstanding:** Implement recipe owner edit and delete functionality.
   - **Status update (2026-10-22):** Edit was implemented in AI-059. Delete has not been implemented.
@@ -3251,6 +3256,7 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - ESLint passed for the changed files.
 - `npm run build` completed successfully.
 - **Known unrelated issue:** The full `npm run lint` command failed because of errors in `HeroSection.tsx` and `AnalyticsManager.tsx`, neither of which was part of this pull request.
+  - **Status update (2026-10-23):** Fixed in #260 (PR #262). `npm run lint` now passes.
 - **Outstanding:** Implement the individual form section fields.
 - **Outstanding:** Add form validation.
 - **Outstanding:** Implement recipe publishing and connect the form to the API.
@@ -3365,6 +3371,7 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - ESLint passed for the changed files.
 - `npm run build` completed successfully.
 - **Known unrelated issue:** The full `npm run lint` command failed because of errors in files outside this pull request.
+  - **Status update (2026-10-23):** Fixed in #260 (PR #262). `npm run lint` now passes.
 - **Outstanding:** Implement form validation and error messages in the separate validation issue.
   - **Status update (2026-10-22):** Done in AI-049.
 - **Outstanding:** Resolve the 40px servings button requirement without unintentionally changing the shared recipe detail component.
@@ -3484,6 +3491,7 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - ESLint passed for the changed files.
 - `npm run build` completed successfully.
 - **Known unrelated issue:** The full `npm run lint` command failed because of errors in files outside this pull request.
+  - **Status update (2026-10-23):** Fixed in #260 (PR #262). `npm run lint` now passes.
 - **Outstanding:** Remove the test recipes created in the API during verification.
 
 **References:**
@@ -4512,6 +4520,7 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - The implementation was documented, but visual verification against Figma was not confirmed.
 - **Outstanding:** Finalize homepage integration, verify the `/recipes` destination, consider `next/link` for navigation, and run lint and TypeScript checks.
   - **Status update (2026-10-22):** `HeroSection` is on the homepage and links to `/recipes`. The link is still a plain `<a>` rather than `next/link`.
+  - **Status update (2026-10-23):** The hero link now uses `next/link` (#260, PR #262).
 
 **References:**
 
@@ -4683,3 +4692,90 @@ Asked for line-by-line explanations of the authenticated request helper, `loginU
 - [Ticket #274 - Recipe page opens scrolled to the comments](https://github.com/GroAnita/Flavorcraft_labs/issues/274)
 - Branch: `fix/recipe-scroll-position-274`
 - [Next.js scrolling behavior on navigation](https://nextjs.org/docs/app/api-reference/components/link#scroll)
+
+---
+
+### AI-067 - SEO & Analytics Handover: AI Log, Lighthouse Audit, Report Review and Open Graph
+
+**Date:** 2026-10-21 to 2026-10-23
+
+**Team Member:** Tone Gjerde (GitHub username: `Tunegj`), SEO & Analytics Lead
+
+**Related Tasks / Files:**
+
+- Ticket #55 - Lighthouse Baseline & SEO QA
+- Ticket #56 - AI usage log
+- Ticket #252 - Update README
+- `AI_LOG.md`, `AI_LOG_SHORT.md`
+- `README.md` (branch `docs/update-readme-252`)
+- `src/app/docs/seo/lighthouse-audit.md` and `src/app/docs/seo/lighthouse-reports/`
+- `src/app/docs/seo/seo-analytics-research-and-planning.pdf`
+- `src/app/layout.tsx`, `src/app/page.tsx` (Open Graph and homepage title)
+
+**AI Tool / Model:** Claude Code (Anthropic), VS Code extension, Claude Opus 5.5
+
+**Purpose:** Prepare the SEO & Analytics work for submission and handover: shorten the team's AI log, check which outstanding items were still open, update the README and the Lighthouse audit, review the SEO & Analytics report against the client brief, and add default Open Graph metadata.
+
+**Key Prompt(s):** _(Summary of prompts; not exact original wording)_
+
+1. Suggest how to shorten a 4,000-line AI log without losing information a future developer needs, then create a condensed version.
+2. Go through the AI log and check against the code which outstanding items are still open, then add status updates.
+3. List what the README should contain before submission, then update it.
+4. Review the Lighthouse audit, then update it with the numbers from the saved Lighthouse reports.
+5. Review the SEO & Analytics report (PDF) against the client brief and list what is missing for the SEO & Analytics Lead role.
+6. Show the code for default Open Graph metadata, then review the team member's implementation.
+
+**Outcome and Decisions:**
+
+**AI Log**
+
+- **Accepted:** Created `AI_LOG_SHORT.md`, a condensed log grouped by feature area with a handover summary (architecture decisions, conventions, AI pitfalls, open items). The full log was kept.
+- **Accepted:** AI checked outstanding items against the code and added dated status updates to the full log.
+- **AI contribution:** Found that AI-060 was missing from `AI_LOG.md` after other entries were added, and restored it.
+
+**Lighthouse Audit**
+
+- **Accepted:** AI read the scores, metrics and individual audit results directly from the JSON inside the saved HTML reports and updated the audit with them.
+- **AI contribution:** Found that all 22 October reports tested the `develop` preview (`develop--flavorcraftlabs.netlify.app`), not the main site, and that one report named "mobile" was a desktop run. The file was renamed and the environment documented.
+- **AI contribution:** Found that the saved 16 October mobile report scored 66, while the documented baseline is 46. **Human decision:** Keep 46 and add a note explaining that the saved report is a different run.
+- **AI contribution:** Identified the likely cause of both hero images being downloaded (`priority` on both images in `HeroSection.tsx`), and calculated the contrast ratios before and after the color fix in PR #273 (hero label 3.44 → 4.76:1, card description 4.11 → 8.77:1).
+- **Human decision:** Performance optimization belongs to the development team. The SEO & Analytics Lead's responsibility is to audit, report and create tickets, not to implement the fixes.
+
+**SEO & Analytics Report (PDF)**
+
+- **Accepted:** AI compared the report with the client brief and pointed out missing or unclear items: outcomes for each client requirement, the 90+ target not met for mobile Performance, ratings left out of the JSON-LD (the API has no rating data), JSON-LD placed in the page body, scroll depth and heatmaps, and outdated "pending" statements.
+- **Accepted:** AI flagged personal information (the team member's email) before the PDF was added to the repository. The team member removed it.
+- **Human decision:** Heatmaps were included with a clear limitation, because developer activity could not be excluded and only one tester used a mobile device. Mobile heatmaps were not presented.
+- **Human correction:** AI suggested a favorites row in the "Follow-up on Findings" table, but the usability report contained no favorites finding. The row was removed.
+
+**Open Graph and Homepage Title**
+
+- **Human implementation:** The team member wrote the code, using AI's example as a guide: `metadataBase`, a default `openGraph` block (site name, type, `en_US` locale, image) and a `summary_large_image` Twitter card in `layout.tsx`, and an absolute homepage title in `page.tsx`.
+- **AI contribution:** Checked the bundled Next.js documentation and confirmed that a relative image path without `metadataBase` causes a build error, and that a page's own `openGraph` replaces the layout's block instead of merging with it.
+- **AI contribution:** Found that the homepage title became "Flavorcraft Labs – Good food starts here | FlavorCraft Labs" (duplicate brand, inconsistent spelling).
+- **Human decision:** Kept `og:image` omitted for recipes without an image, rejecting AI's suggestion to fall back to the default image.
+- **AI contribution:** Found a duplicated `alt:` key before committing, which would have broken the build, and fixed it.
+- **Human correction:** AI first said platforms would only fall back to `<title>` on the homepage and `/recipes`. The production build showed that Next.js generates `og:title` and `og:description` automatically, and AI corrected its advice.
+
+**Other Advice**
+
+- **Rejected:** Removing the parentheses from `(pages)` and `(profile)`. AI explained that they are Next.js route groups that keep the folder names out of the URL, so removing them would change every URL.
+- **Kept:** `AGENTS.md` and `CLAUDE.md`, after AI explained that they are only recreated when an AI agent runs `next dev`, and that they help AI tools use the correct Next.js version.
+
+**Verification / Status:**
+
+- `npm run lint` and `npm run build` passed for the Open Graph changes.
+- The Open Graph tags were checked in a local production build (`next start`) on `/`, `/recipes` and a recipe page.
+- All Lighthouse numbers in the audit were checked against the saved report files.
+- Contrast ratios were calculated from the hex values in `globals.css`. A mobile Lighthouse rerun on 23 October 2026 confirmed Accessibility 100.
+- **Mistake during the session:** A git command used by AI briefly detached HEAD on the local repository. No work was lost, and a new branch was created from that point.
+- **Outstanding:** Test the homepage Open Graph preview on the deployed site, merge the README update, and push `docs/update-readme-252`.
+
+**References:**
+
+- [Pull Request #270 - Lighthouse audit and SEO & Analytics report](https://github.com/GroAnita/Flavorcraft_labs/pull/270)
+- [Pull Request #271 - Default Open Graph metadata](https://github.com/GroAnita/Flavorcraft_labs/pull/271)
+- Branches: `docs/lighthouse-contrast-update-55`, `docs/update-ai-log-56`, `docs/update-readme-252`
+- `src/app/docs/seo/lighthouse-audit.md`
+- `src/app/docs/seo/seo-analytics-research-and-planning.pdf`
+- Related entry: AI-060
