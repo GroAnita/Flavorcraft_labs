@@ -102,7 +102,7 @@ docs: add contributing guidelines
 2. Open a PR into `develop` and fill in the PR checklist.
 3. Move the card to **In Review/QA** on the project board.
 4. **QA** approves the PR.
-5. **QA** tests the change and approves it. **QA** signs off with label **QA approved**.
+5. **QA** tests the change and approves it. **QA** signs off with label **QA approved**. If **QA** is unavailable the **Scrum Master** can inform the **QA** and approve the PR.
 6. Merge with **Squash and merge**.
 7. Before each Sprint Review, `develop` is merged into `main` (with **Create a merge commit**) after a final QA check.
 
@@ -112,13 +112,13 @@ Nobody pushes directly to `main` or `develop`.
 
 ## 7. PR checklist
 
-Every PR uses the template in `.github/pull_request_template.md`. It covers:
+Every PR uses this checklist:
 
 - Acceptance criteria are met
 - How to test the change
 - Screenshots (for visual changes)
 - Lint and build pass
-- Link to entry in AI.md if AI was used, if not mark with **AI not used**
+- If AI was used in development inform with a simple **"AI was used, more information in AI_LOG.md"**, if not mark with **AI not used**
 
 ---
 
